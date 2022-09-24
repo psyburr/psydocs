@@ -1,0 +1,323 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd.link</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd.link"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd.link — Network device configuration</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename"><em class="replaceable"><code>link</code></em>.link</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd.link.html#Description">¶</a></h2><p>A plain ini-style text file that encodes configuration for matching network devices, used by
+    <a href="systemd-udevd.html#"><span class="citerefentry"><span class="refentrytitle">systemd-udevd</span>(8)</span></a> and in
+    particular its <span class="command"><strong>net_setup_link</strong></span> builtin. See
+    <a href="systemd.syntax.html#"><span class="citerefentry"><span class="refentrytitle">systemd.syntax</span>(7)</span></a> for a
+    general description of the syntax.</p><p>The link files are read from the files located in the system network directory
+    <code class="filename">/usr/lib/systemd/network</code>, the volatile runtime network directory
+    <code class="filename">/run/systemd/network</code>, and the local administration network directory
+    <code class="filename">/etc/systemd/network</code>. Link files must have the extension
+    <code class="filename">.link</code>; other extensions are ignored. All link files are collectively sorted
+    and processed in lexical order, regardless of the directories in which they live. However, files
+    with identical filenames replace each other. Files in <code class="filename">/etc/</code> have the highest
+    priority, files in <code class="filename">/run/</code> take precedence over files with the same name in
+    <code class="filename">/usr/lib/</code>. This can be used to override a system-supplied link file with a
+    local file if needed. As a special case, an empty file (file size 0) or symlink with the same name
+    pointing to <code class="filename">/dev/null</code> disables the configuration file entirely (it is
+    "masked").</p><p>Along with the link file <code class="filename">foo.link</code>, a "drop-in" directory
+    <code class="filename">foo.link.d/</code> may exist. All files with the suffix "<code class="literal">.conf</code>"
+    from this directory will be merged in the alphanumeric order and parsed after the main file itself
+    has been parsed. This is useful to alter or add configuration settings, without having to modify
+    the main configuration file. Each drop-in file must have appropriate section headers.</p><p>In addition to <code class="filename">/etc/systemd/network</code>, drop-in "<code class="literal">.d</code>"
+    directories can be placed in <code class="filename">/usr/lib/systemd/network</code> or
+    <code class="filename">/run/systemd/network</code> directories. Drop-in files in <code class="filename">/etc/</code>
+    take precedence over those in <code class="filename">/run/</code> which in turn take precedence over those
+    in <code class="filename">/usr/lib/</code>. Drop-in files under any of these directories take precedence
+    over the main link file wherever located.</p><p>The link file contains a [Match] section, which determines if a given link file may be applied to a
+    given device, as well as a [Link] section specifying how the device should be configured. The first (in
+    lexical order) of the link files that matches a given device is applied. Note that a default file
+    <code class="filename">99-default.link</code> is shipped by the system. Any user-supplied
+    <code class="filename">.link</code> should hence have a lexically earlier name to be considered at all.</p><p>See <a href="udevadm.html#"><span class="citerefentry"><span class="refentrytitle">udevadm</span>(8)</span></a> for
+    diagnosing problems with <code class="filename">.link</code> files.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="[Match] Section Options">[Match] Section Options<a class="headerlink" title="Permalink to this headline" href="systemd.link.html#%5BMatch%5D%20Section%20Options">¶</a></h2><p>A link file is said to match a device if all matches specified by the
+    [Match] section are satisfied. When a link file does not contain valid settings
+    in [Match] section, then the file will match all devices and
+    <span class="command"><strong>systemd-udevd</strong></span> warns about that. Hint: to avoid the warning and to make it clear
+    that all interfaces shall be matched, add the following:
+    </p><pre class="programlisting">OriginalName=*</pre><p>
+    The following keys are accepted:</p><div class="variablelist"><dl class="variablelist"><dt id="MACAddress="><span class="term"><code class="varname">MACAddress=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#MACAddress=">¶</a></dt><dd><p>A whitespace-separated list of hardware addresses. Use full colon-, hyphen- or dot-delimited hexadecimal. See the example below.
+          This option may appear more than once, in which case the lists are merged. If the empty string is assigned to this option, the list
+          of hardware addresses defined prior to this is reset.</p><p>Example:
+          </p><pre class="programlisting">MACAddress=01:23:45:67:89:ab 00-11-22-33-44-55 AABB.CCDD.EEFF</pre></dd><dt id="PermanentMACAddress="><span class="term"><code class="varname">PermanentMACAddress=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#PermanentMACAddress=">¶</a></dt><dd><p>A whitespace-separated list of hardware's permanent addresses. While
+          <code class="varname">MACAddress=</code> matches the device's current MAC address, this matches the
+          device's permanent MAC address, which may be different from the current one. Use full
+          colon-, hyphen- or dot-delimited hexadecimal. This option may appear more than once, in
+          which case the lists are merged. If the empty string is assigned to this option, the list
+          of hardware addresses defined prior to this is reset.</p></dd><dt id="Path="><span class="term"><code class="varname">Path=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Path=">¶</a></dt><dd><p>A whitespace-separated list of shell-style globs matching
+          the persistent path, as exposed by the udev property
+          <code class="varname">ID_PATH</code>.</p></dd><dt id="Driver="><span class="term"><code class="varname">Driver=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Driver=">¶</a></dt><dd><p>A whitespace-separated list of shell-style globs matching the driver currently bound to the
+          device, as exposed by the udev property <code class="varname">ID_NET_DRIVER</code> of its parent device, or
+          if that is not set, the driver as exposed by <span class="command"><strong>ethtool -i</strong></span> of the device itself.
+          If the list is prefixed with a "!", the test is inverted.</p></dd><dt id="Type="><span class="term"><code class="varname">Type=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Type=">¶</a></dt><dd><p>A whitespace-separated list of shell-style globs matching the device type, as exposed by
+          <span class="command"><strong>networkctl list</strong></span>. If the list is prefixed with a "!", the test is inverted.
+          Some valid values are "<code class="literal">ether</code>", "<code class="literal">loopback</code>", "<code class="literal">wlan</code>", "<code class="literal">wwan</code>".
+          Valid types are named either from the udev "<code class="literal">DEVTYPE</code>" attribute, or
+          "<code class="literal">ARPHRD_</code>" macros in <code class="filename">linux/if_arp.h</code>, so this is not comprehensive.
+          </p></dd><dt id="Property="><span class="term"><code class="varname">Property=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Property=">¶</a></dt><dd><p>A whitespace-separated list of udev property names with their values after equals sign
+          ("<code class="literal">=</code>"). If multiple properties are specified, the test results are ANDed.
+          If the list is prefixed with a "!", the test is inverted. If a value contains white
+          spaces, then please quote whole key and value pair. If a value contains quotation, then
+          please escape the quotation with "<code class="literal">\</code>".</p><p>Example: if a .link file has the following:
+          </p><pre class="programlisting">Property=ID_MODEL_ID=9999 "ID_VENDOR_FROM_DATABASE=vendor name" "KEY=with \"quotation\""</pre><p>
+          then, the .link file matches only when an interface has all the above three properties.
+          </p></dd><dt id="OriginalName="><span class="term"><code class="varname">OriginalName=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#OriginalName=">¶</a></dt><dd><p>A whitespace-separated list of shell-style globs matching the device name, as exposed by the
+          udev property "INTERFACE". This cannot be used to match on names that have already been changed
+          from userspace. Caution is advised when matching on kernel-assigned names, as they are known to be
+          unstable between reboots.</p></dd><dt id="Host="><span class="term"><code class="varname">Host=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Host=">¶</a></dt><dd><p>Matches against the hostname or machine ID of the host. See <code class="varname">ConditionHost=</code> in
+          <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>
+          for details. When prefixed with an exclamation mark ("<code class="literal">!</code>"), the result is negated.
+          If an empty string is assigned, then previously assigned value is cleared.
+          </p></dd><dt id="Virtualization="><span class="term"><code class="varname">Virtualization=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Virtualization=">¶</a></dt><dd><p>Checks whether the system is executed in a virtualized environment and optionally test
+          whether it is a specific implementation. See <code class="varname">ConditionVirtualization=</code> in
+          <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>
+          for details. When prefixed with an exclamation mark ("<code class="literal">!</code>"), the result is negated.
+          If an empty string is assigned, then previously assigned value is cleared.
+          </p></dd><dt id="KernelCommandLine="><span class="term"><code class="varname">KernelCommandLine=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#KernelCommandLine=">¶</a></dt><dd><p>Checks whether a specific kernel command line option is set. See
+          <code class="varname">ConditionKernelCommandLine=</code> in
+          <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>
+          for details. When prefixed with an exclamation mark ("<code class="literal">!</code>"), the result is negated.
+          If an empty string is assigned, then previously assigned value is cleared.
+          </p></dd><dt id="KernelVersion="><span class="term"><code class="varname">KernelVersion=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#KernelVersion=">¶</a></dt><dd><p>Checks whether the kernel version (as reported by <span class="command"><strong>uname -r</strong></span>) matches a certain
+          expression. See <code class="varname">ConditionKernelVersion=</code> in
+          <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a> for
+          details. When prefixed with an exclamation mark ("<code class="literal">!</code>"), the result is negated.
+          If an empty string is assigned, then previously assigned value is cleared.
+          </p></dd><dt id="Architecture="><span class="term"><code class="varname">Architecture=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Architecture=">¶</a></dt><dd><p>Checks whether the system is running on a specific architecture. See
+          <code class="varname">ConditionArchitecture=</code> in
+          <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>
+          for details. When prefixed with an exclamation mark ("<code class="literal">!</code>"), the result is negated.
+          If an empty string is assigned, then previously assigned value is cleared.
+          </p></dd><dt id="Firmware="><span class="term"><code class="varname">Firmware=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Firmware=">¶</a></dt><dd><p>Checks whether the system is running on a machine with the specified firmware. See
+          <code class="varname">ConditionFirmware=</code> in
+          <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>
+          for details. When prefixed with an exclamation mark ("<code class="literal">!</code>"), the result is negated.
+          If an empty string is assigned, then previously assigned value is cleared.
+          </p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="[Link] Section Options">[Link] Section Options<a class="headerlink" title="Permalink to this headline" href="systemd.link.html#%5BLink%5D%20Section%20Options">¶</a></h2><p>The [Link] section accepts the following
+    keys:</p><div class="variablelist"><dl class="variablelist"><dt id="Description="><span class="term"><code class="varname">Description=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Description=">¶</a></dt><dd><p>A description of the device.</p></dd><dt id="Alias="><span class="term"><code class="varname">Alias=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Alias=">¶</a></dt><dd><p>The <code class="varname">ifalias</code> interface property is set to this value.</p></dd><dt id="MACAddressPolicy="><span class="term"><code class="varname">MACAddressPolicy=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#MACAddressPolicy=">¶</a></dt><dd><p>The policy by which the MAC address should be set. The
+          available policies are:
+          </p><div class="variablelist"><dl class="variablelist"><dt id="persistent"><span class="term"><code class="option">persistent</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#persistent">¶</a></dt><dd><p>If the hardware has a persistent MAC address, as
+                most hardware should, and if it is used by the kernel,
+                nothing is done. Otherwise, a new MAC address is
+                generated which is guaranteed to be the same on every
+                boot for the given machine and the given device, but
+                which is otherwise random. This feature depends on ID_NET_NAME_*
+                properties to exist for the link. On hardware where these
+                properties are not set, the generation of a persistent MAC address
+                will fail.</p></dd><dt id="random"><span class="term"><code class="option">random</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#random">¶</a></dt><dd><p>If the kernel is using a random MAC address,
+                nothing is done. Otherwise, a new address is randomly
+                generated each time the device appears, typically at
+                boot. Either way, the random address will have the
+                "<code class="literal">unicast</code>" and
+                "<code class="literal">locally administered</code>" bits set.</p></dd><dt id="none"><span class="term"><code class="option">none</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#none">¶</a></dt><dd><p>Keeps the MAC address assigned by the kernel. Or use the MAC address specified in
+                <code class="varname">MACAddress=</code>.</p></dd></dl></div><p>An empty string assignment is equivalent to setting "<code class="literal">none</code>".</p></dd><dt id="MACAddress=1"><span class="term"><code class="varname">MACAddress=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#MACAddress=1">¶</a></dt><dd><p>The interface MAC address to use. For this setting to take effect,
+          <code class="varname">MACAddressPolicy=</code> must either be unset, empty, or "<code class="literal">none</code>".
+          </p></dd><dt id="NamePolicy="><span class="term"><code class="varname">NamePolicy=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#NamePolicy=">¶</a></dt><dd><p>An ordered, space-separated list of policies by which the interface name should be set.
+          <code class="varname">NamePolicy=</code> may be disabled by specifying <code class="option">net.ifnames=0</code> on the
+          kernel command line. Each of the policies may fail, and the first successful one is used. The name
+          is not set directly, but is exported to udev as the property <code class="option">ID_NET_NAME</code>, which
+          is, by default, used by a
+          <a href="udev.html#"><span class="citerefentry"><span class="refentrytitle">udev</span>(7)</span></a>,
+          rule to set <code class="varname">NAME</code>. The available policies are:
+          </p><div class="variablelist"><dl class="variablelist"><dt id="kernel"><span class="term"><code class="option">kernel</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#kernel">¶</a></dt><dd><p>If the kernel claims that the name it has set
+                for a device is predictable, then no renaming is
+                performed.</p></dd><dt id="database"><span class="term"><code class="option">database</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#database">¶</a></dt><dd><p>The name is set based on entries in the udev's
+                Hardware Database with the key
+                <code class="varname">ID_NET_NAME_FROM_DATABASE</code>.
+                </p></dd><dt id="onboard"><span class="term"><code class="option">onboard</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#onboard">¶</a></dt><dd><p>The name is set based on information given by
+                the firmware for on-board devices, as exported by the
+                udev property <code class="varname">ID_NET_NAME_ONBOARD</code>.
+                See <a href="systemd.net-naming-scheme.html#"><span class="citerefentry"><span class="refentrytitle">systemd.net-naming-scheme</span>(7)</span></a>.
+                </p></dd><dt id="slot"><span class="term"><code class="option">slot</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#slot">¶</a></dt><dd><p>The name is set based on information given by
+                the firmware for hot-plug devices, as exported by the
+                udev property <code class="varname">ID_NET_NAME_SLOT</code>.
+                See <a href="systemd.net-naming-scheme.html#"><span class="citerefentry"><span class="refentrytitle">systemd.net-naming-scheme</span>(7)</span></a>.
+                </p></dd><dt id="path"><span class="term"><code class="option">path</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#path">¶</a></dt><dd><p>The name is set based on the device's physical
+                location, as exported by the udev property
+                <code class="varname">ID_NET_NAME_PATH</code>.
+                See <a href="systemd.net-naming-scheme.html#"><span class="citerefentry"><span class="refentrytitle">systemd.net-naming-scheme</span>(7)</span></a>.
+                </p></dd><dt id="mac"><span class="term"><code class="option">mac</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#mac">¶</a></dt><dd><p>The name is set based on the device's persistent
+                MAC address, as exported by the udev property
+                <code class="varname">ID_NET_NAME_MAC</code>.
+                See <a href="systemd.net-naming-scheme.html#"><span class="citerefentry"><span class="refentrytitle">systemd.net-naming-scheme</span>(7)</span></a>.
+                </p></dd><dt id="keep"><span class="term"><code class="option">keep</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#keep">¶</a></dt><dd><p>If the device already had a name given by userspace (as part of creation of the device
+                or a rename), keep it.</p></dd></dl></div></dd><dt id="Name="><span class="term"><code class="varname">Name=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Name=">¶</a></dt><dd><p>The interface name to use. This option has lower precedence than
+          <code class="varname">NamePolicy=</code>, so for this setting to take effect, <code class="varname">NamePolicy=</code>
+          must either be unset, empty, disabled, or all policies configured there must fail. Also see the
+          example below with "<code class="literal">Name=dmz0</code>".</p><p>Note that specifying a name that the kernel might use for another
+          interface (for example "<code class="literal">eth0</code>") is dangerous because the
+          name assignment done by udev will race with the assignment done by the
+          kernel, and only one interface may use the name. Depending on the order of
+          operations, either udev or the kernel will win, making the naming
+          unpredictable. It is best to use some different prefix, for example
+          "<code class="literal">internal0</code>"/"<code class="literal">external0</code>" or
+          "<code class="literal">lan0</code>"/"<code class="literal">lan1</code>"/"<code class="literal">lan3</code>".
+          </p></dd><dt id="AlternativeNamesPolicy="><span class="term"><code class="varname">AlternativeNamesPolicy=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#AlternativeNamesPolicy=">¶</a></dt><dd><p>A space-separated list of policies by which the interface's alternative names
+          should be set. Each of the policies may fail, and all successful policies are used. The
+          available policies are "<code class="literal">database</code>", "<code class="literal">onboard</code>",
+          "<code class="literal">slot</code>", "<code class="literal">path</code>", and "<code class="literal">mac</code>". If the
+          kernel does not support the alternative names, then this setting will be ignored.
+          </p></dd><dt id="AlternativeName="><span class="term"><code class="varname">AlternativeName=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#AlternativeName=">¶</a></dt><dd><p>The alternative interface name to use. This option can be specified multiple times.
+          If the empty string is assigned to this option, the list is reset, and all prior assignments
+          have no effect. If the kernel does not support the alternative names, then this setting will
+          be ignored.</p></dd><dt id="TransmitQueues="><span class="term"><code class="varname">TransmitQueues=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#TransmitQueues=">¶</a></dt><dd><p>Specifies the device's number of transmit queues. An integer in the range 1…4096.
+          When unset, the kernel's default will be used.</p></dd><dt id="ReceiveQueues="><span class="term"><code class="varname">ReceiveQueues=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#ReceiveQueues=">¶</a></dt><dd><p>Specifies the device's number of receive queues. An integer in the range 1…4096.
+          When unset, the kernel's default will be used.</p></dd><dt id="TransmitQueueLength="><span class="term"><code class="varname">TransmitQueueLength=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#TransmitQueueLength=">¶</a></dt><dd><p>Specifies the transmit queue length of the device in number of packets. An unsigned integer
+          in the range 0…4294967294. When unset, the kernel's default will be used.</p></dd><dt id="MTUBytes="><span class="term"><code class="varname">MTUBytes=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#MTUBytes=">¶</a></dt><dd><p>The maximum transmission unit in bytes to set for the
+          device. The usual suffixes K, M, G are supported and are
+          understood to the base of 1024.</p></dd><dt id="BitsPerSecond="><span class="term"><code class="varname">BitsPerSecond=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#BitsPerSecond=">¶</a></dt><dd><p>The speed to set for the device, the value is rounded
+          down to the nearest Mbps. The usual suffixes K, M, G are
+          supported and are understood to the base of 1000.</p></dd><dt id="Duplex="><span class="term"><code class="varname">Duplex=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Duplex=">¶</a></dt><dd><p>The duplex mode to set for the device. The accepted values are <code class="option">half</code> and
+          <code class="option">full</code>.</p></dd><dt id="AutoNegotiation="><span class="term"><code class="varname">AutoNegotiation=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#AutoNegotiation=">¶</a></dt><dd><p>Takes a boolean. If set to yes, automatic negotiation of transmission parameters is enabled.
+          Autonegotiation is a procedure by which two connected ethernet devices choose
+          common transmission parameters, such as speed, duplex mode, and flow control.
+          When unset, the kernel's default will be used.</p><p>Note that if autonegotiation is enabled, speed and duplex settings are
+          read-only. If autonegotiation is disabled, speed and duplex settings are writable
+          if the driver supports multiple link modes.</p></dd><dt id="WakeOnLan="><span class="term"><code class="varname">WakeOnLan=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#WakeOnLan=">¶</a></dt><dd><p>The Wake-on-LAN policy to set for the device. Takes the special value
+          "<code class="literal">off</code>" which disables Wake-on-LAN, or space separated list of the following
+          words:</p><div class="variablelist"><dl class="variablelist"><dt id="phy"><span class="term"><code class="option">phy</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#phy">¶</a></dt><dd><p>Wake on PHY activity.</p></dd><dt id="unicast"><span class="term"><code class="option">unicast</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#unicast">¶</a></dt><dd><p>Wake on unicast messages.</p></dd><dt id="multicast"><span class="term"><code class="option">multicast</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#multicast">¶</a></dt><dd><p>Wake on multicast messages.</p></dd><dt id="broadcast"><span class="term"><code class="option">broadcast</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#broadcast">¶</a></dt><dd><p>Wake on broadcast messages.</p></dd><dt id="arp"><span class="term"><code class="option">arp</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#arp">¶</a></dt><dd><p>Wake on ARP.</p></dd><dt id="magic"><span class="term"><code class="option">magic</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#magic">¶</a></dt><dd><p>Wake on receipt of a magic packet.
+                </p></dd><dt id="secureon"><span class="term"><code class="option">secureon</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#secureon">¶</a></dt><dd><p>Enable secureon(tm) password for MagicPacket(tm).
+                </p></dd></dl></div><p>Defaults to unset, and the device's default will be used. This setting can be specified
+          multiple times. If an empty string is assigned, then the all previous assignments are
+          cleared.</p></dd><dt id="Port="><span class="term"><code class="varname">Port=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Port=">¶</a></dt><dd><p>The port option is used to select the device port. The
+          supported values are:</p><div class="variablelist"><dl class="variablelist"><dt id="tp"><span class="term"><code class="option">tp</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#tp">¶</a></dt><dd><p>An Ethernet interface using Twisted-Pair cable as the medium.</p></dd><dt id="aui"><span class="term"><code class="option">aui</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#aui">¶</a></dt><dd><p>Attachment Unit Interface (AUI). Normally used with hubs.
+                </p></dd><dt id="bnc"><span class="term"><code class="option">bnc</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#bnc">¶</a></dt><dd><p>An Ethernet interface using BNC connectors and co-axial cable.</p></dd><dt id="mii"><span class="term"><code class="option">mii</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#mii">¶</a></dt><dd><p>An Ethernet interface using a Media Independent Interface (MII).</p></dd><dt id="fibre"><span class="term"><code class="option">fibre</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#fibre">¶</a></dt><dd><p>An Ethernet interface using Optical Fibre as the medium.</p></dd></dl></div></dd><dt id="Advertise="><span class="term"><code class="varname">Advertise=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#Advertise=">¶</a></dt><dd><p>This sets what speeds and duplex modes of operation are advertised for auto-negotiation.
+          This implies "<code class="literal">AutoNegotiation=yes</code>". The supported values are:
+
+          </p><div class="table"><a name="id-1.7.3.18.2.1.2"></a><p class="title"><b>Table 1. Supported advertise values</b></p><div class="table-contents"><table class="table" summary="Supported advertise values" border="1"><colgroup><col class="Advertise"><col class="Speed"><col class="Duplex Mode"></colgroup><thead><tr><th>Advertise</th><th>Speed (Mbps)</th><th>Duplex Mode</th></tr></thead><tbody><tr><td><code class="option">10baset-half</code></td><td>10</td><td>half</td></tr><tr><td><code class="option">10baset-full</code></td><td>10</td><td>full</td></tr><tr><td><code class="option">100baset-half</code></td><td>100</td><td>half</td></tr><tr><td><code class="option">100baset-full</code></td><td>100</td><td>full</td></tr><tr><td><code class="option">1000baset-half</code></td><td>1000</td><td>half</td></tr><tr><td><code class="option">1000baset-full</code></td><td>1000</td><td>full</td></tr><tr><td><code class="option">10000baset-full</code></td><td>10000</td><td>full</td></tr><tr><td><code class="option">2500basex-full</code></td><td>2500</td><td>full</td></tr><tr><td><code class="option">1000basekx-full</code></td><td>1000</td><td>full</td></tr><tr><td><code class="option">10000basekx4-full</code></td><td>10000</td><td>full</td></tr><tr><td><code class="option">10000basekr-full</code></td><td>10000</td><td>full</td></tr><tr><td><code class="option">10000baser-fec</code></td><td>10000</td><td>full</td></tr><tr><td><code class="option">20000basemld2-full</code></td><td>20000</td><td>full</td></tr><tr><td><code class="option">20000basekr2-full</code></td><td>20000</td><td>full</td></tr></tbody></table></div></div><p><br class="table-break">
+
+          By default this is unset, i.e. all possible modes will be advertised.
+          This option may be specified more than once, in which case all specified speeds and modes are advertised.
+          If the empty string is assigned to this option, the list is reset, and all prior assignments have no effect.
+          </p></dd><dt id="ReceiveChecksumOffload="><span class="term"><code class="varname">ReceiveChecksumOffload=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#ReceiveChecksumOffload=">¶</a></dt><dd><p>Takes a boolean. If set to true, hardware offload for checksumming of ingress
+          network packets is enabled. When unset, the kernel's default will be used.</p></dd><dt id="TransmitChecksumOffload="><span class="term"><code class="varname">TransmitChecksumOffload=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#TransmitChecksumOffload=">¶</a></dt><dd><p>Takes a boolean. If set to true, hardware offload for checksumming of egress
+          network packets is enabled. When unset, the kernel's default will be used.</p></dd><dt id="TCPSegmentationOffload="><span class="term"><code class="varname">TCPSegmentationOffload=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#TCPSegmentationOffload=">¶</a></dt><dd><p>Takes a boolean. If set to true, TCP Segmentation Offload (TSO) is enabled.
+          When unset, the kernel's default will be used.</p></dd><dt id="TCP6SegmentationOffload="><span class="term"><code class="varname">TCP6SegmentationOffload=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#TCP6SegmentationOffload=">¶</a></dt><dd><p>Takes a boolean. If set to true, TCP6 Segmentation Offload (tx-tcp6-segmentation) is enabled.
+          When unset, the kernel's default will be used.</p></dd><dt id="GenericSegmentationOffload="><span class="term"><code class="varname">GenericSegmentationOffload=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#GenericSegmentationOffload=">¶</a></dt><dd><p>Takes a boolean. If set to true, Generic Segmentation Offload (GSO) is enabled.
+          When unset, the kernel's default will be used.</p></dd><dt id="GenericReceiveOffload="><span class="term"><code class="varname">GenericReceiveOffload=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#GenericReceiveOffload=">¶</a></dt><dd><p>Takes a boolean. If set to true, Generic Receive Offload (GRO) is enabled.
+          When unset, the kernel's default will be used.</p></dd><dt id="GenericReceiveOffloadHardware="><span class="term"><code class="varname">GenericReceiveOffloadHardware=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#GenericReceiveOffloadHardware=">¶</a></dt><dd><p>Takes a boolean. If set to true, hardware accelerated Generic Receive Offload (GRO) is
+          enabled. When unset, the kernel's default will be used.</p></dd><dt id="LargeReceiveOffload="><span class="term"><code class="varname">LargeReceiveOffload=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#LargeReceiveOffload=">¶</a></dt><dd><p>Takes a boolean. If set to true, Large Receive Offload (LRO) is enabled.
+          When unset, the kernel's default will be used.</p></dd><dt id="RxChannels="><span class="term"><code class="varname">RxChannels=</code>, </span><span class="term"><code class="varname">TxChannels=</code>, </span><span class="term"><code class="varname">OtherChannels=</code>, </span><span class="term"><code class="varname">CombinedChannels=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#RxChannels=">¶</a></dt><dd><p>Specifies the number of receive, transmit, other, or combined channels, respectively.
+          Takes an unsigned integer in the range 1…4294967295 or "<code class="literal">max</code>". If set to
+          "<code class="literal">max</code>", the advertised maximum value of the hardware will be used. When
+          unset, the number will not be changed. Defaults to unset.</p></dd><dt id="RxBufferSize="><span class="term"><code class="varname">RxBufferSize=</code>, </span><span class="term"><code class="varname">RxMiniBufferSize=</code>, </span><span class="term"><code class="varname">RxJumboBufferSize=</code>, </span><span class="term"><code class="varname">TxBufferSize=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#RxBufferSize=">¶</a></dt><dd><p>Specifies the maximum number of pending packets in the NIC receive buffer, mini receive
+          buffer, jumbo receive buffer, or transmit buffer, respectively. Takes an unsigned integer in
+          the range 1…4294967295 or "<code class="literal">max</code>". If set to "<code class="literal">max</code>", the
+          advertised maximum value of the hardware will be used. When unset, the number will not be
+          changed. Defaults to unset.</p></dd><dt id="RxFlowControl="><span class="term"><code class="varname">RxFlowControl=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#RxFlowControl=">¶</a></dt><dd><p>Takes a boolean. When set, enables receive flow control, also known as the ethernet
+          receive PAUSE message (generate and send ethernet PAUSE frames). When unset, the kernel's
+          default will be used.</p></dd><dt id="TxFlowControl="><span class="term"><code class="varname">TxFlowControl=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#TxFlowControl=">¶</a></dt><dd><p>Takes a boolean. When set, enables transmit flow control, also known as the ethernet
+          transmit PAUSE message (respond to received ethernet PAUSE frames). When unset, the kernel's
+          default will be used.</p></dd><dt id="AutoNegotiationFlowControl="><span class="term"><code class="varname">AutoNegotiationFlowControl=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#AutoNegotiationFlowControl=">¶</a></dt><dd><p>Takes a boolean. When set, auto negotiation enables the interface to exchange state
+          advertisements with the connected peer so that the two devices can agree on the ethernet
+          PAUSE configuration. When unset, the kernel's default will be used.</p></dd><dt id="GenericSegmentOffloadMaxBytes="><span class="term"><code class="varname">GenericSegmentOffloadMaxBytes=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#GenericSegmentOffloadMaxBytes=">¶</a></dt><dd><p>Specifies the maximum size of a Generic Segment Offload (GSO) packet the
+          device should accept. The usual suffixes K, M, G are supported and are
+          understood to the base of 1024. An unsigned integer in the range 1…65536.
+          Defaults to unset.</p></dd><dt id="GenericSegmentOffloadMaxSegments="><span class="term"><code class="varname">GenericSegmentOffloadMaxSegments=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#GenericSegmentOffloadMaxSegments=">¶</a></dt><dd><p>Specifies the maximum number of Generic Segment Offload (GSO) segments the device should
+          accept. An unsigned integer in the range 1…65535. Defaults to unset.</p></dd><dt id="UseAdaptiveRxCoalesce="><span class="term"><code class="varname">UseAdaptiveRxCoalesce=</code>, </span><span class="term"><code class="varname">UseAdaptiveTxCoalesce=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#UseAdaptiveRxCoalesce=">¶</a></dt><dd><p>Boolean properties that, when set, enable/disable adaptive Rx/Tx coalescing if the hardware
+          supports it. When unset, the kernel's default will be used.</p></dd><dt id="RxCoalesceSec="><span class="term"><code class="varname">RxCoalesceSec=</code>, </span><span class="term"><code class="varname">RxCoalesceIrqSec=</code>, </span><span class="term"><code class="varname">RxCoalesceLowSec=</code>, </span><span class="term"><code class="varname">RxCoalesceHighSec=</code>, </span><span class="term"><code class="varname">TxCoalesceSec=</code>, </span><span class="term"><code class="varname">TxCoalesceIrqSec=</code>, </span><span class="term"><code class="varname">TxCoalesceLowSec=</code>, </span><span class="term"><code class="varname">TxCoalesceHighSec=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#RxCoalesceSec=">¶</a></dt><dd><p>These properties configure the delay before Rx/Tx interrupts are generated after a packet is
+          sent/received. The "<code class="literal">Irq</code>" properties come into effect when the host is servicing an
+          IRQ. The "<code class="literal">Low</code>" and "<code class="literal">High</code>" properties come into effect when the
+          packet rate drops below the low packet rate threshold or exceeds the high packet rate threshold
+          respectively if adaptive Rx/Tx coalescing is enabled. When unset, the kernel's defaults will be
+          used.</p></dd><dt id="RxMaxCoalescedFrames="><span class="term"><code class="varname">RxMaxCoalescedFrames=</code>, </span><span class="term"><code class="varname">RxMaxCoalescedIrqFrames=</code>, </span><span class="term"><code class="varname">RxMaxCoalescedLowFrames=</code>, </span><span class="term"><code class="varname">RxMaxCoalescedHighFrames=</code>, </span><span class="term"><code class="varname">TxMaxCoalescedFrames=</code>, </span><span class="term"><code class="varname">TxMaxCoalescedIrqFrames=</code>, </span><span class="term"><code class="varname">TxMaxCoalescedLowFrames=</code>, </span><span class="term"><code class="varname">TxMaxCoalescedHighFrames=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#RxMaxCoalescedFrames=">¶</a></dt><dd><p>These properties configure the maximum number of frames that are sent/received before a Rx/Tx
+          interrupt is generated. The "<code class="literal">Irq</code>" properties come into effect when the host is
+          servicing an IRQ. The "<code class="literal">Low</code>" and "<code class="literal">High</code>" properties come into
+          effect when the packet rate drops below the low packet rate threshold or exceeds the high packet
+          rate threshold respectively if adaptive Rx/Tx coalescing is enabled. When unset, the kernel's
+          defaults will be used.</p></dd><dt id="CoalescePacketRateLow="><span class="term"><code class="varname">CoalescePacketRateLow=</code>, </span><span class="term"><code class="varname">CoalescePacketRateHigh=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#CoalescePacketRateLow=">¶</a></dt><dd><p>These properties configure the low and high packet rate (expressed in packets per second)
+          threshold respectively and are used to determine when the corresponding coalescing settings for low
+          and high packet rates come into effect if adaptive Rx/Tx coalescing is enabled. If unset, the
+          kernel's defaults will be used.</p></dd><dt id="CoalescePacketRateSampleIntervalSec="><span class="term"><code class="varname">CoalescePacketRateSampleIntervalSec=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#CoalescePacketRateSampleIntervalSec=">¶</a></dt><dd><p>Configures how often to sample the packet rate used for adaptive Rx/Tx coalescing. This
+          property cannot be zero. This lowest time granularity supported by this property is seconds.
+          Partial seconds will be rounded up before being passed to the kernel. If unset, the kernel's
+          default will be used.</p></dd><dt id="StatisticsBlockCoalesceSec="><span class="term"><code class="varname">StatisticsBlockCoalesceSec=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.link.html#StatisticsBlockCoalesceSec=">¶</a></dt><dd><p>How long to delay driver in-memory statistics block updates. If the driver does not have an
+          in-memory statistic block, this property is ignored. This property cannot be zero. If unset, the
+          kernel's default will be used.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="systemd.link.html#Examples">¶</a></h2><div class="example"><a name="id-1.8.2"></a><p class="title"><b>Example 1. /usr/lib/systemd/network/99-default.link</b></p><div class="example-contents"><p>The link file <code class="filename">99-default.link</code> that is
+      shipped with systemd defines the default naming policy for
+      links.</p><pre class="programlisting">[Link]
+NamePolicy=kernel database onboard slot path
+MACAddressPolicy=persistent</pre></div></div><br class="example-break"><div class="example"><a name="id-1.8.3"></a><p class="title"><b>Example 2. /etc/systemd/network/10-dmz.link</b></p><div class="example-contents"><p>This example assigns the fixed name "<code class="literal">dmz0</code>" to the interface with the MAC address
+      00:a0:de:63:7a:e6:</p><pre class="programlisting">[Match]
+MACAddress=00:a0:de:63:7a:e6
+
+[Link]
+Name=dmz0</pre><p><code class="varname">NamePolicy=</code> is not set, so <code class="varname">Name=</code> takes effect. We use the
+      "<code class="literal">10-</code>" prefix to order this file early in the list. Note that it needs to be before
+      "<code class="literal">99-link</code>", i.e. it needs a numerical prefix, to have any effect at all.</p></div></div><br class="example-break"><div class="example"><a name="id-1.8.4"></a><p class="title"><b>Example 3. Debugging <code class="varname">NamePolicy=</code> assignments</b></p><div class="example-contents"><pre class="programlisting">$ sudo SYSTEMD_LOG_LEVEL=debug udevadm test-builtin net_setup_link /sys/class/net/hub0
+…
+Parsed configuration file /usr/lib/systemd/network/99-default.link
+Parsed configuration file /etc/systemd/network/10-eth0.link
+ID_NET_DRIVER=cdc_ether
+Config file /etc/systemd/network/10-eth0.link applies to device hub0
+link_config: autonegotiation is unset or enabled, the speed and duplex are not writable.
+hub0: Device has name_assign_type=4
+Using default interface naming scheme 'v240'.
+hub0: Policies didn't yield a name, using specified Name=hub0.
+ID_NET_LINK_FILE=/etc/systemd/network/10-eth0.link
+ID_NET_NAME=hub0
+…</pre><p>Explicit <code class="varname">Name=</code> configuration wins in this case.</p><pre class="programlisting">sudo SYSTEMD_LOG_LEVEL=debug udevadm test-builtin net_setup_link /sys/class/net/enp0s31f6
+…
+Parsed configuration file /usr/lib/systemd/network/99-default.link
+Parsed configuration file /etc/systemd/network/10-eth0.link
+Created link configuration context.
+ID_NET_DRIVER=e1000e
+Config file /usr/lib/systemd/network/99-default.link applies to device enp0s31f6
+link_config: autonegotiation is unset or enabled, the speed and duplex are not writable.
+enp0s31f6: Device has name_assign_type=4
+Using default interface naming scheme 'v240'.
+enp0s31f6: Policy *keep*: keeping existing userspace name
+enp0s31f6: Device has addr_assign_type=0
+enp0s31f6: MAC on the device already matches policy *persistent*
+ID_NET_LINK_FILE=/usr/lib/systemd/network/99-default.link
+…
+</pre><p>In this case, the interface was already renamed, so the <code class="option">keep</code> policy specified as
+     the first option in <code class="filename">99-default.link</code> means that the existing name is
+     preserved. If <code class="option">keep</code> was removed, or if were in boot before the renaming has happened,
+     we might get the following instead:</p><pre class="programlisting">enp0s31f6: Policy *path* yields "enp0s31f6".
+enp0s31f6: Device has addr_assign_type=0
+enp0s31f6: MAC on the device already matches policy *persistent*
+ID_NET_LINK_FILE=/usr/lib/systemd/network/99-default.link
+ID_NET_NAME=enp0s31f6
+…
+</pre><p>Please note that the details of output are subject to change.</p></div></div><br class="example-break"><div class="example"><a name="id-1.8.5"></a><p class="title"><b>Example 4. /etc/systemd/network/10-internet.link</b></p><div class="example-contents"><p>This example assigns the fixed name
+      "<code class="literal">internet0</code>" to the interface with the device
+      path "<code class="literal">pci-0000:00:1a.0-*</code>":</p><pre class="programlisting">[Match]
+Path=pci-0000:00:1a.0-*
+
+[Link]
+Name=internet0</pre></div></div><br class="example-break"><div class="example"><a name="id-1.8.6"></a><p class="title"><b>Example 5. /etc/systemd/network/25-wireless.link</b></p><div class="example-contents"><p>Here's an overly complex example that shows the use of a large number of [Match] and [Link] settings.</p><pre class="programlisting">[Match]
+MACAddress=12:34:56:78:9a:bc
+Driver=brcmsmac
+Path=pci-0000:02:00.0-*
+Type=wlan
+Virtualization=no
+Host=my-laptop
+Architecture=x86-64
+
+[Link]
+Name=wireless0
+MTUBytes=1450
+BitsPerSecond=10M
+WakeOnLan=magic
+MACAddress=cb:a9:87:65:43:21</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd.link.html#See%20Also">¶</a></h2><p>
+      <a href="systemd-udevd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-udevd.service</span>(8)</span></a>,
+      <a href="udevadm.html#"><span class="citerefentry"><span class="refentrytitle">udevadm</span>(8)</span></a>,
+      <a href="systemd.netdev.html#"><span class="citerefentry"><span class="refentrytitle">systemd.netdev</span>(5)</span></a>,
+      <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>
+    </p></div></div></body></html>

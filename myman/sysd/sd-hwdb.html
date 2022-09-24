@@ -1,0 +1,30 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd-hwdb</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd-hwdb"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd-hwdb — Read-only access to the hardware description database</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-hwdb.h&gt;</pre></div><div class="cmdsynopsis"><p><code class="command">pkg-config --cflags --libs libsystemd</code> </p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd-hwdb.html#Description">¶</a></h2><p><code class="filename">sd-hwdb.h</code> allows read-only access the systemd database of hardware properties.
+    See <a href="hwdb.html#"><span class="citerefentry"><span class="refentrytitle">hwdb</span>(7)</span></a> and
+    <a href="systemd-hwdb.html#"><span class="citerefentry"><span class="refentrytitle">systemd-hwdb</span>(8)</span></a> for more
+    information about the database.</p><p>See <a href="sd_hwdb_new.html#"><span class="citerefentry"><span class="refentrytitle">sd_hwdb_new</span>(3)</span></a>
+    and <a href="sd_hwdb_get.html#"><span class="citerefentry"><span class="refentrytitle">sd_hwdb_get</span>(3)</span></a> for
+    information about the functions available.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd-hwdb.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd-hwdb.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-udevd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-udevd.service</span>(8)</span></a>
+    </p></div></div></body></html>

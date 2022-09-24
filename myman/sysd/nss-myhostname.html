@@ -1,0 +1,84 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>nss-myhostname</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="nss-myhostname"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>nss-myhostname, libnss_myhostname.so.2 — Hostname resolution for the locally configured system hostname</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">libnss_myhostname.so.2</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="nss-myhostname.html#Description">¶</a></h2><p><span class="command"><strong>nss-myhostname</strong></span> is a plug-in module for the GNU Name Service Switch (NSS) functionality of
+    the GNU C Library (<span class="command"><strong>glibc</strong></span>), primarily providing hostname resolution for the locally configured
+    system hostname as returned by
+    <a href="http://man7.org/linux/man-pages/man2/gethostname.2.html"><span class="citerefentry"><span class="refentrytitle">gethostname</span>(2)</span></a>.  The precise
+    hostnames resolved by this module are:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>The local, configured hostname is resolved to
+      all locally configured IP addresses ordered by their scope, or
+      — if none are configured — the IPv4 address 127.0.0.2 (which
+      is on the local loopback) and the IPv6 address ::1 (which is the
+      local host).</p></li><li class="listitem"><p>The hostnames "<code class="literal">localhost</code>" and
+      "<code class="literal">localhost.localdomain</code>" (as well as any hostname
+      ending in "<code class="literal">.localhost</code>" or "<code class="literal">.localhost.localdomain</code>")
+      are resolved to the IP addresses 127.0.0.1 and ::1.</p></li><li class="listitem"><p>The hostname "<code class="literal">_gateway</code>" is
+      resolved to all current default routing gateway addresses,
+      ordered by their metric. This assigns a stable hostname to the
+      current gateway, useful for referencing it independently of the
+      current network configuration state.</p></li><li class="listitem"><p>The hostname "<code class="literal">_outbound</code>" is resolved to the local IPv4 and IPv6
+      addresses that are most likely used for communication with other hosts. This is determined by
+      requesting a routing decision to the configured default gateways from the kernel and then using the
+      local IP addresses selected by this decision. This hostname is only available if there is at least one
+      local default gateway configured. This assigns a stable hostname to the local outbound IP addresses,
+      useful for referencing them independently of the current network configuration state.</p></li></ul></div><p>Various software relies on an always-resolvable local
+    hostname. When using dynamic hostnames, this is traditionally
+    achieved by patching <code class="filename">/etc/hosts</code> at the same
+    time as changing the hostname. This is problematic since it
+    requires a writable <code class="filename">/etc/</code> file system and is
+    fragile because the file might be edited by the administrator at
+    the same time. With <span class="command"><strong>nss-myhostname</strong></span> enabled,
+    changing <code class="filename">/etc/hosts</code> is unnecessary, and on
+    many systems, the file becomes entirely optional.</p><p>To activate the NSS modules, add "<code class="literal">myhostname</code>" to the line starting with
+    "<code class="literal">hosts:</code>" in <code class="filename">/etc/nsswitch.conf</code>.</p><p>It is recommended to place "<code class="literal">myhostname</code>" after "<code class="literal">file</code>" and before "<code class="literal">dns</code>".
+    This resolves well-known hostnames like "<code class="literal">localhost</code>"
+    and the machine hostnames locally. It is consistent with the behaviour
+    of <span class="command"><strong>nss-resolve</strong></span>, and still allows overriding via
+    <code class="filename">/etc/hosts</code>.</p><p>Please keep in mind that <span class="command"><strong>nss-myhostname</strong></span> (and <span class="command"><strong>nss-resolve</strong></span>) also resolve
+    in the other direction — from locally attached IP addresses to
+    hostnames. If you rely on that lookup being provided by DNS, you might
+    want to order things differently.
+    </p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Example">Example<a class="headerlink" title="Permalink to this headline" href="nss-myhostname.html#Example">¶</a></h2><p>Here is an example <code class="filename">/etc/nsswitch.conf</code> file that enables
+    <span class="command"><strong>nss-myhostname</strong></span> correctly:</p><pre class="programlisting">passwd:         compat systemd
+group:          compat [SUCCESS=merge] systemd
+shadow:         compat systemd
+gshadow:        files systemd
+
+
+hosts:          mymachines resolve [!UNAVAIL=return] files <span class="command"><strong>myhostname</strong></span> dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis</pre><p>To test, use <span class="command"><strong>glibc</strong></span>'s <span class="command"><strong>getent</strong></span> tool:</p><pre class="programlisting">$ getent ahosts `hostname`
+::1       STREAM omega
+::1       DGRAM
+::1       RAW
+127.0.0.2       STREAM
+127.0.0.2       DGRAM
+127.0.0.2       RAW</pre><p>In this case, the local hostname is <code class="varname">omega</code>.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="nss-myhostname.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="nss-systemd.html#"><span class="citerefentry"><span class="refentrytitle">nss-systemd</span>(8)</span></a>,
+      <a href="nss-resolve.html#"><span class="citerefentry"><span class="refentrytitle">nss-resolve</span>(8)</span></a>,
+      <a href="nss-mymachines.html#"><span class="citerefentry"><span class="refentrytitle">nss-mymachines</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/nsswitch.conf.5.html"><span class="citerefentry"><span class="refentrytitle">nsswitch.conf</span>(5)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/getent.1.html"><span class="citerefentry"><span class="refentrytitle">getent</span>(1)</span></a>
+    </p></div></div></body></html>

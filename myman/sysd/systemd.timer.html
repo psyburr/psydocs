@@ -1,0 +1,185 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd.timer</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd.timer"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd.timer — Timer unit configuration</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename"><em class="replaceable"><code>timer</code></em>.timer</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd.timer.html#Description">¶</a></h2><p>A unit configuration file whose name ends in
+    "<code class="literal">.timer</code>" encodes information about a timer
+    controlled and supervised by systemd, for timer-based
+    activation.</p><p>This man page lists the configuration options specific to
+    this unit type. See
+    <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>
+    for the common options of all unit configuration files. The common
+    configuration items are configured in the generic [Unit] and
+    [Install] sections. The timer specific configuration options are
+    configured in the [Timer] section.</p><p>For each timer file, a matching unit file must exist,
+    describing the unit to activate when the timer elapses. By
+    default, a service by the same name as the timer (except for the
+    suffix) is activated. Example: a timer file
+    <code class="filename">foo.timer</code> activates a matching service
+    <code class="filename">foo.service</code>. The unit to activate may be
+    controlled by <code class="varname">Unit=</code> (see below).</p><p>Note that in case the unit to activate is already active at the time the timer elapses it is not restarted,
+    but simply left running. There is no concept of spawning new service instances in this case. Due to this, services
+    with <code class="varname">RemainAfterExit=</code> set (which stay around continuously even after the service's main process
+    exited) are usually not suitable for activation via repetitive timers, as they will only be activated once, and
+    then stay around forever.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Automatic Dependencies">Automatic Dependencies<a class="headerlink" title="Permalink to this headline" href="systemd.timer.html#Automatic%20Dependencies">¶</a></h2><div class="refsect2"><a name="id-1.6.2"></a><h3 id="Implicit Dependencies">Implicit Dependencies<a class="headerlink" title="Permalink to this headline" href="systemd.timer.html#Implicit%20Dependencies">¶</a></h3><p>The following dependencies are implicitly added:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Timer units automatically gain a <code class="varname">Before=</code>
+        dependency on the service they are supposed to activate.</p></li></ul></div></div><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Default Dependencies">Default Dependencies<a class="headerlink" title="Permalink to this headline" href="systemd.timer.html#Default%20Dependencies">¶</a></h3><p>The following dependencies are added unless <code class="varname">DefaultDependencies=no</code> is set:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Timer units will automatically have dependencies of type <code class="varname">Requires=</code> and
+        <code class="varname">After=</code> on <code class="filename">sysinit.target</code>, a dependency of type <code class="varname">Before=</code>
+        on <code class="filename">timers.target</code>, as well as <code class="varname">Conflicts=</code> and <code class="varname">Before=</code> on
+        <code class="filename">shutdown.target</code> to ensure that they are stopped cleanly prior to system shutdown. Only timer
+        units involved with early boot or late system shutdown should disable the
+        <code class="varname">DefaultDependencies=</code> option.</p></li><li class="listitem"><p>Timer units with at least one <code class="varname">OnCalendar=</code> directive acquire a pair
+        of additional <code class="varname">After=</code> dependencies on <code class="filename">time-set.target</code> and
+        <code class="filename">time-sync.target</code>, in order to avoid being started before the system clock has
+        been correctly set. See
+        <a href="systemd.special.html#"><span class="citerefentry"><span class="refentrytitle">systemd.special</span>(7)</span></a>
+        for details on these two targets.</p></li></ul></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="systemd.timer.html#Options">¶</a></h2><p>Timer files must include a [Timer] section, which carries
+    information about the timer it defines. The options specific to
+    the [Timer] section of timer units are the following:</p><div class="variablelist"><dl class="variablelist"><dt id="OnActiveSec="><span class="term"><code class="varname">OnActiveSec=</code>, </span><span class="term"><code class="varname">OnBootSec=</code>, </span><span class="term"><code class="varname">OnStartupSec=</code>, </span><span class="term"><code class="varname">OnUnitActiveSec=</code>, </span><span class="term"><code class="varname">OnUnitInactiveSec=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#OnActiveSec=">¶</a></dt><dd><p>Defines monotonic timers relative to different
+        starting points:</p><div class="table"><a name="id-1.7.3.1.6.2"></a><p class="title"><b>Table 1. Settings and their starting points</b></p><div class="table-contents"><table class="table" summary="Settings and their starting points" border="1"><colgroup><col><col></colgroup><thead><tr><th>Setting</th><th>Meaning</th></tr></thead><tbody><tr><td><code class="varname">OnActiveSec=</code></td><td>Defines a timer relative to the moment the timer unit itself is activated.</td></tr><tr><td><code class="varname">OnBootSec=</code></td><td>Defines a timer relative to when the machine was booted up. In containers, for the system manager instance, this is mapped to <code class="varname">OnStartupSec=</code>, making both equivalent.</td></tr><tr><td><code class="varname">OnStartupSec=</code></td><td>Defines a timer relative to when the service manager was first started. For system timer units this is very similar to <code class="varname">OnBootSec=</code> as the system service manager is generally started very early at boot. It's primarily useful when configured in units running in the per-user service manager, as the user service manager is generally started on first login only, not already during boot.</td></tr><tr><td><code class="varname">OnUnitActiveSec=</code></td><td>Defines a timer relative to when the unit the timer unit is activating was last activated.</td></tr><tr><td><code class="varname">OnUnitInactiveSec=</code></td><td>Defines a timer relative to when the unit the timer unit is activating was last deactivated.</td></tr></tbody></table></div></div><br class="table-break"><p>Multiple directives may be combined of the same and of different types, in which case the timer
+        unit will trigger whenever any of the specified timer expressions elapse. For example, by combining
+        <code class="varname">OnBootSec=</code> and <code class="varname">OnUnitActiveSec=</code>, it is possible to define a
+        timer that elapses in regular intervals and activates a specific service each time. Moreover, both
+        monotonic time expressions and <code class="varname">OnCalendar=</code> calendar expressions may be combined in
+        the same timer unit.</p><p>The arguments to the directives are time spans
+        configured in seconds. Example: "OnBootSec=50" means 50s after
+        boot-up. The argument may also include time units. Example:
+        "OnBootSec=5h 30min" means 5 hours and 30 minutes after
+        boot-up. For details about the syntax of time spans, see
+        <a href="systemd.time.html#"><span class="citerefentry"><span class="refentrytitle">systemd.time</span>(7)</span></a>.</p><p>If a timer configured with <code class="varname">OnBootSec=</code>
+        or <code class="varname">OnStartupSec=</code> is already in the past
+        when the timer unit is activated, it will immediately elapse
+        and the configured unit is started. This is not the case for
+        timers defined in the other directives.</p><p>These are monotonic timers, independent of wall-clock time and timezones. If the computer is
+        temporarily suspended, the monotonic clock generally pauses, too. Note that if
+        <code class="varname">WakeSystem=</code> is used, a different monotonic clock is selected that continues to
+        advance while the system is suspended and thus can be used as the trigger to resume the
+        system.</p><p>If the empty string is assigned to any of these options, the list of timers is reset (both
+        monotonic timers and <code class="varname">OnCalendar=</code> timers, see below), and all prior assignments
+        will have no effect.</p><p>Note that timers do not necessarily expire at the
+        precise time configured with these settings, as they are
+        subject to the <code class="varname">AccuracySec=</code> setting
+        below.</p></dd><dt id="OnCalendar="><span class="term"><code class="varname">OnCalendar=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#OnCalendar=">¶</a></dt><dd><p>Defines realtime (i.e. wallclock) timers with
+        calendar event expressions. See
+        <a href="systemd.time.html#"><span class="citerefentry"><span class="refentrytitle">systemd.time</span>(7)</span></a>
+        for more information on the syntax of calendar event
+        expressions. Otherwise, the semantics are similar to
+        <code class="varname">OnActiveSec=</code> and related settings.</p><p>Note that timers do not necessarily expire at the
+        precise time configured with this setting, as it is subject to
+        the <code class="varname">AccuracySec=</code> setting
+        below.</p><p>May be specified more than once, in which case the timer unit will trigger whenever any of the
+        specified expressions elapse. Moreover calendar timers and monotonic timers (see above) may be
+        combined within the same timer unit.</p><p>If the empty string is assigned to any of these options, the list of timers is reset (both
+        <code class="varname">OnCalendar=</code> timers and monotonic timers, see above), and all prior assignments
+        will have no effect.</p></dd><dt id="AccuracySec="><span class="term"><code class="varname">AccuracySec=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#AccuracySec=">¶</a></dt><dd><p>Specify the accuracy the timer shall elapse
+        with. Defaults to 1min. The timer is scheduled to elapse
+        within a time window starting with the time specified in
+        <code class="varname">OnCalendar=</code>,
+        <code class="varname">OnActiveSec=</code>,
+        <code class="varname">OnBootSec=</code>,
+        <code class="varname">OnStartupSec=</code>,
+        <code class="varname">OnUnitActiveSec=</code> or
+        <code class="varname">OnUnitInactiveSec=</code> and ending the time
+        configured with <code class="varname">AccuracySec=</code> later. Within
+        this time window, the expiry time will be placed at a
+        host-specific, randomized, but stable position that is
+        synchronized between all local timer units. This is done in
+        order to optimize power consumption to suppress unnecessary
+        CPU wake-ups. To get best accuracy, set this option to
+        1us. Note that the timer is still subject to the timer slack
+        configured via
+        <a href="systemd-system.conf.html#"><span class="citerefentry"><span class="refentrytitle">systemd-system.conf</span>(5)</span></a>'s
+        <code class="varname">TimerSlackNSec=</code> setting. See
+        <a href="http://man7.org/linux/man-pages/man2/prctl.2.html"><span class="citerefentry"><span class="refentrytitle">prctl</span>(2)</span></a>
+        for details. To optimize power consumption, make sure to set
+        this value as high as possible and as low as
+        necessary.</p><p>Note that this setting is primarily a power saving option that allows coalescing CPU
+        wake-ups. It should not be confused with <code class="varname">RandomizedDelaySec=</code> (see below) which
+        adds a random value to the time the timer shall elapse next and whose purpose is the opposite: to
+        stretch elapsing of timer events over a longer period to reduce workload spikes. For further details
+        and explanations and how both settings play together, see below.</p></dd><dt id="RandomizedDelaySec="><span class="term"><code class="varname">RandomizedDelaySec=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#RandomizedDelaySec=">¶</a></dt><dd><p>Delay the timer by a randomly selected, evenly distributed amount of time between 0
+        and the specified time value. Defaults to 0, indicating that no randomized delay shall be applied.
+        Each timer unit will determine this delay randomly before each iteration, and the delay will simply
+        be added on top of the next determined elapsing time, unless modified with
+        <code class="varname">FixedRandomDelay=</code>, see below.</p><p>This setting is useful to stretch dispatching of similarly configured timer events over a
+        certain time interval, to prevent them from firing all at the same time, possibly resulting in
+        resource congestion.</p><p>Note the relation to <code class="varname">AccuracySec=</code> above: the latter allows the service
+        manager to coalesce timer events within a specified time range in order to minimize wakeups, while
+        this setting does the opposite: it stretches timer events over an interval, to make it unlikely that
+        they fire simultaneously. If <code class="varname">RandomizedDelaySec=</code> and
+        <code class="varname">AccuracySec=</code> are used in conjunction, first the randomized delay is added, and
+        then the result is possibly further shifted to coalesce it with other timer events happening on the
+        system. As mentioned above <code class="varname">AccuracySec=</code> defaults to 1 minute and
+        <code class="varname">RandomizedDelaySec=</code> to 0, thus encouraging coalescing of timer events. In order to
+        optimally stretch timer events over a certain range of time, set
+        <code class="varname">AccuracySec=1us</code> and <code class="varname">RandomizedDelaySec=</code> to some higher value.
+        </p></dd><dt id="FixedRandomDelay="><span class="term"><code class="varname">FixedRandomDelay=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#FixedRandomDelay=">¶</a></dt><dd><p>Takes a boolean argument. When enabled, the randomized offset specified by
+        <code class="varname">RandomizedDelaySec=</code> is reused for all firings of the same timer. For a given timer
+        unit, the offset depends on the machine ID, user identifier and timer name, which means that it is
+        stable between restarts of the manager. This effectively creates a fixed offset for an individual
+        timer, reducing the jitter in firings of this timer, while still avoiding firing at the same time as
+        other similarly configured timers.</p><p>This setting has no effect if <code class="varname">RandomizedDelaySec=</code> is set to 0. Defaults to
+        <code class="option">false</code>.</p></dd><dt id="OnClockChange="><span class="term"><code class="varname">OnClockChange=</code>, </span><span class="term"><code class="varname">OnTimezoneChange=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#OnClockChange=">¶</a></dt><dd><p>These options take boolean arguments. When true, the service unit will be triggered
+        when the system clock (<code class="constant">CLOCK_REALTIME</code>) jumps relative to the monotonic clock
+        (<code class="constant">CLOCK_MONOTONIC</code>), or when the local system timezone is modified. These options
+        can be used alone or in combination with other timer expressions (see above) within the same timer
+        unit. These options default to <code class="option">false</code>.</p></dd><dt id="Unit="><span class="term"><code class="varname">Unit=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#Unit=">¶</a></dt><dd><p>The unit to activate when this timer elapses.
+        The argument is a unit name, whose suffix is not
+        "<code class="literal">.timer</code>". If not specified, this value
+        defaults to a service that has the same name as the timer
+        unit, except for the suffix. (See above.) It is recommended
+        that the unit name that is activated and the unit name of the
+        timer unit are named identically, except for the
+        suffix.</p></dd><dt id="Persistent="><span class="term"><code class="varname">Persistent=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#Persistent=">¶</a></dt><dd><p>Takes a boolean argument. If true, the time when the service unit was last triggered
+        is stored on disk.  When the timer is activated, the service unit is triggered immediately if it
+        would have been triggered at least once during the time when the timer was inactive. Such triggering
+        is nonetheless subject to the delay imposed by <code class="varname">RandomizedDelaySec=</code>.
+        This is useful to catch up on missed runs of the service when the system was powered down. Note that
+        this setting only has an effect on timers configured with <code class="varname">OnCalendar=</code>. Defaults to
+        <code class="option">false</code>.</p><p>Use <span class="command"><strong>systemctl clean --what=state …</strong></span> on the timer unit to remove the timestamp
+        file maintained by this option from disk. In particular, use this command before uninstalling a timer
+        unit. See
+        <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a> for
+        details.</p></dd><dt id="WakeSystem="><span class="term"><code class="varname">WakeSystem=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#WakeSystem=">¶</a></dt><dd><p>Takes a boolean argument. If true, an elapsing timer will cause the system to resume
+        from suspend, should it be suspended and if the system supports this. Note that this option will only
+        make sure the system resumes on the appropriate times, it will not take care of suspending it again
+        after any work that is to be done is finished. Defaults to
+        <code class="option">false</code>.</p><p>Note that this functionality requires privileges and is thus generally only available in the
+        system service manager.</p><p>Note that behaviour of monotonic clock timers (as configured with
+        <code class="varname">OnActiveSec=</code>, <code class="varname">OnBootSec=</code>, <code class="varname">OnStartupSec=</code>,
+        <code class="varname">OnUnitActiveSec=</code>, <code class="varname">OnUnitInactiveSec=</code>, see above) is altered
+        depending on this option. If false, a monotonic clock is used that is paused during system suspend
+        (<code class="constant">CLOCK_MONOTONIC</code>), if true a different monotonic clock is used that continues
+        advancing during system suspend (<code class="constant">CLOCK_BOOTTIME</code>), see
+        <a href="http://man7.org/linux/man-pages/man2/clock_getres.2.html"><span class="citerefentry"><span class="refentrytitle">clock_getres</span>(2)</span></a> for
+        details.</p></dd><dt id="RemainAfterElapse="><span class="term"><code class="varname">RemainAfterElapse=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.timer.html#RemainAfterElapse=">¶</a></dt><dd><p>Takes a boolean argument. If true, a timer will stay loaded, and its state remains
+        queryable even after it elapsed and the associated unit (as configured with <code class="varname">Unit=</code>,
+        see above) deactivated again. If false, an elapsed timer unit that cannot elapse anymore is unloaded
+        once its associated unit deactivated again. Turning this off is particularly useful for transient
+        timer units. Note that this setting has an effect when repeatedly starting a timer unit: if
+        <code class="varname">RemainAfterElapse=</code> is on, starting the timer a second time has no effect. However,
+        if <code class="varname">RemainAfterElapse=</code> is off and the timer unit was already unloaded, it can be
+        started again, and thus the service can be triggered multiple times. Defaults to
+        <code class="option">true</code>.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd.timer.html#See%20Also">¶</a></h2><p>
+        <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+        <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>,
+        <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>,
+        <a href="systemd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd.service</span>(5)</span></a>,
+        <a href="systemd.time.html#"><span class="citerefentry"><span class="refentrytitle">systemd.time</span>(7)</span></a>,
+        <a href="systemd.directives.html#"><span class="citerefentry"><span class="refentrytitle">systemd.directives</span>(7)</span></a>,
+        <a href="systemd-system.conf.html#"><span class="citerefentry"><span class="refentrytitle">systemd-system.conf</span>(5)</span></a>,
+        <a href="http://man7.org/linux/man-pages/man2/prctl.2.html"><span class="citerefentry"><span class="refentrytitle">prctl</span>(2)</span></a>
+      </p></div></div></body></html>

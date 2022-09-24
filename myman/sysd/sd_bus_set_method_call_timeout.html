@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_set_method_call_timeout</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_set_method_call_timeout"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_set_method_call_timeout, sd_bus_get_method_call_timeout — Set or query the default D-Bus method call timeout of a bus object</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_set_method_call_timeout</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>uint64_t <var class="pdparam">usec</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_get_method_call_timeout</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>uint64_t *<var class="pdparam">ret</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_method_call_timeout.html#Description">¶</a></h2><p><code class="function">sd_bus_set_method_call_timeout()</code> sets the default D-Bus method call
+    timeout of <em class="parameter"><code>bus</code></em> to <em class="parameter"><code>usec</code></em> microseconds.</p><p><code class="function">sd_bus_get_method_call_timeout()</code> queries the default D-Bus method
+    call timeout of <em class="parameter"><code>bus</code></em>. If no method call timeout was set using
+    <code class="function">sd_bus_set_method_call_timeout()</code>, the timeout is read from the
+    <code class="varname">$SYSTEMD_BUS_TIMEOUT</code> environment variable. If this environment variable is
+    unset or does not contain a valid timeout, the implementation falls back to a predefined method
+    call timeout of 25 seconds. Note that <code class="varname">$SYSTEMD_BUS_TIMEOUT</code> is read once and
+    cached so callers should not rely on being able to change the default method call timeout at
+    runtime by changing the value of <code class="varname">$SYSTEMD_BUS_TIMEOUT</code>. Instead, call
+    <code class="function">sd_bus_set_method_call_timeout()</code> to change the default method call timeout.
+    </p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_method_call_timeout.html#Return%20Value">¶</a></h2><p>On success, these functions return a non-negative integer. On failure, they return a
+    negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_method_call_timeout.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_method_call_timeout.html#-EINVAL">¶</a></dt><dd><p>The parameters <em class="parameter"><code>bus</code></em> or <em class="parameter"><code>ret</code></em>
+          are <code class="constant">NULL</code>.</p></dd><dt id="-ENOPKG"><span class="term"><code class="constant">-ENOPKG</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_method_call_timeout.html#-ENOPKG">¶</a></dt><dd><p>Bus object <em class="parameter"><code>bus</code></em> could not be resolved.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_method_call_timeout.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_method_call_timeout.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+      <a href="sd_bus_call.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_call</span>(3)</span></a>
+    </p></div></div></body></html>

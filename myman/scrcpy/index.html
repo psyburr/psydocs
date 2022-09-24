@@ -1,0 +1,989 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Mar  6 19:14:09 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>scrcpy</title>
+
+<script type="text/javascript" async="" src="scrcpy_files/nc.js"></script></head>
+<body>
+
+<h1 align="center">scrcpy</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#SHORTCUTS">SHORTCUTS</a><br>
+<a href="#Environment variables">Environment variables</a><br>
+<a href="#AUTHORS">AUTHORS</a><br>
+<a href="#REPORTING BUGS">REPORTING BUGS</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+<a href="#WWW">WWW</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">scrcpy &#8722;
+Display and control your Android device</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>scrcpy</b>
+[<i>options</i>]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>scrcpy</b>
+provides display and control of Android devices connected on
+USB (or over TCP/IP). It does not require any root
+access.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&#8722;&#8722;always&#8722;on&#8722;top</b></p>
+
+<p style="margin-left:22%;">Make scrcpy window always on
+top (above other windows).</p>
+
+<p style="margin-left:11%;"><b>&#8722;b,
+&#8722;&#8722;bit&#8722;rate</b> <i>value</i></p>
+
+<p style="margin-left:22%;">Encode the video at the given
+bit&#8722;rate, expressed in bits/s. Unit suffixes are
+supported: ’<b>K</b>’ (x1000) and
+’<b>M</b>’ (x1000000).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+8000000.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;codec&#8722;options</b>
+<i>key[:type]=value[,...]</i></p>
+
+<p style="margin-left:22%;">Set a list of comma-separated
+key:type=value options for the device encoder.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The possible
+values for ’type’ are ’int’
+(default), ’long’, ’float’ and
+’string’.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The list of
+possible codec options is available in the Android
+documentation
+<a href="https://d.android.com/reference/android/media/MediaFormat">https://d.android.com/reference/android/media/MediaFormat</a>.</p>
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;crop</b>
+<i>width</i>:<i>height</i>:<i>x</i>:<i>y</i></p>
+
+<p style="margin-left:22%;">Crop the device screen on the
+server.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The values are
+expressed in the device natural orientation (typically,
+portrait for a phone, landscape for a tablet). Any
+<b>&#8722;&#8722;max&#8722;size</b> value is computed on the
+cropped size.</p>
+
+<p style="margin-left:11%;"><b>&#8722;d,
+&#8722;&#8722;select&#8722;usb</b></p>
+
+<p style="margin-left:22%;">Use USB device (if there is
+exactly one, like adb -d).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Also see
+<b>&#8722;e</b>
+(<b>&#8722;&#8722;select&#8722;tcpip</b>).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;disable-screensaver</b></p>
+
+<p style="margin-left:22%;">Disable screensaver while
+scrcpy is running.</p>
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;display</b>
+<i>id</i></p>
+
+<p style="margin-left:22%;">Specify the display id to
+mirror.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The list of
+possible display ids can be listed by "adb shell
+dumpsys display" (search "mDisplayId=" in the
+output).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+0.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;display&#8722;buffer
+ms</b></p>
+
+<p style="margin-left:22%;">Add a buffering delay (in
+milliseconds) before displaying. This increases latency to
+compensate for jitter.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is 0
+(no buffering).</p>
+
+<p style="margin-left:11%;"><b>&#8722;e,
+&#8722;&#8722;select&#8722;tcpip</b></p>
+
+<p style="margin-left:22%;">Use TCP/IP device (if there is
+exactly one, like adb -e).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Also see
+<b>&#8722;d</b> (<b>&#8722;&#8722;select&#8722;usb</b>).</p>
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;encoder</b>
+<i>name</i></p>
+
+<p style="margin-left:22%;">Use a specific MediaCodec
+encoder (must be a H.264 encoder).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;force&#8722;adb&#8722;forward</b></p>
+
+<p style="margin-left:22%;">Do not attempt to use "adb
+reverse" to connect to the device.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;forward&#8722;all&#8722;clicks</b></p>
+
+<p style="margin-left:22%;">By default, right-click
+triggers BACK (or POWER on) and middle-click triggers HOME.
+This option disables these shortcuts and forward the clicks
+to the device instead.</p>
+
+<p style="margin-left:11%;"><b>&#8722;f,
+&#8722;&#8722;fullscreen</b></p>
+
+<p style="margin-left:22%;">Start in fullscreen.</p>
+
+<p style="margin-left:11%;"><b>&#8722;h,
+&#8722;&#8722;help</b></p>
+
+<p style="margin-left:22%;">Print this help.</p>
+
+<p style="margin-left:11%;"><b>&#8722;K,
+&#8722;&#8722;hid&#8722;keyboard</b></p>
+
+<p style="margin-left:22%;">Simulate a physical keyboard by
+using HID over AOAv2.</p>
+
+<p style="margin-left:22%; margin-top: 1em">This provides a
+better experience for IME users, and allows to generate
+non-ASCII characters, contrary to the default injection
+method.</p>
+
+<p style="margin-left:22%; margin-top: 1em">It may only
+work over USB.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The keyboard
+layout must be configured (once and for all) on the device,
+via Settings -&gt; System -&gt; Languages and input -&gt;
+Physical keyboard. This settings page can be started
+directly:</p>
+
+<p style="margin-left:22%; margin-top: 1em">adb shell am
+start -a android.settings.HARD_KEYBOARD_SETTINGS</p>
+
+<p style="margin-left:22%; margin-top: 1em">However, the
+option is only available when the HID keyboard is enabled
+(or a physical keyboard is connected).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Also see
+<b>&#8722;&#8722;hid&#8722;mouse</b>.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;legacy&#8722;paste</b></p>
+
+<p style="margin-left:22%;">Inject computer clipboard text
+as a sequence of key events on Ctrl+v (like
+MOD+Shift+v).</p>
+
+<p style="margin-left:22%; margin-top: 1em">This is a
+workaround for some devices not behaving as expected when
+setting the device clipboard programmatically.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;lock&#8722;video&#8722;orientation[=value]</b></p>
+
+<p style="margin-left:22%;">Lock video orientation to
+<i>value</i>. Possible values are "unlocked",
+"initial" (locked to the initial orientation), 0,
+1, 2 and 3. Natural device orientation is 0, and each
+increment adds a 90 degrees rotation counterclockwise.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+"unlocked".</p>
+
+<p style="margin-left:22%; margin-top: 1em">Passing the
+option without argument is equivalent to passing
+"initial".</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;max&#8722;fps</b>
+<i>value</i></p>
+
+<p style="margin-left:22%;">Limit the framerate of screen
+capture (officially supported since Android 10, but may work
+on earlier versions).</p>
+
+<p style="margin-left:11%;"><b>&#8722;m,
+&#8722;&#8722;max&#8722;size</b> <i>value</i></p>
+
+<p style="margin-left:22%;">Limit both the width and height
+of the video to <i>value</i>. The other dimension is
+computed so that the device aspect&#8722;ratio is
+preserved.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is 0
+(unlimited).</p>
+
+<p style="margin-left:11%;"><b>&#8722;M,
+&#8722;&#8722;hid&#8722;mouse</b></p>
+
+<p style="margin-left:22%;">Simulate a physical mouse by
+using HID over AOAv2.</p>
+
+<p style="margin-left:22%; margin-top: 1em">In this mode,
+the computer mouse is captured to control the device
+directly (relative mouse mode).</p>
+
+<p style="margin-left:22%; margin-top: 1em">LAlt, LSuper or
+RSuper toggle the capture mode, to give control of the mouse
+back to the computer.</p>
+
+<p style="margin-left:22%; margin-top: 1em">It may only
+work over USB.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Also see
+<b>&#8722;&#8722;hid&#8722;keyboard</b>.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;no&#8722;cleanup</b></p>
+
+<p style="margin-left:22%;">By default, scrcpy removes the
+server binary from the device and restores the device state
+(show touches, stay awake and power mode) on exit.</p>
+
+<p style="margin-left:22%; margin-top: 1em">This option
+disables this cleanup.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;no&#8722;clipboard&#8722;autosync</b></p>
+
+<p style="margin-left:22%;">By default, scrcpy
+automatically synchronizes the computer clipboard to the
+device clipboard before injecting Ctrl+v, and the device
+clipboard to the computer clipboard whenever it changes.</p>
+
+<p style="margin-left:22%; margin-top: 1em">This option
+disables this automatic synchronization.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;no&#8722;downsize&#8722;on&#8722;error</b></p>
+
+<p style="margin-left:22%;">By default, on MediaCodec
+error, scrcpy automatically tries again with a lower
+definition.</p>
+
+<p style="margin-left:22%; margin-top: 1em">This option
+disables this behavior.</p>
+
+<p style="margin-left:11%;"><b>&#8722;n,
+&#8722;&#8722;no&#8722;control</b></p>
+
+<p style="margin-left:22%;">Disable device control (mirror
+the device in read&#8722;only).</p>
+
+<p style="margin-left:11%;"><b>&#8722;N,
+&#8722;&#8722;no&#8722;display</b></p>
+
+<p style="margin-left:22%;">Do not display device (only
+when screen recording is enabled).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;no&#8722;key&#8722;repeat</b></p>
+
+<p style="margin-left:22%;">Do not forward repeated key
+events when a key is held down.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;no&#8722;mipmaps</b></p>
+
+<p style="margin-left:22%;">If the renderer is OpenGL 3.0+
+or OpenGL ES 2.0+, then mipmaps are automatically generated
+to improve downscaling quality. This option disables the
+generation of mipmaps.</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>&#8722;&#8722;otg</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Run in OTG mode: simulate physical keyboard and mouse,
+as if the computer keyboard and mouse were plugged directly
+to the device via an OTG cable.</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:22%; margin-top: 1em">In this mode,
+adb (USB debugging) is not necessary, and mirroring is
+disabled.</p>
+
+<p style="margin-left:22%; margin-top: 1em">LAlt, LSuper or
+RSuper toggle the mouse capture mode, to give control of the
+mouse back to the computer.</p>
+
+<p style="margin-left:22%; margin-top: 1em">If any of
+<b>&#8722;&#8722;hid&#8722;keyboard</b> or
+<b>&#8722;&#8722;hid&#8722;mouse</b> is set, only enable
+keyboard or mouse respectively, otherwise enable both.</p>
+
+<p style="margin-left:22%; margin-top: 1em">It may only
+work over USB.</p>
+
+<p style="margin-left:22%; margin-top: 1em">See
+<b>&#8722;&#8722;hid&#8722;keyboard</b> and
+<b>&#8722;&#8722;hid&#8722;mouse</b>.</p>
+
+<p style="margin-left:11%;"><b>&#8722;p,
+&#8722;&#8722;port</b> <i>port[:port]</i></p>
+
+<p style="margin-left:22%;">Set the TCP port (range) used
+by the client to listen.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+27183:27199.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;power&#8722;off&#8722;on&#8722;close</b></p>
+
+<p style="margin-left:22%;">Turn the device screen off when
+closing scrcpy.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;prefer&#8722;text</b></p>
+
+<p style="margin-left:22%;">Inject alpha characters and
+space as text events instead of key events.</p>
+
+<p style="margin-left:22%; margin-top: 1em">This avoids
+issues when combining multiple keys to enter special
+characters, but breaks the expected behavior of alpha keys
+in games (typically WASD).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;print&#8722;fps</b></p>
+
+<p style="margin-left:22%;">Start FPS counter, to print
+framerate logs to the console. It can be started or stopped
+at any time with MOD+i.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;push&#8722;target</b>
+<i>path</i></p>
+
+<p style="margin-left:22%;">Set the target directory for
+pushing files to the device by drag &amp; drop. It is passed
+as&#8722;is to "adb push".</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+"/sdcard/Download/".</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;raw&#8722;key&#8722;events</b></p>
+
+<p style="margin-left:22%;">Inject key events for all input
+keys, and ignore text events.</p>
+
+<p style="margin-left:11%;"><b>&#8722;r,
+&#8722;&#8722;record</b> <i>file</i></p>
+
+<p style="margin-left:22%;">Record screen to
+<i>file</i>.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The format is
+determined by the <b>&#8722;&#8722;record&#8722;format</b>
+option if set, or by the file extension (.mp4 or .mkv).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;record&#8722;format</b>
+<i>format</i></p>
+
+<p style="margin-left:22%;">Force recording format (either
+mp4 or mkv).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;render&#8722;driver</b>
+<i>name</i></p>
+
+<p style="margin-left:22%;">Request SDL to use the given
+render driver (this is just a hint).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Supported names
+are currently "direct3d", "opengl",
+"opengles2", "opengles",
+"metal" and "software". <br>
+
+<a href="https://wiki.libsdl.org/SDL_HINT_RENDER_DRIVER">https://wiki.libsdl.org/SDL_HINT_RENDER_DRIVER</a></p>
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;rotation</b>
+<i>value</i></p>
+
+<p style="margin-left:22%;">Set the initial display
+rotation. Possibles values are 0, 1, 2 and 3. Each increment
+adds a 90 degrees rotation counterclockwise.</p>
+
+<p style="margin-left:11%;"><b>&#8722;s,
+&#8722;&#8722;serial</b> <i>number</i></p>
+
+<p style="margin-left:22%;">The device serial number.
+Mandatory only if several devices are connected to adb.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;shortcut&#8722;mod</b>
+<i>key[+...]][,...]</i></p>
+
+<p style="margin-left:22%;">Specify the modifiers to use
+for scrcpy shortcuts. Possible keys are "lctrl",
+"rctrl", "lalt", "ralt",
+"lsuper" and "rsuper".</p>
+
+<p style="margin-left:22%; margin-top: 1em">A shortcut can
+consist in several keys, separated by ’+’.
+Several shortcuts can be specified, separated by
+’,’.</p>
+
+<p style="margin-left:22%; margin-top: 1em">For example, to
+use either LCtrl+LAlt or LSuper for scrcpy shortcuts, pass
+"lctrl+lalt,lsuper".</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+"lalt,lsuper" (left-Alt or left-Super).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;tcpip[=ip[:port]]</b></p>
+
+<p style="margin-left:22%;">Configure and reconnect the
+device over TCP/IP.</p>
+
+<p style="margin-left:22%; margin-top: 1em">If a
+destination address is provided, then scrcpy connects to
+this address before starting. The device must listen on the
+given TCP port (default is 5555).</p>
+
+<p style="margin-left:22%; margin-top: 1em">If no
+destination address is provided, then scrcpy attempts to
+find the IP address of the current device (typically
+connected over USB), enables TCP/IP mode, then connects to
+this address before starting.</p>
+
+<p style="margin-left:11%;"><b>&#8722;S,
+&#8722;&#8722;turn&#8722;screen&#8722;off</b></p>
+
+<p style="margin-left:22%;">Turn the device screen off
+immediately.</p>
+
+<p style="margin-left:11%;"><b>&#8722;t,
+&#8722;&#8722;show&#8722;touches</b></p>
+
+<p style="margin-left:22%;">Enable "show touches"
+on start, restore the initial value on exit.</p>
+
+<p style="margin-left:22%; margin-top: 1em">It only shows
+physical touches (not clicks from scrcpy).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;tunnel&#8722;host</b>
+<i>ip</i></p>
+
+<p style="margin-left:22%;">Set the IP address of the adb
+tunnel to reach the scrcpy server. This option automatically
+enables --force-adb-forward.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+localhost.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;tunnel&#8722;port</b>
+<i>port</i></p>
+
+<p style="margin-left:22%;">Set the TCP port of the adb
+tunnel to reach the scrcpy server. This option automatically
+enables --force-adb-forward.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is 0
+(not forced): the local port used for establishing the
+tunnel will be used.</p>
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;v4l2-sink</b>
+<i>/dev/videoN</i></p>
+
+<p style="margin-left:22%;">Output to v4l2loopback
+device.</p>
+
+<p style="margin-left:22%; margin-top: 1em">It requires to
+lock the video orientation (see
+<b>&#8722;&#8722;lock&#8722;video&#8722;orientation</b>).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;v4l2-buffer</b>
+<i>ms</i></p>
+
+<p style="margin-left:22%;">Add a buffering delay (in
+milliseconds) before pushing frames. This increases latency
+to compensate for jitter.</p>
+
+<p style="margin-left:22%; margin-top: 1em">This option is
+similar to <b>&#8722;&#8722;display&#8722;buffer</b>, but
+specific to V4L2 sink.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is 0
+(no buffering).</p>
+
+<p style="margin-left:11%;"><b>&#8722;V,
+&#8722;&#8722;verbosity</b> <i>value</i></p>
+
+<p style="margin-left:22%;">Set the log level
+("verbose", "debug", "info",
+"warn" or "error").</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+"info" for release builds, "debug" for
+debug builds.</p>
+
+<p style="margin-left:11%;"><b>&#8722;v,
+&#8722;&#8722;version</b></p>
+
+<p style="margin-left:22%;">Print the version of
+scrcpy.</p>
+
+<p style="margin-left:11%;"><b>&#8722;w,
+&#8722;&#8722;stay-awake</b></p>
+
+<p style="margin-left:22%;">Keep the device on while scrcpy
+is running, when the device is plugged in.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;window&#8722;borderless</b></p>
+
+<p style="margin-left:22%;">Disable window decorations
+(display borderless window).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;window&#8722;title</b>
+<i>text</i></p>
+
+<p style="margin-left:22%;">Set a custom window title.</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;window&#8722;x</b>
+<i>value</i></p>
+
+<p style="margin-left:22%;">Set the initial window
+horizontal position.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+"auto".</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;window&#8722;y</b>
+<i>value</i></p>
+
+<p style="margin-left:22%;">Set the initial window vertical
+position.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is
+"auto".</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;window&#8722;width</b>
+<i>value</i></p>
+
+<p style="margin-left:22%;">Set the initial window
+width.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is 0
+(automatic).</p>
+
+
+<p style="margin-left:11%;"><b>&#8722;&#8722;window&#8722;height</b>
+<i>value</i></p>
+
+<p style="margin-left:22%;">Set the initial window
+height.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Default is 0
+(automatic).</p>
+
+<h2>SHORTCUTS
+<a name="SHORTCUTS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">In the
+following list, MOD is the shortcut modifier. By default,
+it’s (left) Alt or (left) Super, but it can be
+configured by <b>&#8722;&#8722;shortcut&#8722;mod</b> (see
+above).</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>MOD+f</b></p></td>
+<td width="4%"></td>
+<td width="33%">
+
+
+<p>Switch fullscreen mode</p></td>
+<td width="45%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>MOD+Left</b></p>
+
+<p style="margin-left:22%;">Rotate display left</p>
+
+<p style="margin-left:11%;"><b>MOD+Right</b></p>
+
+<p style="margin-left:22%;">Rotate display right</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>MOD+g</b></p></td>
+<td width="4%"></td>
+<td width="55%">
+
+
+<p>Resize window to 1:1 (pixel&#8722;perfect)</p></td>
+<td width="23%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>MOD+w, Double&#8722;click on
+black borders</b></p>
+
+<p style="margin-left:22%;">Resize window to remove black
+borders</p>
+
+<p style="margin-left:11%;"><b>MOD+h, Home,
+Middle&#8722;click</b></p>
+
+<p style="margin-left:22%;">Click on HOME</p>
+
+<p style="margin-left:11%;"><b>MOD+b, MOD+Backspace,
+Right&#8722;click (when screen is on)</b></p>
+
+<p style="margin-left:22%;">Click on BACK</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>MOD+s</b></p></td>
+<td width="2%"></td>
+<td width="29%">
+
+
+<p>Click on APP_SWITCH</p></td>
+<td width="49%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>MOD+m</b></p></td>
+<td width="2%"></td>
+<td width="29%">
+
+
+<p>Click on MENU</p></td>
+<td width="49%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>MOD+Up</b></p></td>
+<td width="2%"></td>
+<td width="29%">
+
+
+<p>Click on VOLUME_UP</p></td>
+<td width="49%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>MOD+Down</b></p>
+
+<p style="margin-left:22%;">Click on VOLUME_DOWN</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>MOD+p</b></p></td>
+<td width="4%"></td>
+<td width="53%">
+
+
+<p>Click on POWER (turn screen on/off)</p></td>
+<td width="25%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>Right&#8722;click (when
+screen is off)</b></p>
+
+<p style="margin-left:22%;">Turn screen on</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>MOD+o</b></p></td>
+<td width="4%"></td>
+<td width="60%">
+
+
+<p>Turn device screen off (keep mirroring)</p></td>
+<td width="18%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>MOD+Shift+o</b></p>
+
+<p style="margin-left:22%;">Turn device screen on</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>MOD+r</b></p></td>
+<td width="4%"></td>
+<td width="38%">
+
+
+<p>Rotate device screen</p></td>
+<td width="40%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>MOD+n</b></p></td>
+<td width="4%"></td>
+<td width="38%">
+
+
+<p>Expand notification panel</p></td>
+<td width="40%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>MOD+Shift+n</b></p>
+
+<p style="margin-left:22%;">Collapse notification panel</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>Mod+c</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Copy to clipboard (inject COPY keycode, Android &gt;= 7
+only)</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>Mod+x</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Cut to clipboard (inject CUT keycode, Android &gt;= 7
+only)</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>MOD+v</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Copy computer clipboard to device, then paste (inject
+PASTE keycode, Android &gt;= 7 only)</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>MOD+Shift+v</b></p>
+
+<p style="margin-left:22%;">Inject computer clipboard text
+as a sequence of key events</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>MOD+i</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Enable/disable FPS counter (print frames/second in
+logs)</p> </td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>Ctrl+click-and-move</b></p>
+
+<p style="margin-left:22%;">Pinch-to-zoom from the center
+of the screen</p>
+
+<p style="margin-left:11%;"><b>Drag &amp; drop APK
+file</b></p>
+
+<p style="margin-left:22%;">Install APK from computer</p>
+
+<p style="margin-left:11%;"><b>Drag &amp; drop non-APK
+file</b></p>
+
+<p style="margin-left:22%;">Push file to device (see
+<b>&#8722;&#8722;push&#8722;target</b>)</p>
+
+<h2>Environment variables
+<a name="Environment variables"></a>
+</h2>
+
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p style="margin-top: 1em"><b>ADB</b></p></td>
+<td width="7%"></td>
+<td width="18%">
+
+
+<p style="margin-top: 1em">Path to adb.</p></td>
+<td width="60%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%;"><b>SCRCPY_ICON_PATH</b></p>
+
+<p style="margin-left:22%;">Path to the program icon.</p>
+
+<p style="margin-left:11%;"><b>SCRCPY_SERVER_PATH</b></p>
+
+<p style="margin-left:22%;">Path to the server binary.</p>
+
+<h2>AUTHORS
+<a name="AUTHORS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>scrcpy</b>
+is written by Romain Vimont.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This manual
+page was written by
+<a href="mailto:mmyangfl@gmail.com">Yangfl</a> for the
+Debian Project (and may be used by others).</p>
+
+<h2>REPORTING BUGS
+<a name="REPORTING BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Report bugs to
+<a href="https://github.com/Genymobile/scrcpy/issues">https://github.com/Genymobile/scrcpy/issues</a>.</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+© 2018 Genymobile
+<a href="https://www.genymobile.com/">Genymobile</a></p>
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+© 2018&#8722;2022 <a href="mailto:rom@rom1v.com">Romain
+Vimont</a></p>
+
+<p style="margin-left:11%; margin-top: 1em">Licensed under
+the Apache License, Version 2.0.</p>
+
+<h2>WWW
+<a name="WWW"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="https://github.com/Genymobile/scrcpy">https://github.com/Genymobile/scrcpy</a></p>
+<hr>
+
+
+</body></html>

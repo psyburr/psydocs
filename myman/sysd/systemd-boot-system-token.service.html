@@ -1,0 +1,43 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-boot-system-token.service</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-boot-system-token.service"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-boot-system-token.service — Generate an initial boot loader system token and random seed</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">systemd-boot-system-token.service</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-boot-system-token.service.html#Description">¶</a></h2><p><code class="filename">systemd-boot-system-token.service</code> is a system service that automatically
+    generates a 'system token' to store in an EFI variable in the system's NVRAM and a random seed to store
+    on the EFI System Partition ESP on disk. The boot loader may then combine these two randomized data
+    fields by cryptographic hashing, and pass it to the OS it boots as initialization seed for its entropy
+    pool. The random seed stored in the ESP is refreshed on each reboot ensuring that multiple subsequent
+    boots will boot with different seeds. The 'system token' is generated randomly once, and then
+    persistently stored in the system's EFI variable storage.</p><p>The <code class="filename">systemd-boot-system-token.service</code> unit invokes the <span class="command"><strong>bootctl
+    random-seed</strong></span> command, which updates the random seed in the ESP, and initializes the 'system
+    token' if it's not initialized yet. The service is conditionalized so that it is run only when all of the
+    below apply:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>A boot loader is used that implements the <a class="ulink" href="https://systemd.io/BOOT_LOADER_INTERFACE" target="_top">Boot Loader Interface</a> (which defines the 'system
+      token' concept).</p></li><li class="listitem"><p>Either a 'system token' was not set yet, or the boot loader has not passed the OS a
+      random seed yet (and thus most likely has been missing the random seed file in the
+      ESP).</p></li><li class="listitem"><p>The system is not running in a VM environment. This case is explicitly excluded since
+      on VM environments the ESP backing storage and EFI variable storage is typically not physically
+      separated and hence booting the same OS image in multiple instances would replicate both, thus reusing
+      the same random seed and 'system token' among all instances, which defeats its purpose. Note that it's
+      still possible to use boot loader random seed provisioning in this mode, but the automatic logic
+      implemented by this service has no effect then, and the user instead has to manually invoke the
+      <span class="command"><strong>bootctl random-seed</strong></span> acknowledging these restrictions.</p></li></ul></div><p>For further details see
+    <a href="bootctl.html#"><span class="citerefentry"><span class="refentrytitle">bootctl</span>(1)</span></a>, regarding
+    the command this service invokes.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-boot-system-token.service.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="bootctl.html#"><span class="citerefentry"><span class="refentrytitle">bootctl</span>(1)</span></a>,
+      <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a>
+    </p></div></div></body></html>

@@ -1,36 +1,24 @@
 # smbmap
 
-> SMB enumeration tool.
+> Allow users to enumerate samba share drives across an entire domain.
 > More information: <https://github.com/ShawnDEvans/smbmap>.
 
-- Display SMB shares and permissions on a host, prompting for user's password or NTLM hash:
+- Enumerate hosts with NULL sessions enabled and open shares:
 
-`smbmap -u {{username}} --prompt -H {{ip}}`
+`smbmap --host-file {{path/to/file}}`
 
-- Display SMB shares and permissions on a host, specifying the domain and passing the password NTLM hash:
+- Enumerate hosts and check SMB file permissions:
 
-`smbmap -u {{username}} --prompt -d {{domain}} -H {{ip}}`
+`smbmap --host-file {{path/to/file}} -u {{username}} -p {{password}} -q`
 
-- Display SMB shares and list a single level of directories and files:
+- Connect to an ip or hostname through smb using a username and password:
 
-`smbmap -u {{username}} --prompt -H {{ip}} -r`
+`smbmap -u {{username}} -p {{password}} -d {{domain}} -H {{ip_or_hostname}}`
 
-- Display SMB shares and recursively list a defined number of levels of directories and files:
+- Locate and download files [R]ecursively up to N levels depth, searching for filename pattern (regex), and excluding certain shares:
 
-`smbmap -u {{username}} --prompt -H {{ip}} -R --depth {{3}}`
+`smbmap --host-file {{path/to/file}} -u {{username}} -p {{password}} -q -R --depth {{number}} --exclude {{sharename}} -A {{filepattern}}`
 
-- Display SMB shares and recursively list directories and files, downloading the files matching a regular expression:
+- Upload file through smb using username and password:
 
-`smbmap -u {{username}} --prompt -H {{ip}} -R -A {{pattern}}`
-
-- Display SMB shares and recursively list directories and files, searching for file content matching a regular expression:
-
-`smbmap -u {{username}} --prompt -H {{ip}} -R -F {{pattern}}`
-
-- Execute a shell command on a remote system:
-
-`smbmap -u {{username}} --prompt -H {{ip}} -x {{command}}`
-
-- Upload a file to a remote system:
-
-`smbmap -u {{username}} --prompt -H {{ip}} --upload {{source}} {{destination}}`
+`smbmap -u {{username}} -p {{password}} -d {{domain}} -H {{ip_or_hostname}} --upload {{path/to/file}} '{{/share_name/remote_filename}}'`

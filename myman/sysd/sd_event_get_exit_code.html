@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_event_exit</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_event_exit"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_event_exit, sd_event_get_exit_code — Ask the event loop to exit</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-event.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_exit</b>(</code></td><td>sd_event *<var class="pdparam">event</var>, </td></tr><tr><td> </td><td>int <var class="pdparam">code</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_get_exit_code</b>(</code></td><td>sd_event *<var class="pdparam">event</var>, </td></tr><tr><td> </td><td>int *<var class="pdparam">code</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_event_get_exit_code.html#Description">¶</a></h2><p><code class="function">sd_event_exit()</code> requests the event loop
+    specified in the <em class="parameter"><code>event</code></em> event loop object to
+    exit. The <em class="parameter"><code>code</code></em> parameter may be any integer
+    value and is returned as-is by
+    <a href="sd_event_loop.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_loop</span>(3)</span></a>
+    after the last event loop iteration. It may also be queried
+    using <code class="function">sd_event_get_exit_code()</code>, see
+    below. </p><p>When exiting is requested the event loop will stop listening
+    for and dispatching regular event sources. Instead it will proceed
+    with executing only event sources registered with
+    <a href="sd_event_add_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_exit</span>(3)</span></a>
+    in the order defined by their priority. After all exit event
+    sources have been dispatched the event loop is terminated.</p><p>If <code class="function">sd_event_exit()</code> is invoked a second
+    time while the event loop is still processing exit event sources,
+    the exit code stored in the event loop object is updated, but
+    otherwise no further operation is executed.</p><p><code class="function">sd_event_get_exit_code()</code> may be used to
+    query the exit code passed into
+    <code class="function">sd_event_exit()</code> earlier.</p><p>While the full positive and negative integer ranges may be used
+    for the exit code, care should be taken not pick exit codes that
+    conflict with regular exit codes returned by
+    <code class="function">sd_event_loop()</code>, if these exit codes shall be
+    distinguishable.</p><p>Note that for most event source types passing the callback pointer as <code class="constant">NULL</code> in
+    the respective constructor call (i.e. in
+    <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+    <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>,
+    …) has the effect of <code class="function">sd_event_exit()</code> being invoked once the event source triggers,
+    with the specified userdata pointer cast to an integer as the exit code parameter. This is useful to
+    automatically terminate an event loop after some condition, such as a time-out or reception of
+    <code class="constant">SIGTERM</code> or similar. See the documentation for the respective constructor call for
+    details.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_event_get_exit_code.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_event_exit()</code> and <code class="function">sd_event_get_exit_code()</code>
+    return 0 or a positive integer. On failure, they return a negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_event_get_exit_code.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_get_exit_code.html#-EINVAL">¶</a></dt><dd><p>The event loop object or error code pointer are invalid.</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_get_exit_code.html#-ECHILD">¶</a></dt><dd><p>The event loop was created in a different process.</p></dd><dt id="-ESTALE"><span class="term"><code class="constant">-ESTALE</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_get_exit_code.html#-ESTALE">¶</a></dt><dd><p>The event loop has exited already and all exit handlers are already processed.
+          </p></dd><dt id="-ENODATA"><span class="term"><code class="constant">-ENODATA</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_get_exit_code.html#-ENODATA">¶</a></dt><dd><p>The event loop has not been requested to exit yet.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_event_get_exit_code.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_event_get_exit_code.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-event.html#"><span class="citerefentry"><span class="refentrytitle">sd-event</span>(3)</span></a>,
+      <a href="sd_event_new.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_new</span>(3)</span></a>,
+      <a href="sd_event_add_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_exit</span>(3)</span></a>,
+      <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+      <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>,
+      <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+      <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>,
+      <a href="sd_event_add_inotify.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_inotify</span>(3)</span></a>
+    </p></div></div></body></html>

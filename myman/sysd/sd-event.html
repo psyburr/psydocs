@@ -1,0 +1,109 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd-event</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd-event"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd-event — A generic event loop implementation</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-event.h&gt;</pre></div><div class="cmdsynopsis"><p><code class="command">pkg-config --cflags --libs libsystemd</code> </p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd-event.html#Description">¶</a></h2><p><code class="filename">sd-event.h</code> provides a generic event
+    loop implementation, based on Linux <a href="http://man7.org/linux/man-pages/man7/epoll.7.html"><span class="citerefentry"><span class="refentrytitle">epoll</span>(7)</span></a>.
+    </p><p>See
+    <a href="sd_event_new.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_new</span>(3)</span></a>,
+    <a href="sd_event_run.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_run</span>(3)</span></a>,
+    <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+    <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+    <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>,
+    <a href="sd_event_add_child.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_child</span>(3)</span></a>,
+    <a href="sd_event_add_inotify.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_inotify</span>(3)</span></a>,
+    <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>,
+    <a href="sd_event_source_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_unref</span>(3)</span></a>,
+    <a href="sd_event_source_set_priority.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_priority</span>(3)</span></a>,
+    <a href="sd_event_source_set_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_enabled</span>(3)</span></a>,
+    <a href="sd_event_source_set_userdata.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_userdata</span>(3)</span></a>,
+    <a href="sd_event_source_get_event.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_get_event</span>(3)</span></a>,
+    <a href="sd_event_source_get_pending.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_get_pending</span>(3)</span></a>,
+    <a href="sd_event_source_set_description.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_description</span>(3)</span></a>,
+    <a href="sd_event_source_set_prepare.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_prepare</span>(3)</span></a>,
+    <a href="sd_event_source_set_ratelimit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_ratelimit</span>(3)</span></a>,
+    <a href="sd_event_wait.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_wait</span>(3)</span></a>,
+    <a href="sd_event_get_fd.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_get_fd</span>(3)</span></a>,
+    <a href="sd_event_set_watchdog.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_set_watchdog</span>(3)</span></a>,
+    <a href="sd_event_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_exit</span>(3)</span></a>,
+    <a href="sd_event_now.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_now</span>(3)</span></a>
+    for more information about the functions available.</p><p>The event loop design is targeted on running a separate
+    instance of the event loop in each thread; it has no concept of
+    distributing events from a single event loop instance onto
+    multiple worker threads. Dispatching events is strictly ordered
+    and subject to configurable priorities. In each event loop
+    iteration a single event source is dispatched. Each time an event
+    source is dispatched the kernel is polled for new events, before
+    the next event source is dispatched. The event loop is designed to
+    honor priorities and provide fairness within each priority. It is
+    not designed to provide optimal throughput, as this contradicts
+    these goals due the limitations of the underlying <a href="http://man7.org/linux/man-pages/man7/epoll.7.html"><span class="citerefentry"><span class="refentrytitle">epoll</span>(7)</span></a>
+    primitives.</p><p>The event loop implementation provides the following features:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>I/O event sources, based on <a href="http://man7.org/linux/man-pages/man7/epoll.7.html"><span class="citerefentry"><span class="refentrytitle">epoll</span>(7)</span></a>'s
+      file descriptor watching, including edge triggered events (<code class="constant">EPOLLET</code>). See <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>.</p></li><li class="listitem"><p>Timer event sources, based on <a href="http://man7.org/linux/man-pages/man2/timerfd_create.2.html"><span class="citerefentry"><span class="refentrytitle">timerfd_create</span>(2)</span></a>,
+      supporting the <code class="constant">CLOCK_MONOTONIC</code>,
+      <code class="constant">CLOCK_REALTIME</code>,
+      <code class="constant">CLOCK_BOOTIME</code> clocks, as well as the
+      <code class="constant">CLOCK_REALTIME_ALARM</code> and
+      <code class="constant">CLOCK_BOOTTIME_ALARM</code> clocks that can resume
+      the system from suspend. When creating timer events a required
+      accuracy parameter may be specified which allows coalescing of
+      timer events to minimize power consumption. See <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>.</p></li><li class="listitem"><p>UNIX process signal events, based on
+      <a href="http://man7.org/linux/man-pages/man2/signalfd.2.html"><span class="citerefentry"><span class="refentrytitle">signalfd</span>(2)</span></a>,
+      including full support for real-time signals, and queued parameters. See <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>.</p></li><li class="listitem"><p>Child process state change events, based on
+      <a href="http://man7.org/linux/man-pages/man2/waitid.2.html"><span class="citerefentry"><span class="refentrytitle">waitid</span>(2)</span></a>. See <a href="sd_event_add_child.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_child</span>(3)</span></a>.</p></li><li class="listitem"><p>Static event sources, of three types: defer,
+      post and exit, for invoking calls in each event loop, after
+      other event sources or at event loop termination. See
+      <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>.</p></li><li class="listitem"><p>Event sources may be assigned a 64bit priority
+      value, that controls the order in which event sources are
+      dispatched if multiple are pending simultaneously. See
+      <a href="sd_event_source_set_priority.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_priority</span>(3)</span></a>.</p></li><li class="listitem"><p>The event loop may automatically send watchdog
+      notification messages to the service manager. See
+      <a href="sd_event_set_watchdog.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_set_watchdog</span>(3)</span></a>.</p></li><li class="listitem"><p>The event loop may be integrated into foreign
+      event loops, such as the GLib one. See
+      <a href="sd_event_get_fd.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_get_fd</span>(3)</span></a>
+      for an example.</p></li></ol></div></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd-event.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd-event.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd_event_new.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_new</span>(3)</span></a>,
+      <a href="sd_event_run.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_run</span>(3)</span></a>,
+      <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+      <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+      <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>,
+      <a href="sd_event_add_child.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_child</span>(3)</span></a>,
+      <a href="sd_event_add_inotify.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_inotify</span>(3)</span></a>,
+      <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>,
+      <a href="sd_event_source_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_unref</span>(3)</span></a>,
+      <a href="sd_event_source_set_priority.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_priority</span>(3)</span></a>,
+      <a href="sd_event_source_set_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_enabled</span>(3)</span></a>,
+      <a href="sd_event_source_set_userdata.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_userdata</span>(3)</span></a>,
+      <a href="sd_event_source_get_event.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_get_event</span>(3)</span></a>,
+      <a href="sd_event_source_get_pending.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_get_pending</span>(3)</span></a>,
+      <a href="sd_event_source_set_description.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_description</span>(3)</span></a>,
+      <a href="sd_event_source_set_prepare.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_prepare</span>(3)</span></a>,
+      <a href="sd_event_source_set_ratelimit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_ratelimit</span>(3)</span></a>,
+      <a href="sd_event_wait.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_wait</span>(3)</span></a>,
+      <a href="sd_event_get_fd.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_get_fd</span>(3)</span></a>,
+      <a href="sd_event_set_watchdog.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_set_watchdog</span>(3)</span></a>,
+      <a href="sd_event_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_exit</span>(3)</span></a>,
+      <a href="sd_event_now.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_now</span>(3)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man7/epoll.7.html"><span class="citerefentry"><span class="refentrytitle">epoll</span>(7)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man2/timerfd_create.2.html"><span class="citerefentry"><span class="refentrytitle">timerfd_create</span>(2)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man2/signalfd.2.html"><span class="citerefentry"><span class="refentrytitle">signalfd</span>(2)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man2/waitid.2.html"><span class="citerefentry"><span class="refentrytitle">waitid</span>(2)</span></a>
+    </p></div></div></body></html>

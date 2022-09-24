@@ -1,0 +1,65 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_set_server</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_set_server"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_set_server, sd_bus_is_server, sd_bus_get_bus_id, sd_bus_set_bus_client, sd_bus_is_bus_client, sd_bus_set_monitor, sd_bus_is_monitor — Configure connection mode for a bus object</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_set_server</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>int <var class="pdparam">b</var>, </td></tr><tr><td> </td><td>sd_id128_t <var class="pdparam">id</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_is_server</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_get_bus_id</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>sd_id128_t *<var class="pdparam">id</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_set_bus_client</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>int <var class="pdparam">b</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_is_bus_client</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_set_monitor</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>int <var class="pdparam">b</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_is_monitor</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_bus_client.html#Description">¶</a></h2><p><code class="function">sd_bus_set_server()</code> configures the bus object as a server for direct D-Bus
+    connections. <em class="parameter"><code>b</code></em> enables/disables the server mode. If zero, the server mode is
+    disabled. Otherwise, the server mode is enabled. Configuring a bus object as a server is required to
+    allow establishing direct connections between two peers without going via the D-Bus daemon.
+    <em class="parameter"><code>id</code></em> must contain a 128-bit integer id for the server. If clients add a guid field
+    to their D-Bus address string, the server id must match this guid or the D-Bus authentication handshake
+    will fail. If no specific id is defined for the server,
+    <a href="sd_id128_randomize.html#"><span class="citerefentry"><span class="refentrytitle">sd_id128_randomize</span>(3)</span></a>
+    can be used to generate a random id instead.</p><p><code class="function">sd_bus_is_server()</code> returns whether the server mode is enabled for the given
+    bus object.</p><p><code class="function">sd_bus_get_bus_id()</code> stores the D-Bus server id configured using
+    <code class="function">sd_bus_set_server()</code> (for server bus objects) or received during D-Bus authentication
+    (for client bus objects) in <em class="parameter"><code>id</code></em>.</p><p><code class="function">sd_bus_set_bus_client()</code> configures the bus object as a D-Bus daemon client.
+    <em class="parameter"><code>b</code></em> enables/disables the client mode. If zero, the client mode is disabled and the
+    bus object should connect directly to a D-Bus server. Otherwise, the client mode is enabled and the bus
+    object should connect to a D-Bus daemon. When connecting to an existing bus using any of the functions in
+    the <a href="sd_bus_open.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_open</span>(3)</span></a>
+    family of functions or any of the functions in the
+    <a href="sd_bus_default.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_default</span>(3)</span></a> family
+    of functions, the bus object is automatically configured as a bus client. However, when connecting to a
+    D-Bus daemon by calling
+    <a href="sd_bus_set_address.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_set_address</span>(3)</span></a>
+    followed by
+    <a href="sd_bus_start.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_start</span>(3)</span></a>, the bus
+    object should be manually configured as a bus client using <code class="function">sd_bus_set_bus_client()</code>.
+    By default, a bus object is not configured as a D-Bus daemon client.</p><p><code class="function">sd_bus_is_bus_client()</code> returns whether the client mode is enabled/disabled for
+    the given bus object.</p><p><code class="function">sd_bus_set_monitor()</code> configures the bus object as a D-Bus monitor object.
+    <em class="parameter"><code>b</code></em> enables/disables the monitor mode. If zero, the monitor mode is disabled. If
+    non-zero, the monitor mode is enabled. When the monitor mode is enabled, no messages may be sent via the
+    bus object and it may not expose any objects on the bus. To start monitoring messages, call the
+    <code class="function">org.freedesktop.DBus.Monitoring.BecomeMonitor</code> method of the D-Bus daemon and pass
+    a list of matches indicating which messages to intercept. See
+    <a class="ulink" href="https://dbus.freedesktop.org/doc/dbus-specification.html#bus-messages-become-monitor" target="_top">
+    The D-Bus specification</a> for more information.</p><p><code class="function">sd_bus_is_monitor()</code> returns whether the monitor mode is enabled/disabled for
+    the given bus object.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_bus_client.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_bus_set_server()</code>,
+    <code class="function">sd_bus_get_bus_id()</code>, <code class="function">sd_bus_set_bus_client()</code> and
+    <code class="function">sd_bus_set_monitor()</code> return a non-negative integer. On failure, they return a
+    negative errno-style error code.</p><p><code class="function">sd_bus_is_server()</code>, <code class="function">sd_bus_is_bus_client()</code> and
+    <code class="function">sd_bus_is_monitor()</code> return a positive integer when the server or client mode is
+    enabled, respectively. Otherwise, they return zero.</p><div class="refsect2"><a name="id-1.6.4"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_bus_client.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_bus_client.html#-ECHILD">¶</a></dt><dd><p>The bus connection has been created in a different process.</p></dd><dt id="-EPERM"><span class="term"><code class="constant">-EPERM</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_bus_client.html#-EPERM">¶</a></dt><dd><p>The bus connection has already been started.</p></dd><dt id="-ENOPKG"><span class="term"><code class="constant">-ENOPKG</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_bus_client.html#-ENOPKG">¶</a></dt><dd><p>The bus cannot be resolved.</p></dd><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_bus_client.html#-EINVAL">¶</a></dt><dd><p>A required parameter was <code class="constant">NULL</code> or
+          <em class="parameter"><code>b</code></em> was zero and <em class="parameter"><code>id</code></em> did not equal
+          <code class="constant">SD_ID128_NULL</code>.</p></dd><dt id="-ENOTCONN"><span class="term"><code class="constant">-ENOTCONN</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_bus_client.html#-ENOTCONN">¶</a></dt><dd><p>The bus is not connected.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_bus_client.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_bus_client.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>
+    </p></div></div></body></html>

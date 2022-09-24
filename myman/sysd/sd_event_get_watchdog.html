@@ -1,0 +1,76 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_event_set_watchdog</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_event_set_watchdog"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_event_set_watchdog, sd_event_get_watchdog — Enable event loop watchdog support</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-event.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_set_watchdog</b>(</code></td><td>sd_event *<var class="pdparam">event</var>, </td></tr><tr><td> </td><td>int b<code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_get_watchdog</b>(</code></td><td>sd_event *<var class="pdparam">event</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_event_get_watchdog.html#Description">¶</a></h2><p><code class="function">sd_event_set_watchdog()</code> may be used to
+    enable or disable automatic watchdog notification support in the
+    event loop object specified in the <em class="parameter"><code>event</code></em>
+    parameter. Specifically, depending on the <em class="parameter"><code>b</code></em>
+    boolean argument this will make sure the event loop wakes up in
+    regular intervals and sends watchdog notification messages to the
+    service manager, if this was requested by the service
+    manager. Watchdog support is determined with
+    <a href="sd_watchdog_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_watchdog_enabled</span>(3)</span></a>,
+    and watchdog messages are sent with
+    <a href="sd_notify.html#"><span class="citerefentry"><span class="refentrytitle">sd_notify</span>(3)</span></a>. See
+    the <code class="varname">WatchdogSec=</code> setting in
+    <a href="systemd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd.service</span>(5)</span></a>
+    for details on how to enable watchdog support for a service and
+    the protocol used. The wake-up interval is chosen as half the
+    watchdog timeout declared by the service manager via the
+    <code class="varname">$WATCHDOG_USEC</code> environment variable. If the
+    service manager did not request watchdog notifications, or if the
+    process was not invoked by the service manager this call with a
+    true <em class="parameter"><code>b</code></em> parameter executes no
+    operation. Passing a false <em class="parameter"><code>b</code></em> parameter will
+    disable the automatic sending of watchdog notification messages if
+    it was enabled before. Newly allocated event loop objects have
+    this feature disabled.</p><p>The first watchdog notification message is sent immediately
+    when <code class="function">sd_event_set_watchdog()</code> is invoked with
+    a true <em class="parameter"><code>b</code></em> parameter.</p><p>The watchdog logic is designed to allow the service manager
+    to automatically detect services that ceased processing of
+    incoming events, and thus appear "hung". Watchdog notifications
+    are sent out only at the beginning of each event loop
+    iteration. If an event source dispatch function blocks for an
+    excessively long time and does not return execution to the event
+    loop quickly, this might hence cause the notification message to
+    be delayed, and possibly result in abnormal program termination,
+    as configured in the service unit file.</p><p><code class="function">sd_event_get_watchdog()</code> may be used to
+    determine whether watchdog support was previously requested by a
+    call to <code class="function">sd_event_set_watchdog()</code> with a true
+    <em class="parameter"><code>b</code></em> parameter and successfully
+    enabled.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_event_get_watchdog.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_event_set_watchdog()</code> and
+    <code class="function">sd_event_get_watchdog()</code> return a non-zero positive integer if the service manager
+    requested watchdog support and watchdog support was successfully enabled. They return zero if the service
+    manager did not request watchdog support, or if watchdog support was explicitly disabled with a false
+    <em class="parameter"><code>b</code></em> parameter. On failure, they return a negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_event_get_watchdog.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_get_watchdog.html#-ECHILD">¶</a></dt><dd><p>The event loop has been created in a different process.</p></dd><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_get_watchdog.html#-EINVAL">¶</a></dt><dd><p>The passed event loop object was invalid.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_event_get_watchdog.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_event_get_watchdog.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-event.html#"><span class="citerefentry"><span class="refentrytitle">sd-event</span>(3)</span></a>,
+      <a href="sd_event_new.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_new</span>(3)</span></a>,
+      <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+      <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+      <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>,
+      <a href="sd_event_add_child.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_child</span>(3)</span></a>,
+      <a href="sd_event_add_inotify.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_inotify</span>(3)</span></a>,
+      <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>,
+      <a href="sd_watchdog_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_watchdog_enabled</span>(3)</span></a>,
+      <a href="sd_notify.html#"><span class="citerefentry"><span class="refentrytitle">sd_notify</span>(3)</span></a>,
+      <a href="systemd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd.service</span>(5)</span></a>
+    </p></div></div></body></html>

@@ -1,0 +1,109 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-dissect</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-dissect"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-dissect — Dissect file system OS images</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">systemd-dissect [OPTIONS...]   <em class="replaceable"><code>IMAGE</code></em> </code> </p></div><div class="cmdsynopsis"><p><code class="command">systemd-dissect [OPTIONS...] <code class="option">--mount</code>   <em class="replaceable"><code>IMAGE</code></em>    <em class="replaceable"><code>PATH</code></em> </code> </p></div><div class="cmdsynopsis"><p><code class="command">systemd-dissect [OPTIONS...] <code class="option">--copy-from</code>   <em class="replaceable"><code>IMAGE</code></em>    <em class="replaceable"><code>PATH</code></em>   [<em class="replaceable"><code>TARGET</code></em>]</code> </p></div><div class="cmdsynopsis"><p><code class="command">systemd-dissect [OPTIONS...] <code class="option">--copy-to</code>   <em class="replaceable"><code>IMAGE</code></em>   [<em class="replaceable"><code>SOURCE</code></em>]   <em class="replaceable"><code>PATH</code></em> </code> </p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-dissect.html#Description">¶</a></h2><p><span class="command"><strong>systemd-dissect</strong></span> is a tool for introspecting and interacting with file system OS
+    disk images. It supports four different operations:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Show general OS image information, including the image's
+      <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> data,
+      machine ID, partition information and more.</p></li><li class="listitem"><p>Mount an OS image to a local directory. In this mode it will dissect the OS image and
+      mount the included partitions according to their designation onto a directory and possibly
+      sub-directories.</p></li><li class="listitem"><p>Copy files and directories in and out of an OS image.</p></li></ol></div><p>The tool may operate on three types of OS images:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>OS disk images containing a GPT partition table envelope, with partitions marked
+      according to the <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions
+      Specification</a>.</p></li><li class="listitem"><p>OS disk images containing just a plain file-system without an enveloping partition
+      table. (This file system is assumed to be the root file system of the OS.)</p></li><li class="listitem"><p>OS disk images containing a GPT or MBR partition table, with a single
+      partition only. (This partition is assumed to contain the root file system of the OS.)</p></li></ol></div><p>OS images may use any kind of Linux-supported file systems. In addition they may make use of LUKS
+    disk encryption, and contain Verity integrity information. Note that qualifying OS images may be booted
+    with <a href="systemd-nspawn.html#"><span class="citerefentry"><span class="refentrytitle">systemd-nspawn</span>(1)</span></a>'s
+    <code class="option">--image=</code> switch, and be used as root file system for system service using the
+    <code class="varname">RootImage=</code> unit file setting, see
+    <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(5)</span></a>.</p><p>Note that the partition table shown when invoked without command switch (as listed below) does not
+    necessarily show all partitions included in the image, but just the partitions that are understood and
+    considered part of an OS disk image. Specifically, partitions of unknown types are ignored, as well as
+    duplicate partitions (i.e. more than one per partition type), as are root and <code class="filename">/usr/</code>
+    partitions of architectures not compatible with the local system. In other words: this tool will display
+    what it operates with when mounting the image. To display the complete list of partitions use a tool such
+    as <a href="http://man7.org/linux/man-pages/man8/fdisk.8.html"><span class="citerefentry"><span class="refentrytitle">fdisk</span>(8)</span></a>.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Commands">Commands<a class="headerlink" title="Permalink to this headline" href="systemd-dissect.html#Commands">¶</a></h2><p>If neither of the command switches listed below are passed the specified disk image is opened and
+    general information about the image and the contained partitions and their use is shown.</p><div class="variablelist"><dl class="variablelist"><dt id="--mount"><span class="term"><code class="option">--mount</code>, </span><span class="term"><code class="option">-m</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--mount">¶</a></dt><dd><p>Mount the specified OS image to the specified directory. This will dissect the image,
+        determine the OS root file system — as well as possibly other partitions — and mount them to the
+        specified directory. If the OS image contains multiple partitions marked with the <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions Specification</a>
+        multiple nested mounts are established. This command expects two arguments: a path to an image file
+        and a path to a directory where to mount the image.</p><p>To unmount an OS image mounted like this use <a href="http://man7.org/linux/man-pages/man8/umount.8.html"><span class="citerefentry"><span class="refentrytitle">umount</span>(8)</span></a>'s
+        <code class="option">-R</code> switch (for recursive operation), so that the OS image and all nested partition
+        mounts are unmounted.</p><p>When the OS image contains LUKS encrypted or Verity integrity protected file systems
+        appropriate volumes are automatically set up and marked for automatic disassembly when the image is
+        unmounted.</p><p>The OS image may either be specified as path to an OS image stored in a regular file or may
+        refer to block device node (in the latter case the block device must be the "whole" device, i.e. not
+        a partition device). (The other supported commands described here support this, too.)</p><p>All mounted file systems are checked with the appropriate <a href="http://man7.org/linux/man-pages/man8/fsck.8.html"><span class="citerefentry"><span class="refentrytitle">fsck</span>(8)</span></a>
+        implementation in automatic fixing mode, unless explicitly turned off (<code class="option">--fsck=no</code>) or
+        read-only operation is requested (<code class="option">--read-only</code>).</p></dd><dt id="-M"><span class="term"><code class="option">-M</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#-M">¶</a></dt><dd><p>This is a shortcut for <code class="option">--mount --mkdir</code>.</p></dd><dt id="--copy-from"><span class="term"><code class="option">--copy-from</code>, </span><span class="term"><code class="option">-x</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--copy-from">¶</a></dt><dd><p>Copies a file or directory from the specified OS image into the specified location on
+        the host file system. Expects three arguments: a path to an image file, a source path (relative to
+        the image's root directory) and a destination path (relative to the current working directory, or an
+        absolute path, both outside of the image). If the destination path is omitted or specified as dash
+        ("<code class="literal">-</code>"), the specified file is written to standard output. If the source path in the
+        image file system refers to a regular file it is copied to the destination path. In this case access
+        mode, extended attributes and timestamps are copied as well, but file ownership is not. If the source
+        path in the image refers to a directory, it is copied to the destination path, recursively with all
+        containing files and directories. In this case the file ownership is copied too.</p></dd><dt id="--copy-to"><span class="term"><code class="option">--copy-to</code>, </span><span class="term"><code class="option">-a</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--copy-to">¶</a></dt><dd><p>Copies a file or directory from the specified location in the host file system into
+        the specified OS image. Expects three arguments: a path to an image file, a source path (relative to
+        the current working directory, or an absolute path, both outside of the image) and a destination path
+        (relative to the image's root directory). If the source path is omitted or specified as dash
+        ("<code class="literal">-</code>"), the data to write is read from standard input. If the source path in the host
+        file system refers to a regular file, it is copied to the destination path. In this case access mode,
+        extended attributes and timestamps are copied as well, but file ownership is not. If the source path
+        in the host file system refers to a directory it is copied to the destination path, recursively with
+        all containing files and directories. In this case the file ownership is copied
+        too.</p><p>As with <code class="option">--mount</code> file system checks are implicitly run before the copy
+        operation begins.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="systemd-dissect.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--read-only"><span class="term"><code class="option">--read-only</code>, </span><span class="term"><code class="option">-r</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--read-only">¶</a></dt><dd><p>Operate in read-only mode. By default <code class="option">--mount</code> will establish
+        writable mount points. If this option is specified they are established in read-only mode
+        instead.</p></dd><dt id="--fsck=no"><span class="term"><code class="option">--fsck=no</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--fsck=no">¶</a></dt><dd><p>Turn off automatic file system checking. By default when an image is accessed for
+        writing (by <code class="option">--mount</code> or <code class="option">--copy-to</code>) the file systems contained in the
+        OS image are automatically checked using the appropriate <a href="http://man7.org/linux/man-pages/man8/fsck.8.html"><span class="citerefentry"><span class="refentrytitle">fsck</span>(8)</span></a>
+        command, in automatic fixing mode. This behavior may be switched off using
+        <code class="option">--fsck=no</code>.</p></dd><dt id="--growfs=no"><span class="term"><code class="option">--growfs=no</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--growfs=no">¶</a></dt><dd><p>Turn off automatic growing of accessed file systems to their partition size, if
+        marked for that in the GPT partition table. By default when an image is accessed for writing (by
+        <code class="option">--mount</code> or <code class="option">--copy-to</code>) the file systems contained in the OS image
+        are automatically grown to their partition sizes, if bit 59 in the GPT partition flags is set for
+        partition types that are defined by the <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions Specification</a>. This
+        behavior may be switched off using <code class="option">--growfs=no</code>. File systems are grown automatically
+        on access if all of the following conditions are met:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>The file system is mounted writable</p></li><li class="listitem"><p>The file system currently is smaller than the partition it is contained in (and thus can be grown)</p></li><li class="listitem"><p>The image contains a GPT partition table</p></li><li class="listitem"><p>The file system is stored on a partition defined by the Discoverable Partitions Specification</p></li><li class="listitem"><p>Bit 59 of the GPT partition flags for this partition is set, as per specification</p></li><li class="listitem"><p>The <code class="option">--growfs=no</code> option is not passed.</p></li></ol></div></dd><dt id="--mkdir"><span class="term"><code class="option">--mkdir</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--mkdir">¶</a></dt><dd><p>If combined with <code class="option">--mount</code> the directory to mount the OS image to is
+        created if it is missing. Note that the directory is not automatically removed when the disk image is
+        unmounted again.</p></dd><dt id="--discard="><span class="term"><code class="option">--discard=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--discard=">¶</a></dt><dd><p>Takes one of "<code class="literal">disabled</code>", "<code class="literal">loop</code>",
+        "<code class="literal">all</code>", "<code class="literal">crypto</code>". If "<code class="literal">disabled</code>" the image is
+        accessed with empty block discarding turned off. If "<code class="literal">loop</code>" discarding is enabled if
+        operating on a regular file. If "<code class="literal">crypt</code>" discarding is enabled even on encrypted file
+        systems. If "<code class="literal">all</code>" discarding is unconditionally enabled.</p></dd><dt id="--root-hash="><span class="term"><code class="option">--root-hash=</code>, </span><span class="term"><code class="option">--root-hash-sig=</code>, </span><span class="term"><code class="option">--verity-data=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--root-hash=">¶</a></dt><dd><p>Configure various aspects of Verity data integrity for the OS image. Option
+        <code class="option">--root-hash=</code> specifies a hex-encoded top-level Verity hash to use for setting up the
+        Verity integrity protection. Option <code class="option">--root-hash-sig=</code> specifies the path to a file
+        containing a PKCS#7 signature for the hash. This signature is passed to the kernel during activation,
+        which will match it against signature keys available in the kernel keyring.  Option
+        <code class="option">--verity-data=</code> specifies a path to a file with the Verity data to use for the OS
+        image, in case it is stored in a detached file. It is recommended to embed the Verity data directly
+        in the image, using the Verity mechanisms in the <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions Specification</a>.
+        </p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd><dt id="--no-legend"><span class="term"><code class="option">--no-legend</code></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--no-legend">¶</a></dt><dd><p>Do not print the legend, i.e. column headers and the
+      footer with hints.</p></dd><dt id="--json=MODE"><span class="term"><code class="option">--json=</code><em class="replaceable"><code>MODE</code></em></span><a class="headerlink" title="Permalink to this term" href="systemd-dissect.html#--json=MODE">¶</a></dt><dd><p>Shows output formatted as JSON. Expects one of "<code class="literal">short</code>" (for the
+    shortest possible output without any redundant whitespace or line breaks), "<code class="literal">pretty</code>"
+    (for a pretty version of the same, with indentation and line breaks) or "<code class="literal">off</code>" (to turn
+    off JSON output, the default).</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="systemd-dissect.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code
+    otherwise.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-dissect.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-nspawn.html#"><span class="citerefentry"><span class="refentrytitle">systemd-nspawn</span>(1)</span></a>,
+      <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(5)</span></a>,
+      <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions Specification</a>,
+      <a href="http://man7.org/linux/man-pages/man8/umount.8.html"><span class="citerefentry"><span class="refentrytitle">umount</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man8/fdisk.8.html"><span class="citerefentry"><span class="refentrytitle">fdisk</span>(8)</span></a>
+    </p></div></div></body></html>

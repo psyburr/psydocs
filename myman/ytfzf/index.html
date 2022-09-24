@@ -1,0 +1,1523 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Aug  4 05:09:15 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>YTFZF</title>
+
+</head>
+<body>
+
+<h1 align="center">YTFZF</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#SEARCH OPERATORS">SEARCH OPERATORS</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#CONFIGURATION">CONFIGURATION</a><br>
+<a href="#ENVIRONMENT">ENVIRONMENT</a><br>
+<a href="#FILES">FILES</a><br>
+<a href="#CACHE">CACHE</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">ytfzf &minus;
+search and play videos</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p style="margin-top: 1em"><b>ytfzf</b></p></td>
+<td width="2%"></td>
+<td width="37%">
+
+
+<p style="margin-top: 1em">[<i>options</i>]
+[<i>search&minus;query</i>]</p> </td>
+<td width="43%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p style="margin-top: 1em"><b>ytfzf</b></p></td>
+<td width="2%"></td>
+<td width="37%">
+
+
+<p style="margin-top: 1em">[<i>options</i>] &minus;</p></td>
+<td width="43%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>ytfzf</b> is
+a POSIX script that helps you find videos from Youtube,
+Peertube or Odysee (without API) and opens/downloads them
+using mpv/youtube&minus;dl.</p>
+
+<h2>SEARCH OPERATORS
+<a name="SEARCH OPERATORS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Search
+operators are special search queries.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Standard search
+operators include:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="7%">
+
+
+<p><i>:help</i></p></td>
+<td width="3%"></td>
+<td width="68%">
+
+
+<p>Prints a possibly brief description of how to use the
+scraper.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Addon scrapers
+may have more or less search operators</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">Information</p>
+
+<p style="margin-left:22%;"><b>&minus;h</b>,
+<b>&minus;&minus;help</b></p>
+
+<p style="margin-left:32%;">Show help text.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;version</b></p>
+
+<p style="margin-left:32%;">Show ytfzf&rsquo;s version.</p>
+
+<p style="margin-left:11%; margin-top: 1em">How to play the
+selected videos.</p>
+
+<p style="margin-left:22%;"><b>&minus;d</b>,
+<b>&minus;&minus;download</b></p>
+
+<p style="margin-left:32%;">Download the selected videos.
+This can also be set in the config file with
+<b>is_download</b>.</p>
+
+<p style="margin-left:22%;"><b>&minus;m</b>,
+<b>&minus;&minus;audio&minus;only</b></p>
+
+<p style="margin-left:32%;">Play audio only. This can also
+be set in the config file with <b>is_audio_only</b>.</p>
+
+<p style="margin-left:22%;"><b>&minus;f</b>,
+<b>&minus;&minus;formats</b></p>
+
+<p style="margin-left:32%;">Show available formats before
+proceeding.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;format&minus;selection=</b><i>screen</i></p>
+
+<p style="margin-left:32%;">The format selection screen
+type to use.</p>
+
+<p style="margin-left:32%; margin-top: 1em">Types:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="43%"></td>
+<td width="9%">
+
+
+<p><i>normal</i></p></td>
+<td width="48%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="43%"></td>
+<td width="9%">
+
+
+<p><i>simple</i></p></td>
+<td width="48%">
+</td></tr>
+</table>
+
+<p style="margin-left:32%; margin-top: 1em">This can also
+be set in the config file with
+<b>format_selection_screen</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;format&minus;sort=</b><i>sort</i></p>
+
+<p style="margin-left:32%;">The
+&minus;&minus;format&minus;sort to use in ytdl. This can
+also be set in the config file with
+<b>format_selection_sort</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;video&minus;pref=pref</b></p>
+
+<p style="margin-left:32%;">Set the ytdl video format to
+pref. This can also be set in the config file with
+<b>video_pref</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;audio&minus;pref=pref</b></p>
+
+<p style="margin-left:32%;">Set the ytdl audio format to
+pref. This can also be set in the config file with
+<b>audio_pref</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;ytdl&minus;pref=pref</b></p>
+
+<p style="margin-left:32%;">Set the ytdl format to pref.
+This can also be set in the config file with
+<b>ytdl_pref</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;detach</b></p>
+
+<p style="margin-left:32%;">Detach the video player from
+the terminal. This can also be set in the config file with
+<b>is_detach</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;url&minus;handler=handler</b></p>
+
+<p style="margin-left:32%;">The function/program to use as
+a url handler. This can also be set in the config file with
+<b>url_handler</b>.</p>
+
+<p style="margin-left:22%;"><b>&minus;I</b>
+<i>option</i></p>
+
+<p style="margin-left:32%;">Instead of playing the selected
+videos, get information about them in the selected format.
+The available options are: <i><br>
+L</i>|<i>l</i>|<i>link</i></p>
+
+<p style="margin-left:43%;">Prints the URL of the selected
+videos.</p>
+
+
+<p style="margin-left:32%;"><i>VJ</i>|<i>vj</i>|<i>video&minus;json</i></p>
+
+<p style="margin-left:43%;">Prints the json of the selected
+videos.</p>
+
+
+<p style="margin-left:32%;"><i>J</i>|<i>j</i>|<i>json</i></p>
+
+<p style="margin-left:43%;">Prints the json of all the
+videos in the search results.</p>
+
+
+<p style="margin-left:32%;"><i>F</i>|<i>f</i>|<i>format</i></p>
+
+<p style="margin-left:43%;">Prints the video format being
+used.</p>
+
+
+<p style="margin-left:32%;"><i>R</i>|<i>r</i>|<i>raw</i></p>
+
+<p style="margin-left:43%;">Prints the data of the selected
+videos, as appears in the menu.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="3%">
+
+
+<p><b>&minus;L</b></p></td>
+<td width="7%"></td>
+<td width="22%">
+
+
+<p>Alias for &minus;I L</p></td>
+<td width="46%">
+</td></tr>
+</table>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;info&minus;action=Iaction</b></p>
+
+<p style="margin-left:32%;">The action to do when
+&minus;&minus;info&minus;wait is 1.
+<b>info_wait_action</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;info&minus;wait=</b><i>number</i></p>
+
+<p style="margin-left:32%;">Whether or not to wait after
+printing info requested with &minus;I or &minus;L. This can
+also be set in the config file with <b>info_wait</b>.</p>
+
+
+<p style="margin-left:11%;"><b>&minus;&minus;url&minus;handler&minus;opts=opts</b></p>
+
+<p style="margin-left:22%;">Opts to pass to the url
+handler, by default this will pass extra opts to mpv. This
+can also be set in the config file with
+<b>url_handler_opts</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Menu
+options</p>
+
+<p style="margin-left:22%;"><b>&minus;l</b>,
+<b>&minus;&minus;loop</b></p>
+
+<p style="margin-left:32%;">Reopen the menu when the video
+stops playing. This can also be set in the config file with
+<b>is_loop</b>.</p>
+
+<p style="margin-left:22%;"><b>&minus;s</b>,
+<b>&minus;&minus;search&minus;again</b></p>
+
+<p style="margin-left:32%;">After closing fzf make another
+search. This can also be set in the config file with
+<b>search_again</b>.</p>
+
+<p style="margin-left:22%;"><b>&minus;t</b>,
+<b>&minus;&minus;show&minus;thumbnails</b></p>
+
+<p style="margin-left:32%;">Show thumbnails. Doesn&rsquo;t
+work with <b>&minus;D</b> or <b>&minus;H</b>. This can also
+be set in the config file with <b>show_thumbnails</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;async&minus;thumbnails</b></p>
+
+<p style="margin-left:32%;">Whether or not to download
+thumbnails asynchronously. <br>
+Downloading asynchronously will open the menu before all
+thumbnails are downloaded. This can also be set in the
+config fil with <b>async_thumbnails</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;skip&minus;thumb&minus;download</b></p>
+
+<p style="margin-left:32%;">Whether or not to skip the
+thumbnail download. This is used if you want to not have
+thumbnails, or use custom thumbnails in
+$YTFZF_CUSTOM_THUMBNAILS_DIR. <br>
+For more info see CUSTOM THUMBNAILS in ytfzf(5) <br>
+This can also be set in the config file with
+<b>skip_thumb_download</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;notify-playing</b></p>
+
+<p style="margin-left:32%;">Show notifications when a video
+is about to be played. This can also be set in the config
+file with <b>notify_playing</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;preview&minus;side=side</b></p>
+
+<p style="margin-left:32%;">The preview side in fzf. <br>
+Options:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>left</i></p></td>
+<td width="60%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>right</i></p></td>
+<td width="60%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>up</i></p></td>
+<td width="60%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>down</i></p></td>
+<td width="60%">
+</td></tr>
+</table>
+
+<p style="margin-left:22%; margin-top: 1em">This can also
+be changed in the config file with <b>fzf_preview_side</b>.
+<b><br>
+&minus;&minus;thumb&minus;viewer=program</b></p>
+
+<p style="margin-left:32%;">Use program for displaying
+thumbnails. <br>
+Built-in programs: <i><br>
+chafa,</i>chafa-16,<i>chafa-tty</i></p>
+
+<p style="margin-left:43%;">chafa, chafa with 16 colors,
+chafa with 4 colors.</p>
+
+<p style="margin-left:32%;"><i>catimg,</i>catimg-256</p>
+
+<p style="margin-left:43%;">catimg, catimg with 256
+colors.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>w3m</i></p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+<p>Uses a workaround to get w3m to work in fzf, may take up
+a lot of cpu.</p></td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>imv</i></p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+<p>Good with tiling window managers.</p></td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>mpv</i></p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+<p>Similar to imv.</p></td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>kitty</i></p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+<p>For the kitty terminal.</p></td></tr>
+</table>
+
+<p style="margin-left:32%;"><i>swayimg</i></p>
+
+<p style="margin-left:43%;">Only works on the sway wayland
+compositor.</p>
+
+<p style="margin-left:32%;"><i>&lt;custom&gt;</i></p>
+
+<p style="margin-left:43%;">Additional viewers can be put
+into $YTFZF_THUMBNAIL_VIEWERS_DIR.</p>
+
+<p style="margin-left:22%;">This can also be changed in the
+config file with <b>thumbnail_viewer</b>. <b><br>
+&minus;D</b>, <b>&minus;&minus;external&minus;menu</b></p>
+
+<p style="margin-left:32%;">Use an external menu instead of
+fzf. The default is <i>dmenu</i>. This can also be set in
+the config file with <b>interface=&quot;ext&quot;</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;interface=interface</b></p>
+
+<p style="margin-left:32%;">Use a custom interface script,
+which would be in $YTFZF_CUSTOM_INTERFACES_DIR. This can
+also be set in the config file with <b>interface</b>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="9%">
+
+
+<p><b>&minus;&minus;sort</b></p></td>
+<td width="1%"></td>
+<td width="68%">
+
+
+<p>Sorts videos (after scraping) by upload date.</p></td></tr>
+</table>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;sort&minus;name=name</b></p>
+
+<p style="margin-left:32%;">Calls a function set in
+$YTFZF_CONFIG_FILE. Or sources a script in
+$YTFZF_SORT_NAMES_DIR (if it exists). See SORT NAMES in
+ytfzf(5) for more information.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;fancy&minus;subs</b></p>
+
+<p style="margin-left:32%;">Whether or not to have a
+separator between each subscription. When this option is
+used it automatically disbables &minus;&minus;sort as it
+will mess up this option. <br>
+This can also be set in the config file with
+<b>fancy_subs</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;disable&minus;back</b></p>
+
+<p style="margin-left:32%;">Whether or not to disable the
+back button in submenus. <br>
+This can also be set in the config file with
+<b>enable_back_button</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;disable&minus;submenus</b></p>
+
+<p style="margin-left:32%;">Whether or not to disable
+submenus. <br>
+Submenus are the menus that happen after a playlist or
+channel (currently only supported by youtube/invidious) is
+selected <br>
+This can also be set in the config file with
+<b>enable_submenus</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;keep&minus;vars</b></p>
+
+<p style="margin-left:32%;">Whether or not options passed
+into ytfzf also get passed into submenus. This can also be
+set in the config file with <b>keep_vars</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;submenu&minus;opts=opts</b></p>
+
+<p style="margin-left:32%;">The opts to use in the submenu.
+<br>
+This can also be set in the config file with
+<b>submenu_opts</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;submenu&minus;scraping&minus;opts=opts</b></p>
+
+<p style="margin-left:32%;"><b>DEPRECATED (use
+&minus;&minus;submenu&minus;opts instead)</b> Does the same
+thing as &minus;&minus;submenu&minus;opts. <br>
+This can also be set in the config file with
+<b>submenu_scraping_opts</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Auto
+selecting</p>
+
+<p style="margin-left:22%;"><b>&minus;a</b>,
+<b>&minus;&minus;auto&minus;select</b></p>
+
+<p style="margin-left:32%;">Auto&minus;play the first
+result.</p>
+
+<p style="margin-left:22%;"><b>&minus;A</b>,
+<b>&minus;&minus;select&minus;all</b></p>
+
+<p style="margin-left:32%;">Select all results.</p>
+
+<p style="margin-left:22%;"><b>&minus;r</b>,
+<b>&minus;&minus;random&minus;select</b></p>
+
+<p style="margin-left:32%;">Auto&minus;play a random
+result.</p>
+
+<p style="margin-left:22%;"><b>&minus;S</b> <i>sed
+address</i><b>,</b> &minus;&minus;select=<i>sed
+address</i></p>
+
+<p style="margin-left:32%;">Auto&minus;play a specific
+video.</p>
+
+<p style="margin-left:32%; margin-top: 1em">Examples:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="43%"></td>
+<td width="6%">
+
+
+<p><i>2</i></p></td>
+<td width="5%"></td>
+<td width="46%">
+
+
+<p>Select the second video</p></td></tr>
+<tr valign="top" align="left">
+<td width="43%"></td>
+<td width="6%">
+
+
+<p><i>$</i></p></td>
+<td width="5%"></td>
+<td width="46%">
+
+
+<p>Select the last video</p></td></tr>
+<tr valign="top" align="left">
+<td width="43%"></td>
+<td width="6%">
+
+
+<p><i>/^h/</i></p></td>
+<td width="5%"></td>
+<td width="46%">
+
+
+<p>Select all videos starting with h</p></td></tr>
+</table>
+
+<p style="margin-left:22%;"><b>&minus;n</b>
+<i>number</i><b>,</b>
+&minus;&minus;link&minus;count=<i>number</i></p>
+
+<p style="margin-left:32%;">The <i>number</i> of videos to
+select with <b>&minus;a</b> or <b>&minus;r</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Scrapers</p>
+
+<p style="margin-left:22%;"><b>&minus;c</b>
+<i>scrapers</i><b>,</b>
+<i>&minus;&minus;scrape=scrapers</i></p>
+
+<p style="margin-left:32%;">Set which scraper to use.
+Multiple scrapers can be separated by comma (,). The
+currently supported builtin scrapers are: <i><br>
+youtube</i>|<i>Y</i></p>
+
+<p style="margin-left:43%;">Scrapes invidious&rsquo; api
+with a search query</p>
+
+<p style="margin-left:32%;"><i>youtube-channel</i></p>
+
+<p style="margin-left:43%;">Scrapes a youtube channel with
+youtube</p>
+
+<p style="margin-left:32%;"><i>invidious-channel</i></p>
+
+<p style="margin-left:43%;">Scrapes a youtube channel with
+$invidious_instance <br>
+When this scrape is active the search query is the link to a
+channel.</p>
+
+
+<p style="margin-left:32%;"><i>video-recommended</i>|<i>R</i></p>
+
+<p style="margin-left:43%;">Scrapes recommended videos from
+an invidious video link</p>
+
+
+<p style="margin-left:32%;"><i>youtube-playlist</i>|<i>invidious-playlist</i></p>
+
+<p style="margin-left:43%;">Scrapes a youtube playlist <br>
+When this scrape is active the search query is the link to a
+playlist.</p>
+
+
+<p style="margin-left:32%;"><i>youtube&minus;trending</i>|<i>T</i></p>
+
+<p style="margin-left:43%;">Scrapes invidious&rsquo; api to
+get youtube trending. <br>
+When this scrape is active the search query is the tab of
+trending to scrape.</p>
+
+<p style="margin-left:32%;"><i>M</i>|<i>multi</i></p>
+
+<p style="margin-left:43%;">Uses ytfzf recursively to
+scrape multiple things with multiple different options <br>
+See <i>ytfzf -c M :help</i> for more info <br>
+Tabs:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="43%"></td>
+<td width="9%">
+
+
+<p><i>gaming</i></p></td>
+<td width="48%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="43%"></td>
+<td width="9%">
+
+
+<p><i>music</i></p></td>
+<td width="48%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="43%"></td>
+<td width="9%">
+
+
+<p><i>movies</i></p></td>
+<td width="48%">
+</td></tr>
+</table>
+
+
+<p style="margin-left:32%;"><i>youtube&minus;subscriptions</i>|<i>S</i>|<i>SI</i></p>
+
+<p style="margin-left:43%;"><i>SI</i> Scrapes invidious for
+channels instead of youtube. Scraping youtube may result in
+rate limiting.</p>
+
+
+<p style="margin-left:32%;"><i>scrape&minus;list</i>|<i>SL</i></p>
+
+<p style="margin-left:43%;">uses your
+$YTFZF_SCRAPELIST_FILE as scrape and search input. See
+&quot;scrape lists&quot; ytfzf(5) for more information.</p>
+
+<p style="margin-left:32%;"><i>peertube</i>|<i>P <br>
+odysee</i>|<i>lbry</i>|<i>O <br>
+history</i>|<i>H</i></p>
+
+<p style="margin-left:43%;">(Only if $enable_hist is
+enabled)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>url</i>|<i>U</i></p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+<p>Opens the url in the video player and exits</p></td></tr>
+</table>
+
+<p style="margin-left:32%;"><i>comments</i></p>
+
+<p style="margin-left:43%;">Scrapes the comments of a video
+link from youtube</p>
+
+<p style="margin-left:22%;"><b>&minus;H</b>,
+<b>&minus;&minus;history</b></p>
+
+<p style="margin-left:32%;">Alias for &minus;c H. <br>
+Scrapes history file.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;scrape+=scrapers</b></p>
+
+<p style="margin-left:32%;">Same as &minus;c, but keeps the
+default scrape as well.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;scraper-=scrapers</b></p>
+
+<p style="margin-left:32%;">Removes scraper from list of
+scrapers to use</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;multi&minus;search</b></p>
+
+<p style="margin-left:32%;">Whether or not to use multi
+search. <br>
+To use multi search, seperate each search with a comma, this
+works well when using multiple scrapers. <br>
+This can also be set in the config file with
+<b>multi_search</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;force&minus;youtube</b></p>
+
+<p style="margin-left:32%;">When using the <i>youtube</i>
+scraper, convert the invidious links to youtube links before
+playing/downloading.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Scraper
+Options</p>
+
+<p style="margin-left:22%; margin-top: 1em">Currently,
+&minus;&minus;video&minus;duration, &minus;&minus;type,
+&minus;&minus;thumbnail&minus;quality, and
+&minus;&minus;features only applies to the scrape: youtube/Y
+<b><br>
+&minus;&minus;pages=amount</b></p>
+
+<p style="margin-left:32%;">Amount of pages to scrape on
+youtube/invidious, and the comments scraper. This can also
+be set in the config file with <b>pages_to_scrape</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;pages-start=page</b></p>
+
+<p style="margin-left:32%;">The page to start on. This can
+also be set in the config file with <b>pages_start</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;max&minus;threads=amount</b></p>
+
+<p style="margin-left:32%;">Amount of threads that can be
+used to scrape youtube search, playlists, and channels.
+(this does not apply to the subscription scraper). <br>
+This can also be set in the config file with
+<b>max_thread_count</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;single&minus;threaded</b></p>
+
+<p style="margin-left:32%;">Set the max_thread_count to 1,
+this has the same effect as making everything single
+threaded. (this does not apply to the subscription scraper).
+<br>
+This can also bet set in the config file with
+<b>max_thread_count=1</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;odysee&minus;video&minus;count=amount</b></p>
+
+<p style="margin-left:32%;">Amount of videos to scrape on
+odysee. This can also be set in the config file with
+<b>odysee_video_search_count</b>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="9%">
+
+
+<p><b>&minus;&minus;nsfw</b></p></td>
+<td width="1%"></td>
+<td width="63%">
+
+
+<p>Whether or not to search for nsfw videos.</p></td>
+<td width="5%">
+</td></tr>
+</table>
+
+<p style="margin-left:32%;">Only works with odysee/O This
+can also be set in the config file with <b>nsfw</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;sort&minus;by=sort</b></p>
+
+<p style="margin-left:32%;">Works with youtube/Y and
+odysee/O. <br>
+To use a different sort for each scrape, use comma (,) to
+separate the sorts. <br>
+As apposed to &minus;&minus;sort, this happens during the
+search, not after. Results should sort by: <i><br>
+relevance <br>
+rating</i> (youtube only) <i><br>
+upload_date <br>
+oldest_first</i> (odysee only) <i><br>
+view_count</i> (youtube only)</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;upload&minus;date=time&minus;frame</b></p>
+
+<p style="margin-left:32%;">Works with youtube/Y and
+odysee/O <br>
+To use a different sort for each scrape, use comma (,) to
+separate the dates. <br>
+Search for videos within the last:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>hour</i></p></td>
+<td width="60%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>today</i></p></td>
+<td width="60%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>week</i></p></td>
+<td width="60%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>month</i></p></td>
+<td width="60%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>year</i></p></td>
+<td width="60%">
+</td></tr>
+</table>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;video&minus;duration=duration</b></p>
+
+<p style="margin-left:32%;">Whether or not to search for
+long or short videos. Possible options:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>short</i></p></td>
+<td width="60%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>long</i></p></td>
+<td width="60%">
+</td></tr>
+</table>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;type=type</b></p>
+
+<p style="margin-left:32%;">The type of results to get.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="8%">
+
+
+<p><i>video</i></p></td>
+<td width="60%">
+</td></tr>
+</table>
+
+<p style="margin-left:32%;"><i>playlist <br>
+channel</i></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="5%">
+
+
+<p><i>all</i></p></td>
+<td width="63%">
+</td></tr>
+</table>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;thumbnail&minus;quality=</b><i>quality</i></p>
+
+<p style="margin-left:32%;">Select the quality of the
+thumbnails. Available options:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="10%">
+
+
+<p><i>maxres</i></p></td>
+<td width="58%">
+</td></tr>
+</table>
+
+<p style="margin-left:32%;"><i>maxresdefault <br>
+sddefault <br>
+high</i> (default)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="10%">
+
+
+<p><i>medium</i></p></td>
+<td width="58%">
+</td></tr>
+</table>
+
+<p style="margin-left:32%;"><i>default</i></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="10%">
+
+
+<p><i>start</i></p></td>
+<td width="1%"></td>
+<td width="57%">
+
+
+<p>The first frame of the video (low quality)</p></td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="10%">
+
+
+<p><i>middle</i></p></td>
+<td width="1%"></td>
+<td width="57%">
+
+
+<p>The middle frame of the video (low quality)</p></td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="10%">
+
+
+<p><i>end</i></p></td>
+<td width="1%"></td>
+<td width="57%">
+
+
+<p>The end frame of the video (low quality)</p></td></tr>
+</table>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;features=features</b></p>
+
+<p style="margin-left:32%;">The features to have on a video
+(comma separated).</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="3%">
+
+
+<p><i>hd</i></p></td>
+<td width="65%">
+</td></tr>
+</table>
+
+<p style="margin-left:32%;"><i>subtitles <br>
+creative_commons</i></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="6%">
+
+
+<p><i>3d</i></p></td>
+<td width="62%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="6%">
+
+
+<p><i>live</i></p></td>
+<td width="62%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="6%">
+
+
+<p><i>4k</i></p></td>
+<td width="62%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="6%">
+
+
+<p><i>360</i></p></td>
+<td width="62%">
+</td></tr>
+</table>
+
+<p style="margin-left:32%;"><i>location</i></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="32%"></td>
+<td width="5%">
+
+
+<p><i>hdr</i></p></td>
+<td width="63%">
+</td></tr>
+</table>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;region</b></p>
+
+<p style="margin-left:32%;">The region (country code) to
+search. <br>
+Supported by the scrapes youtube/Y and
+youtube-trending/T</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">Miscelanious</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;ii=instance</b><i>,</i><b>&minus;&minus;invidious&minus;instance=instance</b></p>
+
+<p style="margin-left:32%;">Use a different invidious
+instance.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;channel&minus;link=link</b></p>
+
+<p style="margin-left:32%;">Converts channel links from
+&rsquo;https://youtube.com/c/name&rsquo; to
+&rsquo;https://youtube.com/channel/id&rsquo;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="3%">
+
+
+<p><b>&minus;q</b></p></td>
+<td width="7%"></td>
+<td width="68%">
+
+
+<p>Use search history instead of a search. This can also be
+set in the config file with <b>use_search_hist</b>.</p></td></tr>
+</table>
+
+<p style="margin-left:22%;"><b>&minus;x</b>,
+<b>&minus;&minus;history&minus;clear=&lt;search|watch&gt;</b></p>
+
+<p style="margin-left:32%;">Clear search and watch history
+(if &minus;x or &minus;&minus;history&minus;clear is used)
+<br>
+To specify either search or watch history use
+&minus;&minus;history&minus;clear=&lt;search|watch&gt;</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;keep&minus;cache</b></p>
+
+<p style="margin-left:32%;">Whether or not to keep cache
+after <i>ytfzf</i> exists. This can also be set in the
+config file with <b>keep_cache</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;ytdl&minus;opts=</b><i>option</i></p>
+
+<p style="margin-left:32%;">Pass command&minus;line options
+to youtube&minus;dl when downloading. <br>
+example:
+<b>&minus;&minus;ytdl&minus;opts=</b><i>&acute;&minus;o
+~/Videos/%(title)s.%(ext)s&acute;</i></p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;ytdl&minus;path=</b><i>path</i></p>
+
+<p style="margin-left:32%;">Specify the path to
+youtube&minus;dl or a fork of youtube&minus;dl for
+downloading. <br>
+This can also be set in the config file with
+<b>ytdl_path</b>.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;ext=extension</b></p>
+
+<p style="margin-left:32%;">Load an extension. <br>
+You may also add <i>load_extension extension</i> to your
+config file.</p>
+
+
+<p style="margin-left:22%;"><b>&minus;&minus;list&minus;addons</b></p>
+
+<p style="margin-left:32%;">Lists all addons and exits.</p>
+
+<h2>CONFIGURATION
+<a name="CONFIGURATION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The default
+behaviour of <b>ytfzf</b> can be changed by modifying the
+config file. See <b>ytfzf</b>(5) for more information.</p>
+
+<h2>ENVIRONMENT
+<a name="ENVIRONMENT"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>$YTFZF_CONFIG_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to store config
+files. The default is <i>$XDG_CONFIG_HOME/ytfzf (or
+~/.config/ytfzf)</i></p>
+
+<p style="margin-left:11%;"><b>$YTFZF_CONFIG_FILE</b></p>
+
+<p style="margin-left:22%;">The configuration file to use.
+The defualt is <i>$YTFZF_CONFIG_DIR/conf.sh</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_SUBSCRIPTIONS_FILE</b></p>
+
+<p style="margin-left:22%;">The subscriptions file to use.
+The deafult is <i>$YTFZF_CONFIG_DIR/subscriptions</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_SCRAPELIST_FILE</b></p>
+
+<p style="margin-left:22%;">The scrapelist file to use. The
+default is <i>$YTFZF_CONFIG_DIR/scrapelist</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_THUMBNAIL_VIEWERS_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to keep
+additional thumbnail viewers. The default is
+<i>$YTFZF_CONFIG_DIR/thumbnail-viewers</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_CUSTOM_SCRAPERS_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to store custom
+scraper scripts in The default is
+<i>$YTFZF_CONFIG_DIR/scrapers</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_CUSTOM_INTERFACES_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to store custom
+interface scripts in the default is
+<i>$YTFZF_CONFIG_DIR/interfaces</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_SORT_NAMES_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to store custom
+sort-name scripts in the default is
+<i>$YTFZF_CONFIG_DIR/sort-names</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_URL_HANDLERS_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to store custom
+url handlers in the default is
+<i>$YTFZF_CONFIG_DIR/url-handlers</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_CUSTOM_THUMBNAILS_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to store custom
+thumbnails the default is
+<i>$YTFZF_CONFIG_DIR/thumbnails</i></p>
+
+
+<p style="margin-left:11%;"><b>$YTFZF_EXTENSIONS_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to store
+extensions the default is
+<i>$YTFZF_CONFIG_DIR/extensions</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>$YTFZF_SYSTEM_ADDON_DIR</b></p>
+
+<p style="margin-left:22%;">The directory to store system
+installed addons. The default may vary depending on how you
+installed ytfzf. <b>$cache_dir</b> The directory to store
+cache the default is <i>$XDG_CACHE_HOME/ytfzf (or
+$HOME/.cache/ytfzf)</i></p>
+
+<h2>FILES
+<a name="FILES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>~/.config/ytfzf/conf.sh</i></p>
+
+<p style="margin-left:22%;">The configuration file. If
+submenu-conf.sh does not exist, this will also be used as
+the config in submenus</p>
+
+
+<p style="margin-left:11%;"><i>~/.config/ytfzf/submenu-conf.sh</i></p>
+
+<p style="margin-left:22%;">The submenu configuration
+file</p>
+
+
+<p style="margin-left:11%;"><i>~/.config/ytfzf/subscriptions</i></p>
+
+<p style="margin-left:22%;">The subscriptions file.</p>
+
+
+<p style="margin-left:11%;"><i>~/.cache/ytfzf/watch_hist</i></p>
+
+<p style="margin-left:22%;">Watch history (if $enable_hist
+is 1)</p>
+
+<h2>CACHE
+<a name="CACHE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Each instance
+of ytfzf has its own directory in $cache_dir. <br>
+The structure of $cache_dir looks like this: (&lt;&gt;
+represents a placeholder, ? means optional)</p>
+
+<p style="margin-left:22%;">$cache_dir <br>
+| &minus;&minus; watch_hist <br>
+| &minus;&minus; &lt;search&gt;&minus;&lt;pid&gt; <br>
+| | &minus;&minus; searches.list <br>
+| | &minus;&minus; post-scrape <br>
+| | &minus;&minus;
+&lt;submenu-search&gt;-&lt;submenu-pid&gt;? <br>
+| | &minus;&minus; thumbnails? <br>
+| | &minus;&minus; tmp <br>
+| | | &minus;&minus; curl_config <br>
+| | | &minus;&minus; &lt;scrape&gt;.html <br>
+| | | &minus;&minus; &lt;scrape&gt;.json <br>
+| | | &minus;&minus; menu_keypress <br>
+| | | &minus;&minus; submenu.json? <br>
+| | &minus;&minus; ids <br>
+| | &minus;&minus; videos_json</p>
+
+<p style="margin-left:11%; margin-top: 1em">An explanation
+of each directory/file:</p>
+
+<p style="margin-left:22%;"><i>searches.lsit</i></p>
+
+<p style="margin-left:32%;">A list of all searches <br>
+If &minus;&minus;multi&minus;search is enabled, each search
+is seperated by a new line</p>
+
+<p style="margin-left:22%;"><i>watch_hist</i></p>
+
+<p style="margin-left:32%;">The watch history file.</p>
+
+
+<p style="margin-left:22%;"><i>&lt;search&gt;&minus;&lt;pid&gt;</i></p>
+
+<p style="margin-left:32%;">An instance&rsquo;s parent
+folder. <br>
+If no search was given it uses the name
+&quot;SCRAPE&minus;&lt;scrape&gt;&minus;&lt;pid&gt;&quot;
+instead.</p>
+
+<p style="margin-left:22%;"><i>post-scrape</i></p>
+
+<p style="margin-left:32%;">A folder that contains files
+relating to the scraping of a selected result.</p>
+
+
+<p style="margin-left:22%;"><i>&lt;submenu&minus;search&gt;&minus;&lt;submenu&minus;pid&gt;</i></p>
+
+<p style="margin-left:32%;">Created when a submenu is
+opened (eg: when a channel/playlist is selected).</p>
+
+<p style="margin-left:22%;"><i>thumbnails</i></p>
+
+<p style="margin-left:32%;">Stores the thumbnails for the
+instance (only with &minus;t).</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="4%">
+
+
+<p><i>tmp</i></p></td>
+<td width="6%"></td>
+<td width="68%">
+
+
+<p>Stores less importatnt temporarily used files.</p></td></tr>
+</table>
+
+<p style="margin-left:22%;"><i>curl_config</i></p>
+
+<p style="margin-left:32%;">The configuration file for curl
+for downloading thumbnails (only with &minus;t).</p>
+
+<p style="margin-left:22%;"><i>&lt;scrape&gt;.html</i></p>
+
+<p style="margin-left:32%;">For scrapers that need to
+scrape websites, this is the output of curl.</p>
+
+<p style="margin-left:22%;"><i>&lt;scrape&gt;.json</i></p>
+
+<p style="margin-left:32%;">The json scraped from a
+website.</p>
+
+<p style="margin-left:22%;"><i>menu_keypress</i></p>
+
+<p style="margin-left:32%;">The key pressed in fzf.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="4%">
+
+
+<p><i>ids</i></p></td>
+<td width="6%"></td>
+<td width="68%">
+
+
+<p>The file that stores the id of each selected video.</p></td></tr>
+</table>
+
+<p style="margin-left:22%;"><i>videos_json</i></p>
+
+<p style="margin-left:32%;">The file that stores a json of
+all videos displayed in fzf. <br>
+This file is very helpful for making playlists as it is in
+the same format.</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Originally
+written by pystardust.
+<i>&lt;</i>https://github.com/pystardust<i>&gt;</i></p>
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Report bugs on
+github
+<i>&lt;</i>https://github.com/pystardust/ytfzf/issues<i>&gt;</i></p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>ytfzf</b></i>(5)
+<b>youtube&minus;dl</b>(1), <b>fzf</b>(1)
+<b>dmenu</b>(1)</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>ytfzf</b> is
+free software: you can redistribute it and/or modify it
+under the terms of the <i>GNU General Public License version
+3</i> as published by the Free Software Foundation.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>ytfzf</b> is
+distributed in the hope that it will be useful but WITHOUT
+ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.</p>
+
+<p style="margin-left:11%; margin-top: 1em">You should have
+received a copy of the GNU General Public License along with
+<b>ytfzf</b>. If not, see
+<i>&lt;</i>https://www.gnu.org/licenses/<i>&gt;.</i></p>
+<hr>
+</body>
+</html>

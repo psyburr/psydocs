@@ -1,0 +1,130 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sysusers.d</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sysusers.d"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sysusers.d — Declarative allocation of system users and groups</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">/etc/sysusers.d/*.conf</code></p><p><code class="filename">/run/sysusers.d/*.conf</code></p><p><code class="filename">/usr/lib/sysusers.d/*.conf</code></p><pre class="programlisting">
+#Type Name       ID                  GECOS              Home directory Shell
+u     user_name  uid                 "User Description" /home/dir      /path/to/shell
+u     user_name  uid:gid             "User Description" /home/dir      /path/to/shell
+u     user_name  /file/owned/by/user "User Description" /home/dir      /path/to/shell
+g     group_name gid
+g     group_name /file/owned/by/group
+m     user_name  group_name
+r     -          lowest-highest</pre></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Description">¶</a></h2><p><span class="command"><strong>systemd-sysusers</strong></span> uses the files from
+    <code class="filename">sysusers.d</code> directory to create system users and groups and
+    to add users to groups, at package installation or boot time. This tool may be
+    used to allocate system users and groups only, it is not useful for creating
+    non-system (i.e. regular, "human") users and groups, as it accesses
+    <code class="filename">/etc/passwd</code> and <code class="filename">/etc/group</code> directly,
+    bypassing any more complex user databases, for example any database involving NIS
+    or LDAP.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Configuration Directories and Precedence">Configuration Directories and Precedence<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Configuration%20Directories%20and%20Precedence">¶</a></h2><p>Each configuration file shall be named in the style of
+    <code class="filename"><em class="replaceable"><code>package</code></em>.conf</code> or
+    <code class="filename"><em class="replaceable"><code>package</code></em>-<em class="replaceable"><code>part</code></em>.conf</code>.
+    The second variant should be used when it is desirable to make it
+    easy to override just this part of configuration.</p><p>Files in <code class="filename">/etc/sysusers.d</code> override files
+    with the same name in <code class="filename">/usr/lib/sysusers.d</code> and
+    <code class="filename">/run/sysusers.d</code>. Files in
+    <code class="filename">/run/sysusers.d</code> override files with the same
+    name in <code class="filename">/usr/lib/sysusers.d</code>. Packages should
+    install their configuration files in
+    <code class="filename">/usr/lib/sysusers.d</code>. Files in
+    <code class="filename">/etc/sysusers.d</code> are reserved for the local
+    administrator, who may use this logic to override the
+    configuration files installed by vendor packages. All
+    configuration files are sorted by their filename in lexicographic
+    order, regardless of which of the directories they reside in. If
+    multiple files specify the same path, the entry in the file with
+    the lexicographically earliest name will be applied. All later
+    entries for the same user and group names will be logged as warnings.
+    </p><p>If the administrator wants to disable a configuration file
+    supplied by the vendor, the recommended way is to place a symlink
+    to <code class="filename">/dev/null</code> in
+    <code class="filename">/etc/sysusers.d/</code> bearing the same filename.
+    </p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Configuration File Format">Configuration File Format<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Configuration%20File%20Format">¶</a></h2><p>The file format is one line per user or group containing name, ID, GECOS
+    field description, home directory, and login shell:</p><pre class="programlisting">#Type Name     ID             GECOS                 Home directory Shell
+u     httpd    404            "HTTP User"
+u     _authd   /usr/bin/authd "Authorization user"
+u     postgres -              "Postgresql Database" /var/lib/pgsql /usr/libexec/postgresdb
+g     input    -              -
+m     _authd   input
+u     root     0              "Superuser"           /root          /bin/zsh
+r     -        500-900
+</pre><p>Empty lines and lines beginning with the "<code class="literal">#</code>" character are ignored, and may be used for
+    commenting.</p><div class="refsect2"><a name="id-1.7.5"></a><h3 id="Type">Type<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Type">¶</a></h3><p>The type consists of a single letter. The following line
+      types are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="u"><span class="term"><code class="varname">u</code></span><a class="headerlink" title="Permalink to this term" href="sysusers.d.html#u">¶</a></dt><dd><p>Create a system user and group of the specified name should
+          they not exist yet. The user's primary group will be set to the group
+          bearing the same name unless the ID field specifies it. The account will be
+          created disabled, so that logins are not allowed.</p></dd><dt id="g"><span class="term"><code class="varname">g</code></span><a class="headerlink" title="Permalink to this term" href="sysusers.d.html#g">¶</a></dt><dd><p>Create a system group of the specified name
+          should it not exist yet. Note that <code class="varname">u</code>
+          implicitly creates a matching group. The group will be
+          created with no password set.</p></dd><dt id="m"><span class="term"><code class="varname">m</code></span><a class="headerlink" title="Permalink to this term" href="sysusers.d.html#m">¶</a></dt><dd><p>Add a user to a group. If the user or group
+          do not exist yet, they will be implicitly
+          created.</p></dd><dt id="r"><span class="term"><code class="varname">r</code></span><a class="headerlink" title="Permalink to this term" href="sysusers.d.html#r">¶</a></dt><dd><p>Add a range of numeric UIDs/GIDs to the pool
+          to allocate new UIDs and GIDs from. If no line of this type
+          is specified, the range of UIDs/GIDs is set to some
+          compiled-in default. Note that both UIDs and GIDs are
+          allocated from the same pool, in order to ensure that users
+          and groups of the same name are likely to carry the same
+          numeric UID and GID.</p></dd></dl></div></div><div class="refsect2"><a name="id-1.7.6"></a><h3 id="Name">Name<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Name">¶</a></h3><p>The name field specifies the user or group name. The specified name must consist only of the characters a-z,
+      A-Z, 0-9, "<code class="literal">_</code>" and "<code class="literal">-</code>", except for the first character which must be one of a-z,
+      A-Z or "<code class="literal">_</code>" (i.e. numbers and "<code class="literal">-</code>" are not permitted as first character). The
+      user/group name must have at least one character, and at most 31.</p><p>For further details about the syntax of user/group names, see <a class="ulink" href="https://systemd.io/USER_NAMES" target="_top">User/Group Name Syntax</a>.</p><p>It is strongly recommended to pick user and group names that are unlikely to clash with normal users
+      created by the administrator. A good scheme to guarantee this is by prefixing all system and group names with the
+      underscore, and avoiding too generic names.</p><p>For <code class="varname">m</code> lines, this field should contain
+      the user name to add to a group.</p><p>For lines of type <code class="varname">r</code>, this field should
+      be set to "<code class="literal">-</code>".</p></div><div class="refsect2"><a name="id-1.7.7"></a><h3 id="ID">ID<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#ID">¶</a></h3><p>For <code class="varname">u</code> and <code class="varname">g</code>, the
+      numeric 32-bit UID or GID of the user/group. Do not use IDs 65535
+      or 4294967295, as they have special placeholder meanings.
+      Specify "<code class="literal">-</code>" for automatic UID/GID allocation
+      for the user or group (this is strongly recommended unless it is strictly
+      necessary to use a specific UID or GID). Alternatively, specify an absolute path
+      in the file system. In this case, the UID/GID is read from the
+      path's owner/group. This is useful to create users whose UID/GID
+      match the owners of pre-existing files (such as SUID or SGID
+      binaries).
+      The syntaxes "<code class="literal"><em class="replaceable"><code>uid</code></em>:<em class="replaceable"><code>gid</code></em></code>" and
+      "<code class="literal"><em class="replaceable"><code>uid</code></em>:<em class="replaceable"><code>groupname</code></em></code>" are supported to
+      allow creating users with specific primary groups. The given group must be created explicitly, or it
+      must already exist. Specifying "<code class="literal">-</code>" for the UID in these syntaxes is also supported.
+      </p><p>For <code class="varname">m</code> lines, this field should contain
+      the group name to add to a user to.</p><p>For lines of type <code class="varname">r</code>, this field should
+      be set to a UID/GID range in the format
+      "<code class="literal">FROM-TO</code>", where both values are formatted as
+      decimal ASCII numbers. Alternatively, a single UID/GID may be
+      specified formatted as decimal ASCII numbers.</p></div><div class="refsect2"><a name="id-1.7.8"></a><h3 id="GECOS">GECOS<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#GECOS">¶</a></h3><p>A short, descriptive string for users to be created, enclosed in
+      quotation marks. Note that this field may not contain colons.</p><p>Only applies to lines of type <code class="varname">u</code> and should otherwise
+      be left unset (or "<code class="literal">-</code>").</p></div><div class="refsect2"><a name="id-1.7.9"></a><h3 id="Home Directory">Home Directory<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Home%20Directory">¶</a></h3><p>The home directory for a new system user. If omitted, defaults to the
+      root directory.</p><p>Only applies to lines of type <code class="varname">u</code> and should otherwise
+      be left unset (or "<code class="literal">-</code>"). It is recommended to omit this, unless
+      software strictly requires a home directory to be set.</p><p><span class="command"><strong>systemd-sysusers</strong></span> only sets the home directory record in the
+      user database. To actually create the directory, consider adding a corresponding
+      <a href="tmpfiles.d.html#"><span class="citerefentry"><span class="refentrytitle">tmpfiles.d</span>(5)</span></a>
+      fragment.</p></div><div class="refsect2"><a name="id-1.7.10"></a><h3 id="Shell">Shell<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Shell">¶</a></h3><p>The login shell of the user. If not specified, this will be set to
+      <code class="filename">/usr/sbin/nologin</code>, except if the UID of the user is 0, in
+      which case <code class="filename">/bin/sh</code> will be used.</p><p>Only applies to lines of type <code class="varname">u</code> and should otherwise
+      be left unset (or "<code class="literal">-</code>"). It is recommended to omit this, unless
+      a shell different <code class="filename">/usr/sbin/nologin</code> must be used.</p></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Specifiers">Specifiers<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Specifiers">¶</a></h2><p>Specifiers can be used in the "<code class="literal">Name</code>", "<code class="literal">ID</code>",
+    "<code class="literal">GECOS</code>", "<code class="literal">Home directory</code>", and "<code class="literal">Shell</code>" fields. An
+    unknown or unresolvable specifier is treated as invalid configuration. The following expansions are
+    understood:</p><div class="table"><a name="id-1.8.3"></a><p class="title"><b>Table 1. Specifiers available</b></p><div class="table-contents"><table class="table" summary="Specifiers available" border="1"><colgroup><col align="left" class="spec"><col align="left" class="mean"><col align="left" class="detail"></colgroup><thead><tr><th align="left">Specifier</th><th align="left">Meaning</th><th align="left">Details</th></tr></thead><tbody><tr><td align="left"><a name="a"></a>"<code class="literal">%a</code>"</td><td align="left">Architecture</td><td align="left">A short string identifying the architecture of the local system. A string such as <code class="constant">x86</code>, <code class="constant">x86-64</code> or <code class="constant">arm64</code>. See the architectures defined for <code class="varname">ConditionArchitecture=</code> in <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a> for a full list.</td></tr><tr><td align="left"><a name="A"></a>"<code class="literal">%A</code>"</td><td align="left">Operating system image version</td><td align="left">The operating system image version identifier of the running system, as read from the <code class="varname">IMAGE_VERSION=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="b"></a>"<code class="literal">%b</code>"</td><td align="left">Boot ID</td><td align="left">The boot ID of the running system, formatted as string. See <a href="http://man7.org/linux/man-pages/man4/random.4.html"><span class="citerefentry"><span class="refentrytitle">random</span>(4)</span></a> for more information.</td></tr><tr><td align="left"><a name="B"></a>"<code class="literal">%B</code>"</td><td align="left">Operating system build ID</td><td align="left">The operating system build identifier of the running system, as read from the <code class="varname">BUILD_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="H"></a>"<code class="literal">%H</code>"</td><td align="left">Host name</td><td align="left">The hostname of the running system.</td></tr><tr><td align="left"><a name="l"></a>"<code class="literal">%l</code>"</td><td align="left">Short host name</td><td align="left">The hostname of the running system, truncated at the first dot to remove any domain component.</td></tr><tr><td align="left"><a name="m"></a>"<code class="literal">%m</code>"</td><td align="left">Machine ID</td><td align="left">The machine ID of the running system, formatted as string. See <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="M"></a>"<code class="literal">%M</code>"</td><td align="left">Operating system image identifier</td><td align="left">The operating system image identifier of the running system, as read from the <code class="varname">IMAGE_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="o"></a>"<code class="literal">%o</code>"</td><td align="left">Operating system ID</td><td align="left">The operating system identifier of the running system, as read from the <code class="varname">ID=</code> field of <code class="filename">/etc/os-release</code>. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="T"></a>"<code class="literal">%T</code>"</td><td align="left">Directory for temporary files</td><td align="left">This is either <code class="filename">/tmp</code> or the path "<code class="literal">$TMPDIR</code>", "<code class="literal">$TEMP</code>" or "<code class="literal">$TMP</code>" are set to. (Note that the directory may be specified without a trailing slash.)</td></tr><tr><td align="left"><a name="v"></a>"<code class="literal">%v</code>"</td><td align="left">Kernel release</td><td align="left">Identical to <span class="command"><strong>uname -r</strong></span> output.</td></tr><tr><td align="left"><a name="V"></a>"<code class="literal">%V</code>"</td><td align="left">Directory for larger and persistent temporary files</td><td align="left">This is either <code class="filename">/var/tmp</code> or the path "<code class="literal">$TMPDIR</code>", "<code class="literal">$TEMP</code>" or "<code class="literal">$TMP</code>" are set to. (Note that the directory may be specified without a trailing slash.)</td></tr><tr><td align="left"><a name="w"></a>"<code class="literal">%w</code>"</td><td align="left">Operating system version ID</td><td align="left">The operating system version identifier of the running system, as read from the <code class="varname">VERSION_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="W"></a>"<code class="literal">%W</code>"</td><td align="left">Operating system variant ID</td><td align="left">The operating system variant identifier of the running system, as read from the <code class="varname">VARIANT_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="percent"></a>"<code class="literal">%%</code>"</td><td align="left">Single percent sign</td><td align="left">Use "<code class="literal">%%</code>" in place of "<code class="literal">%</code>" to specify a single percent sign.</td></tr></tbody></table></div></div><br class="table-break"></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Idempotence">Idempotence<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#Idempotence">¶</a></h2><p>Note that <span class="command"><strong>systemd-sysusers</strong></span> will do nothing if the
+    specified users or groups already exist or the users are members of specified
+    groups, so normally there is no reason to override
+    <code class="filename">sysusers.d</code> vendor configuration, except to block certain
+    users or groups from being created.</p></div><div class="refsect1"><a name="id-1.10"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sysusers.d.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-sysusers.html#"><span class="citerefentry"><span class="refentrytitle">systemd-sysusers</span>(8)</span></a>
+    </p></div></div></body></html>

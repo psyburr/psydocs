@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>
+    
+      Documenting your projects on GitHub &middot; GitHub Guides
+    
+  </title>
+  <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="stylesheet" href="../../components/gridism/gridism.css">
+  <link rel="stylesheet" href="../../components/primer/markdown.css">
+  <link rel="stylesheet" href="../../components/primer/octicons.css">
+  <link href="../../stylesheets/main.css" rel="stylesheet" />
+  <link href="../../stylesheets/pygments.css" rel="stylesheet" />
+
+  <script src="../../javascripts/jquery.js" type="text/javascript"></script>
+  <script src="../../javascripts/snap.svg-min.js" type="text/javascript"></script>
+  <script src="../../javascripts/application.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-3769691-29']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+</head>
+<body>
+
+  <header>
+    <div class="wrap">
+      <ul class="links">
+        <li><a href="https://www.youtube.com/githubguides">Video Guides</a></li>
+        <li><a href="https://help.github.com">GitHub Help</a></li>
+        <li class="nav-github"><a href="https://github.com">GitHub.com</a></li>
+        <li class="nav-rss"><a href="../../feed/index.xml"><span class="octicon octicon-rss"></span></a></li>
+      </ul>
+
+      <a href ="../../index.html"><img src="../../images/logo@2x.png" width="136" height="25" alt ="GitHub Guides logo"/></a>
+    </div>
+  </header>
+
+  <article class="full">
+  <div class="article-heading js-article-heading js-geopattern" style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJyZ2IoMzMsIDE0NywgNzEpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iI2RkZCIgZmlsbC1vcGFjaXR5PSIwLjA1NDY2NjY2NjY2NjY2NjY3IiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLjAsIDAuMCkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjMjIyIiBmaWxsLW9wYWNpdHk9IjAuMDYzMzMzMzMzMzMzMzMzMzQiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIzLjMzMzMzMzMzMzMzMzMzNiwgMC4wKSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiNkZGQiIGZpbGwtb3BhY2l0eT0iMC4xNDEzMzMzMzMzMzMzMzMzNCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDYuNjY2NjY2NjY2NjY2NjcsIDAuMCkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMDcyMDAwMDAwMDAwMDAwMDEiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcwLjAsIDAuMCkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMTI0MDAwMDAwMDAwMDAwMDEiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkzLjMzMzMzMzMzMzMzMzM0LCAwLjApIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iI2RkZCIgZmlsbC1vcGFjaXR5PSIwLjEyNDAwMDAwMDAwMDAwMDAxIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMTYuNjY2NjY2NjY2NjY2NjksIDAuMCkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMTI0MDAwMDAwMDAwMDAwMDEiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMCwgMjMuMzMzMzMzMzMzMzMzMzM2KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiNkZGQiIGZpbGwtb3BhY2l0eT0iMC4xMjQwMDAwMDAwMDAwMDAwMSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjMuMzMzMzMzMzMzMzMzMzM2LCAyMy4zMzMzMzMzMzMzMzMzMzYpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iIzIyMiIgZmlsbC1vcGFjaXR5PSIwLjA2MzMzMzMzMzMzMzMzMzM0IiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0Ni42NjY2NjY2NjY2NjY2NywgMjMuMzMzMzMzMzMzMzMzMzM2KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiNkZGQiIGZpbGwtb3BhY2l0eT0iMC4wMzczMzMzMzMzMzMzMzMzMyIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzAuMCwgMjMuMzMzMzMzMzMzMzMzMzM2KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiMyMjIiIGZpbGwtb3BhY2l0eT0iMC4xMzI2NjY2NjY2NjY2NjY2NSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTMuMzMzMzMzMzMzMzMzMzQsIDIzLjMzMzMzMzMzMzMzMzMzNikiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMDM3MzMzMzMzMzMzMzMzMzMiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExNi42NjY2NjY2NjY2NjY2OSwgMjMuMzMzMzMzMzMzMzMzMzM2KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiMyMjIiIGZpbGwtb3BhY2l0eT0iMC4xMTUzMzMzMzMzMzMzMzMzNCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wLCA0Ni42NjY2NjY2NjY2NjY2NykiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMTQxMzMzMzMzMzMzMzMzMzQiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIzLjMzMzMzMzMzMzMzMzMzNiwgNDYuNjY2NjY2NjY2NjY2NjcpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iIzIyMiIgZmlsbC1vcGFjaXR5PSIwLjA5OCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDYuNjY2NjY2NjY2NjY2NjcsIDQ2LjY2NjY2NjY2NjY2NjY3KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiNkZGQiIGZpbGwtb3BhY2l0eT0iMC4xMDY2NjY2NjY2NjY2NjY2NyIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzAuMCwgNDYuNjY2NjY2NjY2NjY2NjcpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iIzIyMiIgZmlsbC1vcGFjaXR5PSIwLjE1IiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg5My4zMzMzMzMzMzMzMzMzNCwgNDYuNjY2NjY2NjY2NjY2NjcpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iI2RkZCIgZmlsbC1vcGFjaXR5PSIwLjA4OTMzMzMzMzMzMzMzMzMzIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMTYuNjY2NjY2NjY2NjY2NjksIDQ2LjY2NjY2NjY2NjY2NjY3KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiMyMjIiIGZpbGwtb3BhY2l0eT0iMC4wOTgiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMCwgNzAuMCkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMDM3MzMzMzMzMzMzMzMzMzMiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIzLjMzMzMzMzMzMzMzMzMzNiwgNzAuMCkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMDIiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQ2LjY2NjY2NjY2NjY2NjY3LCA3MC4wKSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiMyMjIiIGZpbGwtb3BhY2l0eT0iMC4wMjg2NjY2NjY2NjY2NjY2NjciIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcwLjAsIDcwLjApIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iI2RkZCIgZmlsbC1vcGFjaXR5PSIwLjA3MjAwMDAwMDAwMDAwMDAxIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg5My4zMzMzMzMzMzMzMzMzNCwgNzAuMCkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjMjIyIiBmaWxsLW9wYWNpdHk9IjAuMTE1MzMzMzMzMzMzMzMzMzQiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExNi42NjY2NjY2NjY2NjY2OSwgNzAuMCkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMTQxMzMzMzMzMzMzMzMzMzQiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMCwgOTMuMzMzMzMzMzMzMzMzMzQpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iI2RkZCIgZmlsbC1vcGFjaXR5PSIwLjEwNjY2NjY2NjY2NjY2NjY3IiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMy4zMzMzMzMzMzMzMzMzMzYsIDkzLjMzMzMzMzMzMzMzMzM0KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiNkZGQiIGZpbGwtb3BhY2l0eT0iMC4wNTQ2NjY2NjY2NjY2NjY2NyIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDYuNjY2NjY2NjY2NjY2NjcsIDkzLjMzMzMzMzMzMzMzMzM0KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiNkZGQiIGZpbGwtb3BhY2l0eT0iMC4wNTQ2NjY2NjY2NjY2NjY2NyIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzAuMCwgOTMuMzMzMzMzMzMzMzMzMzQpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iI2RkZCIgZmlsbC1vcGFjaXR5PSIwLjE0MTMzMzMzMzMzMzMzMzM0IiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg5My4zMzMzMzMzMzMzMzMzNCwgOTMuMzMzMzMzMzMzMzMzMzQpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iI2RkZCIgZmlsbC1vcGFjaXR5PSIwLjAyIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMTYuNjY2NjY2NjY2NjY2NjksIDkzLjMzMzMzMzMzMzMzMzM0KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiNkZGQiIGZpbGwtb3BhY2l0eT0iMC4xNDEzMzMzMzMzMzMzMzMzNCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wLCAxMTYuNjY2NjY2NjY2NjY2NjkpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iIzIyMiIgZmlsbC1vcGFjaXR5PSIwLjEzMjY2NjY2NjY2NjY2NjY1IiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMy4zMzMzMzMzMzMzMzMzMzYsIDExNi42NjY2NjY2NjY2NjY2OSkiICAvPjxwb2x5bGluZSBwb2ludHM9IjcuNzAwMDAwMDAwMDAwMDAxLDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwxNS42MzMzMzMzMzMzMzMzMzUsMTUuNjMzMzMzMzMzMzMzMzM1LDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCw3LjcwMDAwMDAwMDAwMDAwMSw3LjcwMDAwMDAwMDAwMDAwMSwwIiBmaWxsPSIjZGRkIiBmaWxsLW9wYWNpdHk9IjAuMTQxMzMzMzMzMzMzMzMzMzQiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQ2LjY2NjY2NjY2NjY2NjY3LCAxMTYuNjY2NjY2NjY2NjY2NjkpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iI2RkZCIgZmlsbC1vcGFjaXR5PSIwLjAzNzMzMzMzMzMzMzMzMzMzIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3MC4wLCAxMTYuNjY2NjY2NjY2NjY2NjkpIiAgLz48cG9seWxpbmUgcG9pbnRzPSI3LjcwMDAwMDAwMDAwMDAwMSwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDIzLjMzMzMzMzMzMzMzMzMzNiw3LjcwMDAwMDAwMDAwMDAwMSwyMy4zMzMzMzMzMzMzMzMzMzYsMTUuNjMzMzMzMzMzMzMzMzM1LDE1LjYzMzMzMzMzMzMzMzMzNSwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDAsMTUuNjMzMzMzMzMzMzMzMzM1LDAsNy43MDAwMDAwMDAwMDAwMDEsNy43MDAwMDAwMDAwMDAwMDEsMCIgZmlsbD0iIzIyMiIgZmlsbC1vcGFjaXR5PSIwLjE1IiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIwLjAyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg5My4zMzMzMzMzMzMzMzMzNCwgMTE2LjY2NjY2NjY2NjY2NjY5KSIgIC8+PHBvbHlsaW5lIHBvaW50cz0iNy43MDAwMDAwMDAwMDAwMDEsMCwxNS42MzMzMzMzMzMzMzMzMzUsMCwyMy4zMzMzMzMzMzMzMzMzMzYsNy43MDAwMDAwMDAwMDAwMDEsMjMuMzMzMzMzMzMzMzMzMzM2LDE1LjYzMzMzMzMzMzMzMzMzNSwxNS42MzMzMzMzMzMzMzMzMzUsMjMuMzMzMzMzMzMzMzMzMzM2LDcuNzAwMDAwMDAwMDAwMDAxLDIzLjMzMzMzMzMzMzMzMzMzNiwwLDE1LjYzMzMzMzMzMzMzMzMzNSwwLDcuNzAwMDAwMDAwMDAwMDAxLDcuNzAwMDAwMDAwMDAwMDAxLDAiIGZpbGw9IiNkZGQiIGZpbGwtb3BhY2l0eT0iMC4xMDY2NjY2NjY2NjY2NjY2NyIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTE2LjY2NjY2NjY2NjY2NjY5LCAxMTYuNjY2NjY2NjY2NjY2NjkpIiAgLz48L3N2Zz4=);">
+    <div class="wrap">
+      <div class="icon-container">
+        <span class="mega-octicon octicon-book"></span>
+      </div>
+      <h1>Documenting your projects on GitHub</h1>
+      <span class="article-read-time article-meta">
+        <span class="octicon octicon-clock"></span> 10 minute read
+      </span>
+      
+    </div>
+  </div>
+
+
+  <div class="wrap">
+    
+    <div class="toc-wrapper">
+      <ol class="toc js-toc"></ol>
+    </div>
+    
+
+    <div class="markdown-body content-body ">
+      <p><a id="intro" title="Intro" class="toc-item"></a>
+Good documentation is key to the success of any project. Making documentation accessible enables people to learn about a project; making it easy to update ensures that documentation stays relevant.</p>
+
+<p>Two common ways to document a project are <em>README files</em> and <em>wikis</em>:</p>
+
+<ul>
+  <li>
+    <p>README files are a quick and simple way for other users to learn more about your work.</p>
+  </li>
+  <li>
+    <p>Wikis on GitHub help you present in-depth information about your project in a useful way.</p>
+  </li>
+</ul>
+
+<p>It’s a good idea to at least have a README on your project, because it’s the first thing many people will read when they first find your work.</p>
+
+<p><a id="creating-a-readme" title="Creating your README" class="toc-item"></a></p>
+
+<h2>Creating your README</h2>
+
+<p>When you <a href="https://help.github.com/articles/creating-a-new-repository/">create a new repository</a> though GitHub, select “Initialize this repository with a README” unless you plan to import an existing repository.
+<img src="https://cloud.githubusercontent.com/assets/4122993/16925080/64863a10-4cd7-11e6-8da7-b31a29b769f2.png" alt="Screenshot of initializing a README" /></p>
+
+<p>Your README.md file is now available for editing in your brand-new repository. Your project’s name is at the top, followed by any description you chose to include when creating the repository. READMEs are easy to modify, both <a href="https://help.github.com/articles/editing-files-in-your-repository/">on GitHub</a> or locally. Check out the <a href="../mastering-markdown.html">Mastering Markdown guide</a> to learn more about how to modify the text within the file after you’ve made it.</p>
+
+<p><a id="Formatting-a-readme" title="Formatting your README" class="toc-item"></a></p>
+
+<h2>Formatting your README</h2>
+
+<p>READMEs generally follow one format in order to immediately orient developers to the most important aspects of your project.</p>
+
+<ul>
+  <li>
+    <p><strong>Project name</strong>: Your project’s name is the first thing people will see upon scrolling down to your README, and is included upon creation of your README file.</p>
+  </li>
+  <li>
+    <p><strong>Description</strong>: A description of your project follows. A good description is clear, short, and to the point. Describe the importance of your project, and what it does.</p>
+  </li>
+  <li>
+    <p><strong>Table of Contents</strong>: Optionally, include a table of contents in order to allow other people to quickly navigate especially long or detailed READMEs.</p>
+  </li>
+  <li>
+    <p><strong>Installation</strong>: Installation is the next section in an effective README. Tell other users how to install your project locally. Optionally, include a gif to make the process even more clear for other people.</p>
+  </li>
+  <li>
+    <p><strong>Usage</strong>: The next section is usage, in which you instruct other people on how to use your project after they’ve installed it. This would also be a good place to include screenshots of your project in action.</p>
+  </li>
+  <li>
+    <p><strong>Contributing</strong>: Larger projects often have sections on contributing to their project, in which contribution instructions are outlined. Sometimes, this is a separate file. If you have specific contribution preferences, explain them so that other developers know how to best contribute to your work. To learn more about how to help others contribute, check out the guide for <a href="https://help.github.com/articles/setting-guidelines-for-repository-contributors/">setting guidelines for repository contributors</a>.</p>
+  </li>
+  <li>
+    <p><strong>Credits</strong>: Include a section for credits in order to highlight and link to the authors of your project.</p>
+  </li>
+  <li>
+    <p><strong>License</strong>: Finally, include a section for the license of your project. For more information on choosing a license, check out GitHub’s <a href="http://choosealicense.com/">licensing guide</a>!</p>
+  </li>
+</ul>
+
+<p>Your README should contain only the necessary information for developers to get started using and contributing to your project. Longer documentation is best suited for wikis, outlined below.</p>
+
+<p><a id="creating-your-wiki" title="Creating your wiki" class="toc-item"></a></p>
+
+<h2>Creating your wiki</h2>
+
+<p>Every repository on GitHub comes with a wiki. After you’ve created a repository, you can set up the included wiki through the sidebar navigation. Starting your wiki is simply a matter of clicking the wiki button and creating your first page.</p>
+
+<p><img src="wiki-blank-slate.png" alt="Screenshot of the starting page" /></p>
+
+<p><a id="adding-content" title="Adding content" class="toc-item"></a></p>
+
+<h2>Adding content</h2>
+
+<p>Wiki content is designed to be easily editable. You can add or change content on any wiki page by clicking the <strong>Edit</strong> button located in the upper right corner of each page. This opens up the wiki editor.</p>
+
+<p><img src="wiki-editor.png" alt="Screenshot of the wiki editor" /></p>
+
+<p>Wiki pages can be written in any format supported by <a href="http://github.com/github/markup">GitHub Markup</a>. Using the drop-down menu in the editor, you can select the format of your wiki, and then use wiki toolbar to create and include content on a page. Wikis also give you the option of including a custom footer where you can list things like contact details or license information for your project.</p>
+
+<p>GitHub keeps track of changes made to each page in your wiki. Below a page title, you can see who made the most recent edits, in addition to the number of commits made to the page. Clicking on this information will take you to the full page history where you can compare revisions or see a detailed list of edits over time.</p>
+
+<p><a id="adding-pages" title="Adding pages" class="toc-item"></a></p>
+
+<h2>Adding pages</h2>
+
+<p>You can add additional pages to your wiki by selecting <strong>New Page</strong> in the upper right corner. By default, each page you create is included automatically in your wiki’s sidebar and listed in alphabetical order.</p>
+
+<p><img src="wiki-sidebar-closeup.png" alt="Screenshot of the wiki sidebar" /></p>
+
+<p>You can also add a custom sidebar to your wiki by clicking the <strong>Add custom sidebar</strong> link. Custom sidebar content can include text, images, and links.</p>
+
+<p>Note: The page called “Home” functions as the entrance page to your wiki. If it is missing, an automatically generated table of contents will be shown instead.</p>
+
+<div class="alert">
+  <p>
+    If you're knowledgable with the command line, you can also modify wikis locally. Check out <a href="https://help.github.com/articles/adding-and-editing-wiki-pages-locally">our help article</a> for more info.
+  </p>
+</div>
+
+<p><a id="syntax-highlighting" title="Syntax highlighting" class="toc-item"></a></p>
+
+<h2>Syntax highlighting</h2>
+
+<p>Wiki pages support automatic syntax highlighting of code for a wide range of languages by using the following syntax:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```ruby
+  def foo
+    puts 'bar'
+  end
+```
+</code></pre></div></div>
+
+<p>The block must start with three backticks, optionally followed by the the name of the language that is contained by the block. See <a href="http://pygments.org/docs/lexers/">Pygments for the list of languages</a> that can be syntax highlighted.</p>
+
+<p>The block contents should be indented at the same level as the opening backticks. The block must end with three backticks indented at the same level as the opening backticks.</p>
+
+<h2>You’re done!</h2>
+
+<p>You have learned some important information about how to best share your work with the rest of the GitHub community, whether your project is large enough in scope for its own wiki or you’re just starting out and setting up a clear and concise README.</p>
+
+<p>To read more on the topics covered in this article, our guides for <a href="https://help.github.com/articles/creating-a-new-repository/">creating a new repository</a>, <a href="https://help.github.com/articles/editing-files-in-your-repository/">editing files in your repository</a>, <a href="https://help.github.com/articles/setting-guidelines-for-repository-contributors/">setting guidelines for repository contributors</a> and <a href="http://choosealicense.com">choosing a license</a> are great places to start. Otherwise, check out some other <a href="../../index.html">GitHub Guides</a> to keep learning.</p>
+
+<p>Finally, if you’re interested in building a documentation site for your project, we recommend using <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+
+
+      <p class="last-updated">Last updated July 15, 2016</p>
+    </div>
+  </div>
+</article>
+
+
+  <footer>
+    <div class="wrap">
+      <span class="mega-octicon octicon-mark-github"></span>
+      <p>
+        <a href="https://github.com">GitHub</a> is the best way to build and ship software.<br />
+        Powerful collaboration, code review, and code management for open source and private projects.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

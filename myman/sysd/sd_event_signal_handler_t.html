@@ -1,0 +1,86 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_event_add_signal</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_event_add_signal"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_event_add_signal, sd_event_source_get_signal, sd_event_signal_handler_t — Add a UNIX process signal event source to an event
+    loop</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-event.h&gt;</pre><pre class="funcsynopsisinfo"><span class="token">typedef</span> struct sd_event_source sd_event_source;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">typedef int (*<b class="fsfunc">sd_event_signal_handler_t</b>)(</code></td><td>sd_event_source *<var class="pdparam">s</var>, </td></tr><tr><td> </td><td>const struct signalfd_siginfo *<var class="pdparam">si</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_add_signal</b>(</code></td><td>sd_event *<var class="pdparam">event</var>, </td></tr><tr><td> </td><td>sd_event_source **<var class="pdparam">source</var>, </td></tr><tr><td> </td><td>int <var class="pdparam">signal</var>, </td></tr><tr><td> </td><td>sd_event_signal_handler_t <var class="pdparam">handler</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_source_get_signal</b>(</code></td><td>sd_event_source *<var class="pdparam">source</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_event_signal_handler_t.html#Description">¶</a></h2><p><code class="function">sd_event_add_signal()</code> adds a new UNIX
+    process signal event source to an event loop. The event loop
+    object is specified in the <em class="parameter"><code>event</code></em> parameter,
+    and the event source object is returned in the
+    <em class="parameter"><code>source</code></em> parameter. The
+    <em class="parameter"><code>signal</code></em> parameter specifies the numeric
+    signal to be handled (see <a href="http://man7.org/linux/man-pages/man7/signal.7.html"><span class="citerefentry"><span class="refentrytitle">signal</span>(7)</span></a>).
+    The <em class="parameter"><code>handler</code></em> parameter must reference a
+    function to call when the signal is received or be
+    <code class="constant">NULL</code>.  The handler function will be passed
+    the <em class="parameter"><code>userdata</code></em> pointer, which may be chosen
+    freely by the caller. The handler also receives a pointer to a
+    <span class="structname">signalfd_siginfo</span> structure containing
+    information about the received signal. See <a href="http://man7.org/linux/man-pages/man2/signalfd.2.html"><span class="citerefentry"><span class="refentrytitle">signalfd</span>(2)</span></a>
+    for further information.</p><p>Only a single handler may be installed for a specific signal. The signal must be blocked in all
+    threads before this function is called (using <a href="http://man7.org/linux/man-pages/man2/sigprocmask.2.html"><span class="citerefentry"><span class="refentrytitle">sigprocmask</span>(2)</span></a> or
+    <a href="http://man7.org/linux/man-pages/man3/pthread_sigmask.3.html"><span class="citerefentry"><span class="refentrytitle">pthread_sigmask</span>(3)</span></a>).</p><p>By default, the event source is enabled permanently
+    (<code class="constant">SD_EVENT_ON</code>), but this may be changed with
+    <a href="sd_event_source_set_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_enabled</span>(3)</span></a>.
+    If the handler function returns a negative error code, it will be
+    disabled after the invocation, even if the
+    <code class="constant">SD_EVENT_ON</code> mode was requested before.
+    </p><p>To destroy an event source object use
+    <a href="sd_event_source_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_unref</span>(3)</span></a>,
+    but note that the event source is only removed from the event loop
+    when all references to the event source are dropped. To make sure
+    an event source does not fire anymore, even if it is still referenced,
+    disable the event source using
+    <a href="sd_event_source_set_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_enabled</span>(3)</span></a>
+    with <code class="constant">SD_EVENT_OFF</code>.</p><p>If the second parameter of
+    <code class="function">sd_event_add_signal()</code> is
+    <code class="constant">NULL</code> no reference to the event source object
+    is returned. In this case the event source is considered
+    "floating", and will be destroyed implicitly when the event loop
+    itself is destroyed.</p><p>If the <em class="parameter"><code>handler</code></em> parameter to <code class="function">sd_event_add_signal()</code> is
+    <code class="constant">NULL</code>, and the event source fires, this will be considered a request to exit the
+    event loop. In this case, the <em class="parameter"><code>userdata</code></em> parameter, cast to an integer, is passed as
+    the exit code parameter to
+    <a href="sd_event_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_exit</span>(3)</span></a>.</p><p><code class="function">sd_event_source_get_signal()</code> returns
+    the configured signal number of an event source created previously
+    with <code class="function">sd_event_add_signal()</code>. It takes the
+    event source object as the <em class="parameter"><code>source</code></em>
+    parameter.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_event_signal_handler_t.html#Return%20Value">¶</a></h2><p>On success, these functions return 0 or a positive
+    integer. On failure, they return a negative errno-style error
+    code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_event_signal_handler_t.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-ENOMEM"><span class="term"><code class="constant">-ENOMEM</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_signal_handler_t.html#-ENOMEM">¶</a></dt><dd><p>Not enough memory to allocate an object.</p></dd><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_signal_handler_t.html#-EINVAL">¶</a></dt><dd><p>An invalid argument has been passed.</p></dd><dt id="-EBUSY"><span class="term"><code class="constant">-EBUSY</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_signal_handler_t.html#-EBUSY">¶</a></dt><dd><p>A handler is already installed for this
+          signal or the signal was not blocked previously.</p></dd><dt id="-ESTALE"><span class="term"><code class="constant">-ESTALE</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_signal_handler_t.html#-ESTALE">¶</a></dt><dd><p>The event loop is already terminated.</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_signal_handler_t.html#-ECHILD">¶</a></dt><dd><p>The event loop has been created in a different process.</p></dd><dt id="-EDOM"><span class="term"><code class="constant">-EDOM</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_signal_handler_t.html#-EDOM">¶</a></dt><dd><p>The passed event source is not a signal event source.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_event_signal_handler_t.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_event_signal_handler_t.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-event.html#"><span class="citerefentry"><span class="refentrytitle">sd-event</span>(3)</span></a>,
+      <a href="sd_event_new.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_new</span>(3)</span></a>,
+      <a href="sd_event_now.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_now</span>(3)</span></a>,
+      <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+      <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+      <a href="sd_event_add_child.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_child</span>(3)</span></a>,
+      <a href="sd_event_add_inotify.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_inotify</span>(3)</span></a>,
+      <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>,
+      <a href="sd_event_source_set_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_enabled</span>(3)</span></a>,
+      <a href="sd_event_source_set_description.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_description</span>(3)</span></a>,
+      <a href="sd_event_source_set_userdata.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_userdata</span>(3)</span></a>,
+      <a href="sd_event_source_set_floating.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_floating</span>(3)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man7/signal.7.html"><span class="citerefentry"><span class="refentrytitle">signal</span>(7)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man2/signalfd.2.html"><span class="citerefentry"><span class="refentrytitle">signalfd</span>(2)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man2/sigprocmask.2.html"><span class="citerefentry"><span class="refentrytitle">sigprocmask</span>(2)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man3/pthread_sigmask.3.html"><span class="citerefentry"><span class="refentrytitle">pthread_sigmask</span>(3)</span></a>
+    </p></div></div></body></html>

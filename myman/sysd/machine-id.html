@@ -1,0 +1,110 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>machine-id</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="machine-id"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>machine-id — Local machine ID configuration file</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">/etc/machine-id</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="machine-id.html#Description">¶</a></h2><p>The <code class="filename">/etc/machine-id</code> file contains the unique machine ID of
+    the local system that is set during installation or boot. The machine ID is a single
+    newline-terminated, hexadecimal, 32-character, lowercase ID. When decoded from
+    hexadecimal, this corresponds to a 16-byte/128-bit value. This ID may not be all
+    zeros.</p><p>The machine ID is usually generated from a random source during system
+    installation or first boot and stays constant for all subsequent boots. Optionally,
+    for stateless systems, it is generated during runtime during early boot if necessary.
+    </p><p>The machine ID may be set, for example when network booting, with the
+    <code class="varname">systemd.machine_id=</code> kernel command line parameter or by passing the
+    option <code class="option">--machine-id=</code> to systemd. An ID specified in this manner
+    has higher priority and will be used instead of the ID stored in
+    <code class="filename">/etc/machine-id</code>.</p><p>The machine ID does not change based on local or network configuration or when
+    hardware is replaced. Due to this and its greater length, it is a more useful
+    replacement for the
+    <a href="http://man7.org/linux/man-pages/man3/gethostid.3.html"><span class="citerefentry"><span class="refentrytitle">gethostid</span>(3)</span></a>
+    call that POSIX specifies.</p><p>This machine ID adheres to the same format and logic as the
+    D-Bus machine ID.</p><p>This ID uniquely identifies the host. It should be considered "confidential", and must not be exposed in
+    untrusted environments, in particular on the network. If a stable unique identifier that is tied to the machine is
+    needed for some application, the machine ID or any part of it must not be used directly. Instead the machine ID
+    should be hashed with a cryptographic, keyed hash function, using a fixed, application-specific key. That way the
+    ID will be properly unique, and derived in a constant way from the machine ID but there will be no way to retrieve
+    the original machine ID from the application-specific one. The
+    <a href="sd_id128_get_machine_app_specific.html#"><span class="citerefentry"><span class="refentrytitle">sd_id128_get_machine_app_specific</span>(3)</span></a>
+    API provides an implementation of such an algorithm.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Initialization">Initialization<a class="headerlink" title="Permalink to this headline" href="machine-id.html#Initialization">¶</a></h2><p>Each machine should have a non-empty ID in normal operation. The ID of each
+    machine should be unique. To achieve those objectives,
+    <code class="filename">/etc/machine-id</code> can be initialized in a few different ways.
+    </p><p>For normal operating system installations, where a custom image is created for a
+    specific machine, <code class="filename">/etc/machine-id</code> should be populated during
+    installation.</p><p>
+    <a href="systemd-machine-id-setup.html#"><span class="citerefentry"><span class="refentrytitle">systemd-machine-id-setup</span>(1)</span></a>
+    may be used by installer tools to initialize the machine ID at install time, but
+    <code class="filename">/etc/machine-id</code> may also be written using any other means.
+    </p><p>For operating system images which are created once and used on multiple
+    machines, for example for containers or in the cloud,
+    <code class="filename">/etc/machine-id</code> should be either missing or an empty file in the generic file
+    system image (the difference between the two options is described under "First Boot Semantics" below). An
+    ID will be generated during boot and saved to this file if possible. Having an empty file in place is
+    useful because it allows a temporary file to be bind-mounted over the real file, in case the image is
+    used read-only.</p><p><a href="systemd-firstboot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-firstboot</span>(1)</span></a>
+    may be used to initialize <code class="filename">/etc/machine-id</code> on mounted (but not
+    booted) system images.</p><p>When a machine is booted with
+    <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>
+    the ID of the machine will be established. If <code class="varname">systemd.machine_id=</code>
+    or <code class="option">--machine-id=</code> options (see first section) are specified, this
+    value will be used. Otherwise, the value in <code class="filename">/etc/machine-id</code> will
+    be used. If this file is empty or missing, <code class="filename">systemd</code> will attempt
+    to use the D-Bus machine ID from <code class="filename">/var/lib/dbus/machine-id</code>, the
+    value of the kernel command line option <code class="varname">container_uuid</code>, the KVM DMI
+    <code class="filename">product_uuid</code> or the devicetree <code class="filename">vm,uuid</code>
+    (on KVM systems), and finally a randomly generated UUID.</p><p>After the machine ID is established,
+    <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>
+    will attempt to save it to <code class="filename">/etc/machine-id</code>. If this fails, it
+    will attempt to bind-mount a temporary file over <code class="filename">/etc/machine-id</code>.
+    It is an error if the file system is read-only and does not contain a (possibly empty)
+    <code class="filename">/etc/machine-id</code> file.</p><p><a href="systemd-machine-id-commit.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-machine-id-commit.service</span>(8)</span></a>
+    will attempt to write the machine ID to the file system if
+    <code class="filename">/etc/machine-id</code> or <code class="filename">/etc/</code> are read-only during
+    early boot but become writable later on.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="First Boot Semantics">First Boot Semantics<a class="headerlink" title="Permalink to this headline" href="machine-id.html#First%20Boot%20Semantics">¶</a></h2><p><code class="filename">/etc/machine-id</code> is used to decide whether a boot is the first one.  The rules
+    are as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>If <code class="filename">/etc/machine-id</code> does not exist, this is a first boot.  During
+      early boot, <span class="command"><strong>systemd</strong></span> will write "<code class="literal">uninitialized\n</code>" to this file and overmount
+      a temporary file which contains the actual machine ID.  Later (after <code class="filename">first-boot-complete.target</code>
+      has been reached), the real machine ID will be written to disk.</p></li><li class="listitem"><p>If <code class="filename">/etc/machine-id</code> contains the string "<code class="literal">uninitialized</code>",
+      a boot is also considered the first boot.  The same mechanism as above applies.</p></li><li class="listitem"><p>If <code class="filename">/etc/machine-id</code> exists and is empty, a boot is
+      <span class="emphasis"><em>not</em></span> considered the first boot.  <span class="command"><strong>systemd</strong></span> will still bind-mount a file
+      containing the actual machine-id over it and later try to commit it to disk (if <code class="filename">/etc/</code> is
+      writable).</p></li><li class="listitem"><p>If <code class="filename">/etc/machine-id</code> already contains a valid machine-id, this is
+      not a first boot.</p></li></ol></div><p>If by any of the above rules, a first boot is detected, units with <code class="varname">ConditionFirstBoot=yes</code>
+    will be run.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Relation to OSF UUIDs">Relation to OSF UUIDs<a class="headerlink" title="Permalink to this headline" href="machine-id.html#Relation%20to%20OSF%20UUIDs">¶</a></h2><p>Note that the machine ID historically is not an OSF UUID as defined by <a class="ulink" href="https://tools.ietf.org/html/rfc4122" target="_top">RFC 4122</a>, nor a Microsoft GUID; however, starting with
+    systemd v30, newly generated machine IDs do qualify as Variant 1 Version 4 UUIDs, as per RFC 4122.</p><p>In order to maintain compatibility with existing installations, an application requiring a strictly
+    RFC 4122 compliant UUID should decode the machine ID, and then (non-reversibly) apply the following
+    operations to turn it into a valid RFC 4122 Variant 1 Version 4 UUID. With "<code class="literal">id</code>" being an
+    unsigned character array:</p><pre class="programlisting">/* Set UUID version to 4 --- truly random generation */
+id[6] = (id[6] &amp; 0x0F) | 0x40;
+/* Set the UUID variant to DCE */
+id[8] = (id[8] &amp; 0x3F) | 0x80;</pre><p>(This code is inspired by
+    "<code class="literal">generate_random_uuid()</code>" of
+    <code class="filename">drivers/char/random.c</code> from the Linux kernel
+    sources.)</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="History">History<a class="headerlink" title="Permalink to this headline" href="machine-id.html#History">¶</a></h2><p>The simple configuration file format of
+    <code class="filename">/etc/machine-id</code> originates in the
+    <code class="filename">/var/lib/dbus/machine-id</code> file introduced by
+    D-Bus. In fact, this latter file might be a symlink to
+    <code class="filename">/etc/machine-id</code>.</p></div><div class="refsect1"><a name="id-1.10"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="machine-id.html#See%20Also">¶</a></h2><p>
+        <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+        <a href="systemd-machine-id-setup.html#"><span class="citerefentry"><span class="refentrytitle">systemd-machine-id-setup</span>(1)</span></a>,
+        <a href="http://man7.org/linux/man-pages/man3/gethostid.3.html"><span class="citerefentry"><span class="refentrytitle">gethostid</span>(3)</span></a>,
+        <a href="hostname.html#"><span class="citerefentry"><span class="refentrytitle">hostname</span>(5)</span></a>,
+        <a href="machine-info.html#"><span class="citerefentry"><span class="refentrytitle">machine-info</span>(5)</span></a>,
+        <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a>,
+        <a href="sd-id128.html#"><span class="citerefentry"><span class="refentrytitle">sd-id128</span>(3)</span></a>,
+        <a href="sd_id128_get_machine.html#"><span class="citerefentry"><span class="refentrytitle">sd_id128_get_machine</span>(3)</span></a>,
+        <a href="systemd-firstboot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-firstboot</span>(1)</span></a>
+      </p></div></div></body></html>

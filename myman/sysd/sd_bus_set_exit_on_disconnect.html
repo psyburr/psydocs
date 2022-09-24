@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_set_exit_on_disconnect</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_set_exit_on_disconnect"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_set_exit_on_disconnect, sd_bus_get_exit_on_disconnect — Control the exit behavior when the bus object disconnects</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_set_exit_on_disconnect</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>int <var class="pdparam">b</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_get_exit_on_disconnect</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_exit_on_disconnect.html#Description">¶</a></h2><p><code class="function">sd_bus_set_exit_on_disconnect()</code> may be used to configure the exit
+    behavior when the given bus object disconnects. If <em class="parameter"><code>b</code></em> is zero, no special
+    logic is executed when the bus object disconnects. If <em class="parameter"><code>b</code></em> is non-zero, the
+    behavior on disconnect depends on whether the bus object is attached to an event loop or not. If
+    the bus object is attached to an event loop (see
+    <a href="sd_bus_attach_event.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_attach_event</span>(3)</span></a>),
+    the event loop is closed when the bus object disconnects (as if calling
+    <a href="sd_event_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_exit</span>(3)</span></a>).
+    Otherwise,
+    <a href="http://man7.org/linux/man-pages/man3/exit.3.html"><span class="citerefentry"><span class="refentrytitle">exit</span>(3)</span></a>
+    is called. The exit code passed to <code class="function">sd_event_exit()</code> and
+    <code class="function">exit()</code> is <code class="constant">EXIT_FAILURE</code>. If the bus object has already
+    disconnected when enabling the exit behavior, the exit behavior is executed immediately. By
+    default, the exit behavior is disabled.</p><p><code class="function">sd_bus_get_exit_on_disconnect()</code> returns whether the exit on
+    disconnect behavior is enabled for the given bus object.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_exit_on_disconnect.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_bus_set_exit_on_disconnect()</code> returns a non-negative
+    integer. On failure, it returns a negative errno-style error code.</p><p><code class="function">sd_bus_get_exit_on_disconnect()</code> returns a positive integer if the
+    exit on disconnect behavior is enabled. Otherwise, it returns zero.</p><div class="refsect2"><a name="id-1.6.4"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_exit_on_disconnect.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_exit_on_disconnect.html#-EINVAL">¶</a></dt><dd><p>A required parameter was <code class="constant">NULL</code>.</p></dd><dt id="-ENOPKG"><span class="term"><code class="constant">-ENOPKG</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_exit_on_disconnect.html#-ENOPKG">¶</a></dt><dd><p>The bus object could not be resolved.</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_set_exit_on_disconnect.html#-ECHILD">¶</a></dt><dd><p>The bus connection was created in a different process.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_exit_on_disconnect.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_set_exit_on_disconnect.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+      <a href="sd_bus_attach_event.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_attach_event</span>(3)</span></a>,
+      <a href="sd-event.html#"><span class="citerefentry"><span class="refentrytitle">sd-event</span>(3)</span></a>,
+      <a href="sd_event_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_exit</span>(3)</span></a>
+    </p></div></div></body></html>

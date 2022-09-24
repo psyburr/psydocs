@@ -1,0 +1,208 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>timedatectl</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="timedatectl"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>timedatectl — Control the system time and date</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">timedatectl</code>  [OPTIONS...] {COMMAND}</p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="timedatectl.html#Description">¶</a></h2><p><span class="command"><strong>timedatectl</strong></span> may be used to query and change the system clock and its settings,
+    and enable or disable time synchronization services.</p><p>Use
+    <a href="systemd-firstboot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-firstboot</span>(1)</span></a>
+    to initialize the system time zone for mounted (but not booted)
+    system images.</p><p><span class="command"><strong>timedatectl</strong></span> may be used to show the current status of time synchronization
+    services, for example
+    <a href="systemd-timesyncd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timesyncd.service</span>(8)</span></a>.
+    </p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Commands">Commands<a class="headerlink" title="Permalink to this headline" href="timedatectl.html#Commands">¶</a></h2><p>The following commands are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="status"><span class="term"><span class="command"><strong>status</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#status">¶</a></dt><dd><p>Show current settings of the system clock and RTC, including whether network time
+        synchronization is active. If no command is specified, this is the implied default.
+        </p></dd><dt id="show"><span class="term"><span class="command"><strong>show</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#show">¶</a></dt><dd><p>Show the same information as <code class="option">status</code>, but in machine readable form.
+        This command is intended to be used whenever computer-parsable output is required.
+        Use <code class="option">status</code> if you are looking for formatted human-readable output.</p><p>By default, empty properties are suppressed. Use <code class="option">--all</code> to show those too.
+        To select specific properties to show, use <code class="option">--property=</code>.</p></dd><dt id="set-time [TIME]"><span class="term"><span class="command"><strong>set-time [TIME]</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#set-time%20%5BTIME%5D">¶</a></dt><dd><p>Set the system clock to the specified time.
+        This will also update the RTC time accordingly. The time may
+        be specified in the format "2012-10-30
+        18:17:16".</p></dd><dt id="set-timezone [TIMEZONE]"><span class="term"><span class="command"><strong>set-timezone [TIMEZONE]</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#set-timezone%20%5BTIMEZONE%5D">¶</a></dt><dd><p>Set the system time zone to the specified
+        value. Available timezones can be listed with
+        <span class="command"><strong>list-timezones</strong></span>. If the RTC is configured to
+        be in the local time, this will also update the RTC time. This
+        call will alter the <code class="filename">/etc/localtime</code>
+        symlink. See
+        <a href="localtime.html#"><span class="citerefentry"><span class="refentrytitle">localtime</span>(5)</span></a>
+        for more information.</p></dd><dt id="list-timezones"><span class="term"><span class="command"><strong>list-timezones</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#list-timezones">¶</a></dt><dd><p>List available time zones, one per line.
+        Entries from the list can be set as the system timezone with
+        <span class="command"><strong>set-timezone</strong></span>.</p></dd><dt id="set-local-rtc [BOOL]"><span class="term"><span class="command"><strong>set-local-rtc [BOOL]</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#set-local-rtc%20%5BBOOL%5D">¶</a></dt><dd><p>Takes a boolean argument. If
+        "<code class="literal">0</code>", the system is configured to maintain the
+        RTC in universal time. If "<code class="literal">1</code>", it will
+        maintain the RTC in local time instead. Note that maintaining
+        the RTC in the local timezone is not fully supported and will
+        create various problems with time zone changes and daylight
+        saving adjustments. If at all possible, keep the RTC in UTC
+        mode. Note that invoking this will also synchronize the RTC
+        from the system clock, unless
+        <code class="option">--adjust-system-clock</code> is passed (see above).
+        This command will change the 3rd line of
+        <code class="filename">/etc/adjtime</code>, as documented in
+        <a href="http://man7.org/linux/man-pages/man8/hwclock.8.html"><span class="citerefentry"><span class="refentrytitle">hwclock</span>(8)</span></a>.
+        </p></dd><dt id="set-ntp [BOOL]"><span class="term"><span class="command"><strong>set-ntp [BOOL]</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#set-ntp%20%5BBOOL%5D">¶</a></dt><dd><p>Takes a boolean argument. Controls whether network time synchronization is active and
+        enabled (if available). If the argument is true, this enables and starts the first existing network
+        synchronization service. If the argument is false, then this disables and stops the known network
+        synchronization services. The way that the list of services is built is described below.</p></dd></dl></div><div class="refsect2"><a name="id-1.6.4"></a><h3 id="systemd-timesyncd Commands">systemd-timesyncd Commands<a class="headerlink" title="Permalink to this headline" href="timedatectl.html#systemd-timesyncd%20Commands">¶</a></h3><p>The following commands are specific to
+      <a href="systemd-timesyncd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timesyncd.service</span>(8)</span></a>.
+      </p><div class="variablelist"><dl class="variablelist"><dt id="timesync-status"><span class="term"><span class="command"><strong>timesync-status</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#timesync-status">¶</a></dt><dd><p>Show current status of
+          <a href="systemd-timesyncd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timesyncd.service</span>(8)</span></a>.
+          If <code class="option">--monitor</code> is specified, then this will monitor the status updates.</p></dd><dt id="show-timesync"><span class="term"><span class="command"><strong>show-timesync</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#show-timesync">¶</a></dt><dd><p>Show the same information as <code class="option">timesync-status</code>, but in machine readable form.
+          This command is intended to be used whenever computer-parsable output is required.
+          Use <code class="option">timesync-status</code> if you are looking for formatted human-readable output.</p><p>By default, empty properties are suppressed. Use <code class="option">--all</code> to show those too.
+          To select specific properties to show, use <code class="option">--property=</code>.</p></dd><dt id="ntp-servers INTERFACE SERVER…"><span class="term"><span class="command"><strong>ntp-servers <em class="replaceable"><code>INTERFACE</code></em> <em class="replaceable"><code>SERVER</code></em>…</strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#ntp-servers%20INTERFACE%20SERVER%E2%80%A6">¶</a></dt><dd><p>Set the interface specific NTP servers. This command can be used only when the
+          interface is managed by <span class="command"><strong>systemd-networkd</strong></span>.</p></dd><dt id="revert INTERFACE"><span class="term"><span class="command"><strong>revert <em class="replaceable"><code>INTERFACE</code></em></strong></span></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#revert%20INTERFACE">¶</a></dt><dd><p>Revert the interface specific NTP servers. This command can be used only when
+          the interface is managed by <span class="command"><strong>systemd-networkd</strong></span>.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="timedatectl.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--no-ask-password"><span class="term"><code class="option">--no-ask-password</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#--no-ask-password">¶</a></dt><dd><p>Do not query the user for authentication for
+        privileged operations.</p></dd><dt id="--adjust-system-clock"><span class="term"><code class="option">--adjust-system-clock</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#--adjust-system-clock">¶</a></dt><dd><p>If <span class="command"><strong>set-local-rtc</strong></span> is invoked
+        and this option is passed, the system clock is synchronized
+        from the RTC again, taking the new setting into account.
+        Otherwise, the RTC is synchronized from the system
+        clock.</p></dd><dt id="--monitor"><span class="term"><code class="option">--monitor</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#--monitor">¶</a></dt><dd><p>If <span class="command"><strong>timesync-status</strong></span> is invoked and this option is passed, then
+        <span class="command"><strong>timedatectl</strong></span> monitors the status of
+        <a href="systemd-timesyncd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timesyncd.service</span>(8)</span></a>
+        and updates the outputs. Use <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>C</strong></span> to terminate the
+        monitoring.</p></dd><dt id="-a"><span class="term"><code class="option">-a</code>, </span><span class="term"><code class="option">--all</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#-a">¶</a></dt><dd><p>When showing properties of
+        <a href="systemd-timesyncd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timesyncd.service</span>(8)</span></a>,
+        show all properties regardless of whether they are set or not.</p></dd><dt id="-p"><span class="term"><code class="option">-p</code>, </span><span class="term"><code class="option">--property=</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#-p">¶</a></dt><dd><p>When showing properties of
+        <a href="systemd-timesyncd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timesyncd.service</span>(8)</span></a>,
+        limit display to certain properties as specified as argument. If not specified, all set properties are shown.
+        The argument should be a property name, such as "<code class="literal">ServerName</code>". If specified more than once,
+        all properties with the specified names are shown.</p></dd><dt id="--value"><span class="term"><code class="option">--value</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#--value">¶</a></dt><dd><p>When printing properties with <span class="command"><strong>show-timesync</strong></span>, only print the value, and skip the
+          property name and "<code class="literal">=</code>".</p></dd><dt id="-H"><span class="term"><code class="option">-H</code>, </span><span class="term"><code class="option">--host=</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#-H">¶</a></dt><dd><p><a name="host-text"></a>Execute the operation remotely. Specify a hostname, or a
+      username and hostname separated by "<code class="literal">@</code>", to
+      connect to. The hostname may optionally be suffixed by a
+      port ssh is listening on, separated by "<code class="literal">:</code>", and then a
+      container name, separated by "<code class="literal">/</code>", which
+      connects directly to a specific container on the specified
+      host. This will use SSH to talk to the remote machine manager
+      instance. Container names may be enumerated with
+      <span class="command"><strong>machinectl -H
+      <em class="replaceable"><code>HOST</code></em></strong></span>. Put IPv6 addresses in brackets.</p></dd><dt id="-M"><span class="term"><code class="option">-M</code>, </span><span class="term"><code class="option">--machine=</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#-M">¶</a></dt><dd><p><a name="machine-text"></a>Execute operation on a local container. Specify a container name to connect to, optionally
+      prefixed by a user name to connect as and a separating "<code class="literal">@</code>" character. If the special
+      string "<code class="literal">.host</code>" is used in place of the container name, a connection to the local
+      system is made (which is useful to connect to a specific user's user bus: "<code class="literal">--user
+      --machine=lennart@.host</code>"). If the "<code class="literal">@</code>" syntax is not used, the connection is
+      made as root user. If the "<code class="literal">@</code>" syntax is used either the left hand side or the right hand
+      side may be omitted (but not both) in which case the local user name and "<code class="literal">.host</code>" are
+      implied.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="timedatectl.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code otherwise.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Environment">Environment<a class="headerlink" title="Permalink to this headline" href="timedatectl.html#Environment">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="$SYSTEMD_LOG_LEVEL"><span class="term"><code class="varname">$SYSTEMD_LOG_LEVEL</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_LOG_LEVEL">¶</a></dt><dd><p><a name="log-level-body"></a>The maximum log level of emitted messages (messages with a higher
+      log level, i.e. less important ones, will be suppressed). Either one of (in order of decreasing
+      importance) <code class="constant">emerg</code>, <code class="constant">alert</code>, <code class="constant">crit</code>,
+      <code class="constant">err</code>, <code class="constant">warning</code>, <code class="constant">notice</code>,
+      <code class="constant">info</code>, <code class="constant">debug</code>, or an integer in the range 0…7. See
+      <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>
+      for more information.</p></dd><dt id="$SYSTEMD_LOG_COLOR"><span class="term"><code class="varname">$SYSTEMD_LOG_COLOR</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_LOG_COLOR">¶</a></dt><dd><p><a name="log-color-body"></a>A boolean. If true, messages written to the tty will be colored
+      according to priority.</p><p>This setting is only useful when messages are written directly to the terminal, because
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a> and
+      other tools that display logs will color messages based on the log level on their own.</p></dd><dt id="$SYSTEMD_LOG_TIME"><span class="term"><code class="varname">$SYSTEMD_LOG_TIME</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_LOG_TIME">¶</a></dt><dd><p><a name="log-time-body"></a>A boolean. If true, console log messages will be prefixed with a
+      timestamp.</p><p>This setting is only useful when messages are written directly to the terminal or a file, because
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a> and
+      other tools that display logs will attach timestamps based on the entry metadata on their own.</p></dd><dt id="$SYSTEMD_LOG_LOCATION"><span class="term"><code class="varname">$SYSTEMD_LOG_LOCATION</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_LOG_LOCATION">¶</a></dt><dd><p><a name="log-location-body"></a>A boolean. If true, messages will be prefixed with a filename
+      and line number in the source code where the message originates.</p><p>Note that the log location is often attached as metadata to journal entries anyway. Including it
+      directly in the message text can nevertheless be convenient when debugging programs.</p></dd><dt id="$SYSTEMD_LOG_TID"><span class="term"><code class="varname">$SYSTEMD_LOG_TID</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_LOG_TID">¶</a></dt><dd><p><a name="log-tid-body"></a>A boolean. If true, messages will be prefixed with the current
+      numerical thread ID (TID).</p><p>Note that the this information is attached as metadata to journal entries anyway. Including it
+      directly in the message text can nevertheless be convenient when debugging programs.</p></dd><dt id="$SYSTEMD_LOG_TARGET"><span class="term"><code class="varname">$SYSTEMD_LOG_TARGET</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_LOG_TARGET">¶</a></dt><dd><p><a name="log-target-body"></a>The destination for log messages. One of
+      <code class="constant">console</code> (log to the attached tty), <code class="constant">console-prefixed</code> (log to
+      the attached tty but with prefixes encoding the log level and "facility", see <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>,
+      <code class="constant">kmsg</code> (log to the kernel circular log buffer), <code class="constant">journal</code> (log to
+      the journal), <code class="constant">journal-or-kmsg</code> (log to the journal if available, and to kmsg
+      otherwise), <code class="constant">auto</code> (determine the appropriate log target automatically, the default),
+      <code class="constant">null</code> (disable log output).</p></dd><dt id="$SYSTEMD_PAGER"><span class="term"><code class="varname">$SYSTEMD_PAGER</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_PAGER">¶</a></dt><dd><p>Pager to use when <code class="option">--no-pager</code> is not given; overrides
+      <code class="varname">$PAGER</code>. If neither <code class="varname">$SYSTEMD_PAGER</code> nor <code class="varname">$PAGER</code> are set, a
+      set of well-known pager implementations are tried in turn, including
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a> and
+      <a href="http://man7.org/linux/man-pages/man1/more.1.html"><span class="citerefentry"><span class="refentrytitle">more</span>(1)</span></a>, until one is found. If
+      no pager implementation is discovered no pager is invoked. Setting this environment variable to an empty string
+      or the value "<code class="literal">cat</code>" is equivalent to passing <code class="option">--no-pager</code>.</p></dd><dt id="$SYSTEMD_LESS"><span class="term"><code class="varname">$SYSTEMD_LESS</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_LESS">¶</a></dt><dd><p>Override the options passed to <span class="command"><strong>less</strong></span> (by default
+      "<code class="literal">FRSXMK</code>").</p><p>Users might want to change two options in particular:</p><div class="variablelist"><dl class="variablelist"><dt id="K"><span class="term"><code class="option">K</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#K">¶</a></dt><dd></dd><dt id="X"><span class="term"><code class="option">X</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#X">¶</a></dt><dd></dd></dl></div><p>See
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a>
+      for more discussion.</p></dd><dt id="$SYSTEMD_LESSCHARSET"><span class="term"><code class="varname">$SYSTEMD_LESSCHARSET</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_LESSCHARSET">¶</a></dt><dd><p>Override the charset passed to <span class="command"><strong>less</strong></span> (by default "<code class="literal">utf-8</code>", if
+      the invoking terminal is determined to be UTF-8 compatible).</p></dd><dt id="$SYSTEMD_PAGERSECURE"><span class="term"><code class="varname">$SYSTEMD_PAGERSECURE</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_PAGERSECURE">¶</a></dt><dd><p>Takes a boolean argument. When true, the "secure" mode of the pager is enabled; if
+      false, disabled. If <code class="varname">$SYSTEMD_PAGERSECURE</code> is not set at all, secure mode is enabled
+      if the effective UID is not the same as the owner of the login session, see
+      <a href="http://man7.org/linux/man-pages/man2/geteuid.2.html"><span class="citerefentry"><span class="refentrytitle">geteuid</span>(2)</span></a>
+      and <a href="sd_pid_get_owner_uid.html#"><span class="citerefentry"><span class="refentrytitle">sd_pid_get_owner_uid</span>(3)</span></a>.
+      In secure mode, <code class="option">LESSSECURE=1</code> will be set when invoking the pager, and the pager shall
+      disable commands that open or create new files or start new subprocesses. When
+      <code class="varname">$SYSTEMD_PAGERSECURE</code> is not set at all, pagers which are not known to implement
+      secure mode will not be used. (Currently only
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a>
+      implements secure mode.)</p><p>Note: when commands are invoked with elevated privileges, for example under <a href="http://man7.org/linux/man-pages/man8/sudo.8.html"><span class="citerefentry"><span class="refentrytitle">sudo</span>(8)</span></a> or
+      <a href="http://linux.die.net/man/1/pkexec"><span class="citerefentry"><span class="refentrytitle">pkexec</span>(1)</span></a>, care
+      must be taken to ensure that unintended interactive features are not enabled. "Secure" mode for the
+      pager may be enabled automatically as describe above. Setting <code class="varname">SYSTEMD_PAGERSECURE=0</code>
+      or not removing it from the inherited environment allows the user to invoke arbitrary commands. Note
+      that if the <code class="varname">$SYSTEMD_PAGER</code> or <code class="varname">$PAGER</code> variables are to be
+      honoured, <code class="varname">$SYSTEMD_PAGERSECURE</code> must be set too. It might be reasonable to completely
+      disable the pager using <code class="option">--no-pager</code> instead.</p></dd><dt id="$SYSTEMD_COLORS"><span class="term"><code class="varname">$SYSTEMD_COLORS</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_COLORS">¶</a></dt><dd><p>Takes a boolean argument. When true, <span class="command"><strong>systemd</strong></span> and related utilities
+      will use colors in their output, otherwise the output will be monochrome. Additionally, the variable can
+      take one of the following special values: "<code class="literal">16</code>", "<code class="literal">256</code>" to restrict the use
+      of colors to the base 16 or 256 ANSI colors, respectively. This can be specified to override the automatic
+      decision based on <code class="varname">$TERM</code> and what the console is connected to.</p></dd><dt id="$SYSTEMD_URLIFY"><span class="term"><code class="varname">$SYSTEMD_URLIFY</code></span><a class="headerlink" title="Permalink to this term" href="timedatectl.html#%24SYSTEMD_URLIFY">¶</a></dt><dd><p>The value must be a boolean. Controls whether clickable links should be generated in
+      the output for terminal emulators supporting this. This can be specified to override the decision that
+      <span class="command"><strong>systemd</strong></span> makes based on <code class="varname">$TERM</code> and other conditions.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.10"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="timedatectl.html#Examples">¶</a></h2><p>Show current settings:
+    </p><pre class="programlisting">$ timedatectl
+               Local time: Thu 2017-09-21 16:08:56 CEST
+           Universal time: Thu 2017-09-21 14:08:56 UTC
+                 RTC time: Thu 2017-09-21 14:08:56
+                Time zone: Europe/Warsaw (CEST, +0200)
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no</pre><p>
+    </p><p>Enable network time synchronization:
+    </p><pre class="programlisting">$ timedatectl set-ntp true
+==== AUTHENTICATING FOR org.freedesktop.timedate1.set-ntp ===
+Authentication is required to control whether network time synchronization shall be enabled.
+Authenticating as: user
+Password: ********
+==== AUTHENTICATION COMPLETE ===</pre><p>
+
+    </p><pre class="programlisting">$ systemctl status systemd-timesyncd.service
+● systemd-timesyncd.service - Network Time Synchronization
+   Loaded: loaded (/usr/lib/systemd/system/systemd-timesyncd.service; enabled)
+   Active: active (running) since Mo 2015-03-30 14:20:38 CEST; 5s ago
+     Docs: man:systemd-timesyncd.service(8)
+ Main PID: 595 (systemd-timesyn)
+   Status: "Using Time Server 216.239.38.15:123 (time4.google.com)."
+   CGroup: /system.slice/systemd-timesyncd.service
+           └─595 /usr/lib/systemd/systemd-timesyncd
+…</pre><p>
+    </p><p>Show current status of
+    <a href="systemd-timesyncd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timesyncd.service</span>(8)</span></a>:
+    </p><pre class="programlisting">$ timedatectl timesync-status
+       Server: 216.239.38.15 (time4.google.com)
+Poll interval: 1min 4s (min: 32s; max 34min 8s)
+         Leap: normal
+      Version: 4
+      Stratum: 1
+    Reference: GPS
+    Precision: 1us (-20)
+Root distance: 335us (max: 5s)
+       Offset: +316us
+        Delay: 349us
+       Jitter: 0
+ Packet count: 1
+    Frequency: -8.802ppm</pre><p>
+    </p></div><div class="refsect1"><a name="id-1.11"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="timedatectl.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man8/hwclock.8.html"><span class="citerefentry"><span class="refentrytitle">hwclock</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/date.1.html"><span class="citerefentry"><span class="refentrytitle">date</span>(1)</span></a>,
+      <a href="localtime.html#"><span class="citerefentry"><span class="refentrytitle">localtime</span>(5)</span></a>,
+      <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>,
+      <a href="systemd-timedated.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timedated.service</span>(8)</span></a>,
+      <a href="systemd-timesyncd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-timesyncd.service</span>(8)</span></a>,
+      <a href="systemd-firstboot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-firstboot</span>(1)</span></a>
+    </p></div></div></body></html>

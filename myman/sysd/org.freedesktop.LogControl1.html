@@ -1,0 +1,71 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>org.freedesktop.LogControl1</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="org.freedesktop.LogControl1"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>org.freedesktop.LogControl1 — D-Bus interface to query and set logging configuration</p></div><div class="refsect1"><a name="id-1.4"></a><h2 id="Introduction">Introduction<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.LogControl1.html#Introduction">¶</a></h2><p><code class="interfacename">org.freedesktop.LogControl1</code> is a generic interface that is intended
+    to be used by any daemon which allows the log level and target to be set over D-Bus. It is implemented by
+    various daemons that are part of the
+    <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a> suite.</p><p>It is assumed that those settings are global for the whole program, so a fixed object path is
+    used. The interface should always be available under the path
+    <code class="filename">/org/freedesktop/LogControl1</code>.</p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.LogControl1.html#Description">¶</a></h2><p>The following interface is exposed:</p><pre class="programlisting">
+node /org/freedesktop/LogControl1 {
+  interface org.freedesktop.LogControl1 {
+    properties:
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("false")
+      @org.freedesktop.systemd1.Privileged("true")
+      readwrite s LogLevel = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("false")
+      @org.freedesktop.systemd1.Privileged("true")
+      readwrite s LogTarget = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("false")
+      readonly s SyslogIdentifier = '...';
+  };
+  interface org.freedesktop.DBus.Peer { ... };
+  interface org.freedesktop.DBus.Introspectable { ... };
+  interface org.freedesktop.DBus.Properties { ... };
+};
+    </pre><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="refsect2"><a name="id-1.5.9"></a><h3 id="Properties">Properties<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.LogControl1.html#Properties">¶</a></h3><p><code class="varname">LogLevel</code> describes the
+      <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>-style
+      log-level, and should be one of "<code class="literal">emerg</code>", "<code class="literal">alert</code>",
+      "<code class="literal">crit</code>", "<code class="literal">err</code>", "<code class="literal">warning</code>", "<code class="literal">notice</code>",
+      "<code class="literal">info</code>", "<code class="literal">debug</code>", in order of increasing verbosity.</p><p><code class="varname">LogTarget</code> describes the log target (mechanism). It should be one of
+      "<code class="literal">console</code>" (log to the console or standard output),
+      "<code class="literal">kmsg</code>" (log to the kernel ring buffer),
+      "<code class="literal">journal</code>" (log to the journal natively, see
+      <a href="systemd-journald.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-journald.service</span>(8)</span></a>),
+      "<code class="literal">syslog</code>" (log using the
+      <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a> call).
+      </p><p>Those two properties are writable, so they may be set by sufficiently privileged users.</p><p><code class="varname">SyslogIdentifier</code> is a read-only property that shows the "syslog identifier".
+      It is a short string that identifies the program that is the source of log messages that is passed to
+      the <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a> call.
+      </p></div></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Tools">Tools<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.LogControl1.html#Tools">¶</a></h2><p><span class="command"><strong>journalctl</strong></span> option <code class="option">-p</code>/<code class="option">--priority=</code> may be used
+    to filter log messages by log level, option <code class="option">-t</code>/<code class="option">--identifier=</code> may be
+    used to by the syslog identifier, and filters like "<code class="literal">_TRANSPORT=syslog</code>",
+    "<code class="literal">_TRANSPORT=journal</code>", and "<code class="literal">_TRANSPORT=kernel</code>" may be used to filter
+    messages by the mechanism through which they reached <span class="command"><strong>systemd-journald</strong></span>.</p><p><span class="command"><strong>systemctl log-level</strong></span> and <span class="command"><strong>systemctl log-target</strong></span> verbs may be
+    used to query and set the <code class="varname">LogLevel</code> and <code class="varname">LogTarget</code> properties of the
+    service manager. <span class="command"><strong>systemctl service-log-level</strong></span> and <span class="command"><strong>systemctl
+    service-log-target</strong></span> may similarly be used for individual services. (Services must have the
+    <code class="varname">BusName=</code> property set and must implement the interface described here. See
+    <a href="systemd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd.service</span>(5)</span></a>
+    for details about <code class="varname">BusName=</code>.)</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.LogControl1.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a>,
+      <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>,
+      <a href="systemd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd.service</span>(5)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>
+    </p></div></div></body></html>

@@ -1,0 +1,72 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>loader.conf</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="loader.conf"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>loader.conf — Configuration file for systemd-boot</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename"><em class="replaceable"><code>ESP</code></em>/loader/loader.conf</code>,
+    <code class="filename"><em class="replaceable"><code>ESP</code></em>/loader/entries/*.conf</code>
+    </p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="loader.conf.html#Description">¶</a></h2><p>
+    <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a>
+    will read <code class="filename"><em class="replaceable"><code>ESP</code></em>/loader/loader.conf</code> and any files with the
+    "<code class="literal">.conf</code>" extension under
+    <code class="filename"><em class="replaceable"><code>ESP</code></em>/loader/entries/</code> on the EFI system partition (ESP).
+    </p><p>Each configuration file must consist of an option name, followed by
+    whitespace, and the option value. "<code class="literal">#</code>" may be used to start
+    a comment line. Empty and comment lines are ignored.</p><p>Boolean arguments may be written as
+    "<code class="literal">yes</code>"/"<code class="literal">y</code>"/"<code class="literal">true</code>"/"<code class="literal">t</code>"/"<code class="literal">on</code>"/"<code class="literal">1</code>" or
+    "<code class="literal">no</code>"/"<code class="literal">n</code>"/"<code class="literal">false</code>"/"<code class="literal">f</code>"/"<code class="literal">off</code>"/"<code class="literal">0</code>".
+    </p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="loader.conf.html#Options">¶</a></h2><p>The following configuration options in <code class="filename">loader.conf</code> are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="default"><span class="term">default</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#default">¶</a></dt><dd><p>A glob pattern to select the default entry. The default entry
+        may be changed in the boot menu itself, in which case the name of the
+        selected entry will be stored as an EFI variable, overriding this option.
+        </p><div class="table"><a name="id-1.6.3.1.2.2"></a><p class="title"><b>Table 1. Automatically detected entries will use the following names:</b></p><div class="table-contents"><table class="table" summary="Automatically detected entries will use the following names:" border="1"><colgroup><col class="name"><col class="expl"></colgroup><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody><tr><td>auto-efi-default</td><td>EFI Default Loader</td></tr><tr><td>auto-efi-shell</td><td>EFI Shell</td></tr><tr><td>auto-osx</td><td>macOS</td></tr><tr><td>auto-reboot-to-firmware-setup</td><td>Reboot Into Firmware Interface</td></tr><tr><td>auto-windows</td><td>Windows Boot Manager</td></tr></tbody></table></div></div><br class="table-break"></dd><dt id="timeout"><span class="term">timeout</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#timeout">¶</a></dt><dd><p>How long the boot menu should be shown before the default
+        entry is booted, in seconds. This may be changed in the boot menu itself and
+        will be stored as an EFI variable in that case, overriding this option.
+        </p><p>If the timeout is disabled, the default entry will be booted
+        immediately. The menu can be shown by pressing and holding a key before
+        systemd-boot is launched.</p></dd><dt id="console-mode"><span class="term">console-mode</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#console-mode">¶</a></dt><dd><p>This option configures the resolution of the console. Takes a
+        number or one of the special values listed below. The following values may be
+        used:</p><div class="variablelist"><dl class="variablelist"><dt id="0"><span class="term">0</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#0">¶</a></dt><dd><p>Standard UEFI 80x25 mode</p></dd><dt id="1"><span class="term">1</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#1">¶</a></dt><dd><p>80x50 mode, not supported by all devices</p></dd><dt id="2"><span class="term">2</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#2">¶</a></dt><dd><p>the first non-standard mode provided by the device
+              firmware, if any</p></dd><dt id="auto"><span class="term">auto</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#auto">¶</a></dt><dd><p>Pick a suitable mode automatically using heuristics</p></dd><dt id="max"><span class="term">max</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#max">¶</a></dt><dd><p>Pick the highest-numbered available mode</p></dd><dt id="keep"><span class="term">keep</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#keep">¶</a></dt><dd><p>Keep the mode selected by firmware (the default)</p></dd></dl></div></dd><dt id="editor"><span class="term">editor</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#editor">¶</a></dt><dd><p>Takes a boolean argument. Enable (the default) or disable the
+        editor. The editor should be disabled if the machine can be accessed by
+        unauthorized persons.</p></dd><dt id="auto-entries"><span class="term">auto-entries</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#auto-entries">¶</a></dt><dd><p>Takes a boolean argument. Enable (the default) or disable
+        entries for other boot entries found on the boot partition. In particular,
+        this may be useful when loader entries are created to show replacement
+        descriptions for those entries.</p></dd><dt id="auto-firmware"><span class="term">auto-firmware</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#auto-firmware">¶</a></dt><dd><p>Takes a boolean argument. Enable (the default) or disable
+        the "Reboot into firmware" entry.</p></dd><dt id="random-seed-mode"><span class="term">random-seed-mode</span><a class="headerlink" title="Permalink to this term" href="loader.conf.html#random-seed-mode">¶</a></dt><dd><p>Takes one of "<code class="literal">off</code>", "<code class="literal">with-system-token</code>" and
+        "<code class="literal">always</code>". If "<code class="literal">off</code>" no random seed data is read off the ESP, nor
+        passed to the OS. If "<code class="literal">with-system-token</code>" (the default)
+        <span class="command"><strong>systemd-boot</strong></span> will read a random seed from the ESP (from the file
+        <code class="filename">/loader/random-seed</code>) only if the <code class="varname">LoaderSystemToken</code> EFI
+        variable is set, and then derive the random seed to pass to the OS from the combination. If
+        "<code class="literal">always</code>" the boot loader will do so even if <code class="varname">LoaderSystemToken</code> is
+        not set. This mode is useful in environments where protection against OS image reuse is not a
+        concern, and the random seed shall be used even with no further setup in place. Use <span class="command"><strong>bootctl
+        random-seed</strong></span> to initialize both the random seed file in the ESP and the system token EFI
+        variable.</p><p>See <a class="ulink" href="https://systemd.io/RANDOM_SEEDS" target="_top">Random Seeds</a> for further
+        information.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Example">Example<a class="headerlink" title="Permalink to this headline" href="loader.conf.html#Example">¶</a></h2><pre class="programlisting"># /boot/efi/loader/loader.conf
+timeout 0
+default 01234567890abcdef1234567890abdf0-*
+editor no
+    </pre><p>The menu will not be shown by default (the menu can still be shown by
+    pressing and holding a key during boot). One of the entries with files with a
+    name starting with "<code class="literal">01234567890abcdef1234567890abdf0-</code>" will be
+    selected by default. If more than one entry matches, the one with the highest
+    priority will be selected (generally the one with the highest version number).
+    The editor will be disabled, so it is not possible to alter the kernel command
+    line.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="loader.conf.html#See%20Also">¶</a></h2><p>
+        <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a>,
+        <a href="bootctl.html#"><span class="citerefentry"><span class="refentrytitle">bootctl</span>(1)</span></a>
+      </p></div></div></body></html>

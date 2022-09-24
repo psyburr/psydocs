@@ -1,0 +1,101 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-stub</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-stub"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-stub, linuxx64.efi.stub, linuxia32.efi.stub, linuxaa64.efi.stub — A simple UEFI kernel boot stub</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">/usr/lib/systemd/boot/efi/linuxx64.efi.stub</code></p><p><code class="filename">/usr/lib/systemd/boot/efi/linuxia32.efi.stub</code></p><p><code class="filename">/usr/lib/systemd/boot/efi/linuxaa64.efi.stub</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="linuxia32.efi.stub.html#Description">¶</a></h2><p><span class="command"><strong>systemd-stub</strong></span> (stored in per-architecture files
+    <code class="filename">linuxx64.efi.stub</code>, <code class="filename">linuxia32.efi.stub</code>,
+    <code class="filename">linuxaa64.efi.stub</code> on disk) is a simple UEFI boot stub. An UEFI boot stub is
+    attached to a Linux kernel binary image, and is a piece of code that runs in the UEFI firmware
+    environment before transitioning into the Linux kernel environment. The UEFI boot stub ensures a Linux
+    kernel is executable as regular UEFI binary, and is able to do various preparations before switching the
+    system into the Linux world.</p><p>The UEFI boot stub looks for various resources for the kernel invocation inside the UEFI PE binary
+    itself. This allows combining various resources inside a single PE binary image, which may then be signed
+    via UEFI SecureBoot as a whole, covering all individual resources at once. Specifically it may
+    include:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>The ELF Linux kernel images will be looked for in the "<code class="literal">.linux</code>" PE
+      section of the executed image.</p></li><li class="listitem"><p>The initial RAM disk (initrd) will be looked for in the "<code class="literal">.initrd</code>" PE
+      section.</p></li><li class="listitem"><p>The kernel command line to pass to the invoked kernel will be looked for in the
+      "<code class="literal">.cmdline</code>" PE section.</p></li><li class="listitem"><p>A boot splash (in Windows <code class="filename">.BMP</code> format) to show on screen before
+      invoking the kernel will be looked for in the "<code class="literal">.splash</code>" PE section.</p></li></ul></div><p>If UEFI SecureBoot is enabled and the "<code class="literal">.cmdline</code>" section present in the executed
+    image, any attempts to override the kernel command line by passing one as invocation parameters to the
+    EFI binary are ignored. Thus, in order to allow overriding the kernel command line, either disable UEFI
+    SecureBoot, or don't include a kernel command line PE section in the kernel image file. If a command line
+    is accepted via EFI invocation parameters to the EFI binary it is measured into TPM PCR 8 (if a TPM is
+    present).</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Companion Files">Companion Files<a class="headerlink" title="Permalink to this headline" href="linuxia32.efi.stub.html#Companion%20Files">¶</a></h2><p>The <span class="command"><strong>systemd-stub</strong></span> UEFI boot stub automatically collects two types of auxiliary
+    companion files optionally placed in a drop-in directory next to the EFI binary and dynamically generates
+    <span class="command"><strong>cpio</strong></span> initrd archives from them, and passes them to the kernel. Specifically:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>For a kernel binary called <code class="filename"><em class="replaceable"><code>foo</code></em>.efi</code> it
+      will look for files with the <code class="filename">.cred</code> suffix in a directory named
+      <code class="filename"><em class="replaceable"><code>foo</code></em>.efi.extra.d/</code>, next to it. A <span class="command"><strong>cpio</strong></span>
+      archive is generated from all files found that way, placing them in the
+      <code class="filename">/.extra/credentials/</code> directory of the initrd file hierarchy. The main initrd may
+      then access them in this directory. This is supposed to be used to store auxiliary, encrypted,
+      authenticated credentials for use with <code class="varname">LoadCredentialEncrypted=</code> in the UEFI System
+      Partition. See
+      <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(5)</span></a> for
+      details on encrypted credentials. The generated <span class="command"><strong>cpio</strong></span> archive is measured into TPM
+      PCR 4 (if a TPM is present)</p></li><li class="listitem"><p>Similar, files <code class="filename"><em class="replaceable"><code>foo</code></em>.efi.extra.d/*.raw</code>
+      are packed up as <span class="command"><strong>cpio</strong></span> archive and placed in the <code class="filename">/.extra/sysext/</code>
+      directory in the initrd file hierarchy. This is supposed to be used to pass additional system extension
+      images to the initrd. See
+      <a href="systemd-sysext.html#"><span class="citerefentry"><span class="refentrytitle">systemd-sysext</span>(8)</span></a> for
+      details on system extension images. The generated <span class="command"><strong>cpio</strong></span> archive containing these
+      system extension images is measured into TPM PCR 8 (if a TPM is present).</p></li></ul></div><p>Both mechanisms may be used to parameterize and extend trusted (i.e. signed), immutable initrd
+    images in a reasonably safe way: all data they contain is measured into TPM PCRs. On access they should be
+    further validated: in case of the credentials case by encrypting/authenticating them via TPM, as exposed
+    by <span class="command"><strong>systemd-creds encrypt -T</strong></span> (see
+    <a href="systemd-creds.html#"><span class="citerefentry"><span class="refentrytitle">systemd-creds</span>(1)</span></a> for
+    details); in case of the system extension images by using signed Verity images.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="EFI Variables">EFI Variables<a class="headerlink" title="Permalink to this headline" href="linuxia32.efi.stub.html#EFI%20Variables">¶</a></h2><p>The following EFI variables are defined, set and read by <span class="command"><strong>systemd-stub</strong></span>, under the
+    vendor UUID "<code class="literal">4a67b082-0a4c-41cf-b6c7-440b29bb8c4f</code>", for communication between the boot
+    stub and the OS:</p><div class="variablelist"><dl class="variablelist"><dt id="LoaderDevicePartUUID"><span class="term"><code class="varname">LoaderDevicePartUUID</code></span><a class="headerlink" title="Permalink to this term" href="linuxia32.efi.stub.html#LoaderDevicePartUUID">¶</a></dt><dd><p>Contains the partition UUID of the EFI System Partition the EFI image was run
+        from. <a href="systemd-gpt-auto-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-gpt-auto-generator</span>(8)</span></a>
+        uses this information to automatically find the disk booted from, in order to discover various other
+        partitions on the same disk automatically.</p></dd><dt id="LoaderFirmwareInfo"><span class="term"><code class="varname">LoaderFirmwareInfo</code>, </span><span class="term"><code class="varname">LoaderFirmwareType</code></span><a class="headerlink" title="Permalink to this term" href="linuxia32.efi.stub.html#LoaderFirmwareInfo">¶</a></dt><dd><p>Brief firmware information. Use
+        <a href="bootctl.html#"><span class="citerefentry"><span class="refentrytitle">bootctl</span>(1)</span></a> to view this
+        data.</p></dd><dt id="LoaderImageIdentifier"><span class="term"><code class="varname">LoaderImageIdentifier</code></span><a class="headerlink" title="Permalink to this term" href="linuxia32.efi.stub.html#LoaderImageIdentifier">¶</a></dt><dd><p>The path of EFI executable, relative to the EFI System Partition's root
+        directory. Use
+        <a href="bootctl.html#"><span class="citerefentry"><span class="refentrytitle">bootctl</span>(1)</span></a> to view
+        this data.</p></dd><dt id="StubInfo"><span class="term"><code class="varname">StubInfo</code></span><a class="headerlink" title="Permalink to this term" href="linuxia32.efi.stub.html#StubInfo">¶</a></dt><dd><p>Brief stub information. Use
+        <a href="bootctl.html#"><span class="citerefentry"><span class="refentrytitle">bootctl</span>(1)</span></a> to view
+        this data.</p></dd></dl></div><p>Note that some of the variables above may also be set by the boot loader. The stub will only set
+    them if they aren't set already. Some of these variables are defined by the <a class="ulink" href="https://systemd.io/BOOT_LOADER_INTERFACE" target="_top">Boot Loader Interface</a>.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Assembling Kernel Images">Assembling Kernel Images<a class="headerlink" title="Permalink to this headline" href="linuxia32.efi.stub.html#Assembling%20Kernel%20Images">¶</a></h2><p>In order to assemble an UEFI PE kernel image from various components as described above, use an
+    <a href="https://www.freedesktop.org/software/systemd/man/objcopy.html#"><span class="citerefentry"><span class="refentrytitle">objcopy</span>(1)</span></a> command line
+    like this:</p><pre class="programlisting">objcopy \
+    --add-section .osrel=os-release --change-section-vma .osrel=0x20000 \
+    --add-section .cmdline=cmdline.txt --change-section-vma .cmdline=0x30000 \
+    --add-section .splash=splash.bmp --change-section-vma .splash=0x40000 \
+    --add-section .linux=vmlinux --change-section-vma .linux=0x2000000 \
+    --add-section .initrd=initrd.cpio --change-section-vma .initrd=0x3000000 \
+    /usr/lib/systemd/boot/efi/linuxx64.efi.stub \
+    foo-unsigned.efi</pre><p>This generates one PE executable file <code class="filename">foo-unsigned.efi</code> from the six individual
+    files for OS release information, kernel command line, boot splash image, kernel image, main initrd and
+    UEFI boot stub.</p><p>To then sign the resulting image for UEFI SecureBoot use an
+    <a href="https://www.freedesktop.org/software/systemd/man/sbsign.html#"><span class="citerefentry"><span class="refentrytitle">sbsign</span>(1)</span></a> command like
+    the following:</p><pre class="programlisting">sbsign \
+    --key mykey.pem \
+    --cert mykey.crt \
+    --output foo.efi \
+    foo-unsigned.efi</pre><p>This expects a pair of X.509 private key and certificate as parameters and then signs the UEFI PE
+    executable we generated above for UEFI SecureBoot and generates a signed UEFI PE executable as
+    result.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="linuxia32.efi.stub.html#See%20Also">¶</a></h2><p>
+      <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a>,
+      <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(5)</span></a>,
+      <a href="systemd-creds.html#"><span class="citerefentry"><span class="refentrytitle">systemd-creds</span>(1)</span></a>,
+      <a href="systemd-sysext.html#"><span class="citerefentry"><span class="refentrytitle">systemd-sysext</span>(8)</span></a>,
+      <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot Loader Specification</a>,
+      <a class="ulink" href="https://systemd.io/BOOT_LOADER_INTERFACE" target="_top">Boot Loader Interface</a>,
+      <a href="https://www.freedesktop.org/software/systemd/man/objcopy.html#"><span class="citerefentry"><span class="refentrytitle">objcopy</span>(1)</span></a>,
+      <a href="https://www.freedesktop.org/software/systemd/man/sbsign.html#"><span class="citerefentry"><span class="refentrytitle">sbsign</span>(1)</span></a>
+    </p></div></div></body></html>

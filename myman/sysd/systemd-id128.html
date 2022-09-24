@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-id128</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-id128"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-id128 — Generate and print sd-128 identifiers</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">systemd-id128</code>  [OPTIONS...]  new </p></div><div class="cmdsynopsis"><p><code class="command">systemd-id128</code>  [OPTIONS...]  machine-id </p></div><div class="cmdsynopsis"><p><code class="command">systemd-id128</code>  [OPTIONS...]  boot-id </p></div><div class="cmdsynopsis"><p><code class="command">systemd-id128</code>  [OPTIONS...]  invocation-id </p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-id128.html#Description">¶</a></h2><p><span class="command"><strong>id128</strong></span> may be used to conveniently print
+    <a href="sd-id128.html#"><span class="citerefentry"><span class="refentrytitle">sd-id128</span>(3)</span></a>
+    UUIDs. What identifier is printed depends on the specific verb.</p><p>With <span class="command"><strong>new</strong></span>, a new random identifier will be generated.</p><p>With <span class="command"><strong>machine-id</strong></span>, the identifier of the current machine will be
+    printed. See
+    <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a>.
+    </p><p>With <span class="command"><strong>boot-id</strong></span>, the identifier of the current boot will be
+    printed.</p><p>Both <span class="command"><strong>machine-id</strong></span> and <span class="command"><strong>boot-id</strong></span> may be combined
+    with the <code class="option">--app-specific=<em class="replaceable"><code>app-id</code></em></code> switch to
+    generate application-specific IDs. See
+    <a href="sd_id128_get_machine.html#"><span class="citerefentry"><span class="refentrytitle">sd_id128_get_machine</span>(3)</span></a>
+    for the discussion when this is useful.</p><p>With <span class="command"><strong>invocation-id</strong></span>, the identifier of the current service invocation
+    will be printed. This is available in systemd services. See
+    <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(5)</span></a>.
+    </p><p>With <span class="command"><strong>show</strong></span>, well-known IDs are printed (for now, only GPT partition type UUIDs),
+    along with brief identifier strings. When no arguments are specified, all known IDs are shown. When
+    arguments are specified, they must be the identifiers or ID values of one or more known IDs, which are
+    then printed. Combine with <code class="option">--uuid</code> to list the IDs in UUID style, i.e. the way GPT
+    partition type UUIDs are usually shown.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="systemd-id128.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="-p"><span class="term"><code class="option">-p</code>, </span><span class="term"><code class="option">--pretty</code></span><a class="headerlink" title="Permalink to this term" href="systemd-id128.html#-p">¶</a></dt><dd><p>Generate output as programming language snippets.</p></dd><dt id="-a app-id"><span class="term"><code class="option">-a <em class="replaceable"><code>app-id</code></em></code>, </span><span class="term"><code class="option">--app-specific=<em class="replaceable"><code>app-id</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-id128.html#-a%20app-id">¶</a></dt><dd><p>With this option, an identifier that is the result of hashing the
+        application identifier <em class="replaceable"><code>app-id</code></em> and the machine identifier will be
+        printed. The <em class="replaceable"><code>app-id</code></em> argument must be a valid sd-id128 string
+        identifying the application.</p></dd><dt id="-u"><span class="term"><code class="option">-u</code>, </span><span class="term"><code class="option">--uuid</code></span><a class="headerlink" title="Permalink to this term" href="systemd-id128.html#-u">¶</a></dt><dd><p>Generate output as an UUID formatted in the "canonical representation", with five
+        groups of digits separated by hyphens. See the
+        <a class="ulink" href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Format" target="_top">wikipedia</a>
+        for more discussion.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="systemd-id128.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="systemd-id128.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="systemd-id128.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code otherwise.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-id128.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-id128.html#"><span class="citerefentry"><span class="refentrytitle">sd-id128</span>(3)</span></a>,
+      <a href="sd_id128_get_machine.html#"><span class="citerefentry"><span class="refentrytitle">sd_id128_get_machine</span>(3)</span></a>
+    </p></div></div></body></html>

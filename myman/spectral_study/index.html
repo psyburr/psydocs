@@ -1,0 +1,497 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Untitled</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<style type="text/css">
+/* General */
+* html a:hover { background: transparent; }
+body { color: #000000; }
+pre { border: 0; margin: 0; padding: 0; }
+td { padding: 0; }
+table { border: 0; margin: 0; padding: 0; border-collapse: collapse; empty-cells: show; }
+span { display: inline-block; border: 0; margin: 0; }
+td.code_line div { width: 100%; }
+span.code_gutter { vertical-align: top; }
+.code_page {
+    background-color: #FFFFFF;
+    font-family: "Hack", "Courier", Monospace;
+    font-size: 9pt;
+    tab-size: 4;
+}
+.simple_code_page { background-color: white; color: black }
+.code_gutter { display: table-cell; background-color: #CCFF00; padding-right: 10px; }
+.bold { font-weight: bold; }
+.italic { font-style: italic; }
+.normal { font-style: normal; }
+.underline { text-decoration:underline; }
+
+/* Wrapping */
+.wrap {
+    white-space: -moz-pre-wrap; /* Mozilla */
+    white-space: -hp-pre-wrap;  /* HP printers */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    white-space: -pre-wrap;     /* Opera 4-6 */
+    white-space: pre-wrap;      /* CSS 2.1 */
+    word-wrap: break-word;      /* IE */
+}
+.wrap span { display: inline; }
+
+/* Toolbar */
+div#toolbarhide {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    padding-top: 5px;
+    padding-right: 10px;
+}
+div#toolbar {
+    visibility: hidden;
+    text-align: center;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    opacity: 0;
+    -webkit-transform: translateZ(0);    /* webkit flicker fix */
+    -webkit-font-smoothing: antialiased; /* webkit text rendering fix */
+    -webkit-transition: all .25s ease-in;
+    -moz-transition: all .25s ease-in;
+    -ms-transition: all .25s ease-in;
+    -o-transition: all .25s ease-in;
+    transition: all .25s ease-in;
+    background-color:black;
+    color: white;
+}
+div#toolbarhide:hover div#toolbar {
+    visibility: visible;
+    opacity: .8;
+    -webkit-transition: all .25s ease-out;
+    -moz-transition: all .25s ease-out;
+    -ms-transition: all .25s ease-out;
+    -o-transition: all .25s ease-out;
+    transition: all .25s ease-out;
+}
+
+div#toolbar img {
+    display: inline-block;
+    vertical-align: middle;
+    border: 0;
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+    padding: 5px;
+}
+
+/* tooltips */
+#tooltip {
+    border-radius: 5px 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    white-space: -moz-pre-wrap; /* Mozilla */
+    white-space: -hp-pre-wrap;  /* HP printers */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    white-space: -pre-wrap;     /* Opera 4-6 */
+    white-space: pre-wrap;      /* CSS 2.1 */
+    white-space: pre-line;      /* CSS 3 (and 2.1 as well, actually) */
+    word-wrap: break-word;      /* IE */
+    position:absolute; display:block;
+    color: black;
+    padding: 0.8em 1em;
+    background: #FFFFE0; border: solid black;
+    font-family: Calibri, Tahoma, Geneva, sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+a.annotation {
+    color: #000000;
+    outline: none;
+    text-decoration: underline;
+}
+
+span.annotation{ display: inline; }
+
+.tooltip_hotspot { cursor:pointer; }
+
+/* Annotation Table */
+div#comment_list {
+    visibility: hidden;
+    display: none;
+    margin: auto auto;
+    text-align: center;
+    position: fixed;
+    z-index: 99;
+    left:0px;
+    top: 0px;
+}
+div#comment_wr[Here is the site for Spek.](http://spek.cc)apper {
+    max-height: 200px;
+    overflow: auto;
+    border: solid black;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+}
+table#comment_table {
+    border: thin solid; border-collapse: collapse;
+    color: #000000; background-color: #FFFFE0; margin: auto auto;
+}
+div.table_footer { text-align:right; font-size: 8pt; font-weight: bold;}
+a.table_close { color: black; float: right; }
+a.table_close:link { text-decoration: none; }
+a.table_close:active { text-decoration: none; }
+a.table_close:visited { text-decoration: none; }
+a.table_close:hover { text-decoration: none; }
+table#comment_table th, table#comment_table td { border: thin solid; padding: 5px; }
+td.annotation_link { width: 60px; text-align: right; padding-right: 20px; }
+.annotation_comment { width: 500px; }
+div.annotation_comment {
+    float: left;
+    text-align: left;
+    white-space: -moz-pre-wrap; /* Mozilla */
+    white-space: -hp-pre-wrap;  /* HP printers */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    white-space: -pre-wrap;     /* Opera 4-6 */
+    white-space: pre-wrap;      /* CSS 2.1 */
+    word-wrap: break-word;      /* IE */
+}
+</style>
+
+<script type="text/javascript">
+function isUndef(obj) {
+  return obj === void 0;
+}
+
+function isNull(obj) {
+  return obj === null;
+}
+
+</script>
+
+</head>
+<body class="code_page code_text"><pre class="code_page"><table cellspacing="0" cellpadding="0" class="code_page"><tr><td colspan="2" style="background: #FFFFFF"><div id="file_info"><span style="color: #000000">11/17/19 09:00:09 Untitled</span>
+
+</div></td></tr><tr><td><table cellspacing="0" cellpadding="0" class="code_page"><tr><td valign="top" id="L_0_1" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;1&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_1"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">###Transcode Spectral Study</span>
+</div></td></tr><tr><td valign="top" id="L_0_2" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;2&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_2"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_3" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;3&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_3"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">I've noticed a some confusion regarding how to tell a transcode from a proper lossless-&gt;lossy encode using spectral analysis. I've written this "Transcode Spectral Study" to provide a primer on transcodes to explain why they are bad and how to spot them. Most of the information comes from the following links:</span>
+</div></td></tr><tr><td valign="top" id="L_0_4" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;4&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_4"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_5" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;5&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_5"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">http://blowfish.be/eac/Spectral/spectral.html</span>
+</div></td></tr><tr><td valign="top" id="L_0_6" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;6&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_6"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_7" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;7&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_7"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">http://www.whatinterviewprep.com/prepare-for-the-interview/spectral-analysis/</span>
+</div></td></tr><tr><td valign="top" id="L_0_8" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;8&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_8"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_9" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;&nbsp;9&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_9"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">http://www.walterdevos.be/how-to-check-quality-of-mp3-file</span>
+</div></td></tr><tr><td valign="top" id="L_0_10" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;10&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_10"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_11" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;11&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_11"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">I will be using the free program Spek to generate the spectral graphs used in this study. Another great program to use for generating spectral graphs is the open source Audacity. Audacity is nice because you can zoom in on the spectrals, whereas in Spek you are given a static graph.</span>
+</div></td></tr><tr><td valign="top" id="L_0_12" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;12&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_12"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_13" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;13&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_13"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;"><a href="https://www.audacityteam.org/"><b>[Here is the site for Audacity].</b></a></span>
+</div></td></tr><tr><td valign="top" id="L_0_14" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;14&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_14"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_15" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;15&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_15"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;"><a href="http://spek.cc"><b>[Here is the site for Spek].</b></a></span>
+</div></td></tr><tr><td valign="top" id="L_0_16" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;16&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_16"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_17" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;17&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_17"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">***</span>
+</div></td></tr><tr><td valign="top" id="L_0_18" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;18&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_18"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_19" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;19&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_19"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">##Intro: Lossy vs Lossless</span>
+</div></td></tr><tr><td valign="top" id="L_0_20" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;20&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_20"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_21" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;21&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_21"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">The terms **Lossy** and **Lossless** refer to how a given encoded audio file compares to its original source (original source meaning the high quality recording held by a record company or producer). I'll be focusing on mp3 for lossy and wav or flac for lossless, as they are the most commonly used, but this will apply to any type of audio file.</span>
+</div></td></tr><tr><td valign="top" id="L_0_22" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;22&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_22"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_23" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;23&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_23"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">A **lossless** encoded file is an audio file that can be used to exactly recreate the high quality recording from which it is sourced. The benefit of a lossless audio file is that has all of the information of the original encoding. Lossless audio files can be used as the high quality source to create lossy encoded audio files, and can also be used as a source to create other lossless encoded audio files. The main drawback for a lossless audio file is the size; a lossless encoded audio file can be 5-10 times as large as a lossy file encoded with the lossless file as a source.</span>
+</div></td></tr><tr><td valign="top" id="L_0_24" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;24&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_24"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_25" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;25&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_25"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">There are many types of lossless file types, but a few of the common ones are: wav, flac and aif. </span>
+</div></td></tr><tr><td valign="top" id="L_0_26" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;26&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_26"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_27" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;27&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_27"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">A **lossy** encoded file is an audio file that can **not** be used to exactly recreate the high quality recording from which it is sourced. The process of encoding to a lossy file type involves removing some of the data stored in the high quality recording in order to reduce file size. A lossy file should never be used as a source when encoding, and is not meant to be used as an archival backup for a recording. The main advantage to using a lossy encoding for audio files is the reduction in file size and the reduction in processing power required to decode and play the audio. When properly encoded, it can be very difficult to hear the difference between a lossy file and its lossless source.</span>
+</div></td></tr><tr><td valign="top" id="L_0_28" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;28&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_28"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_29" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;29&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_29"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Just like with lossless, there are many types of lossy file types, including: mp3, aac, ogg and wma</span>
+</div></td></tr><tr><td valign="top" id="L_0_30" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;30&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_30"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_31" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;31&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_31"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[Here](http://www.musicbanter.com/general-music/40822-lossy-audio-formats-mp3-ogg-m4a-etc-quality-comparisons.html) is a good, in depth guide on the differences between the two possible encoding schemes. Check it out if you want to learn more or are confused by my brief explanation.</span>
+</div></td></tr><tr><td valign="top" id="L_0_32" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;32&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_32"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_33" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;33&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_33"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">***</span>
+</div></td></tr><tr><td valign="top" id="L_0_34" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;34&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_34"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_35" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;35&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_35"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">##Transcodes: What they are and why they are bad</span>
+</div></td></tr><tr><td valign="top" id="L_0_36" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;36&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_36"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_37" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;37&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_37"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">A **transcode** is commonly used to describe any type of audio file (lossless or lossy) that has been encoded from a lossy source [though technically by definition a transcode is any signal, analog or digital, that has been encoded from a source of the same signal type]. As I mentioned above, a lossy audio file should **never** be used as a source when encoding files, even if the quality that you are encoding to is the same or less (i.e. you shouldn't try to encode a 320kbps mp3 to a 320kbps mp3, or even a 320kbps mp3 to a 128kbps mp3). This is because the resulting audio file will undergo the lossy encoding process again which irreversibly reduces the quality. So a lossy-&gt;lossy encoding results in an irreversible loss in quality, regardless of the quality of the lossy source.</span>
+</div></td></tr><tr><td valign="top" id="L_0_38" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;38&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_38"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_39" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;39&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_39"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">A transcode is bad for the simple reason that at the **very least** there will be an inaudible but easily measurable loss in quality inherent in the resulting file. So the **very best case** for a lossy-&gt;lossy transcode is that the resulting loss in quality is inaudible; there is never a case where the resulting loss is non-existent.</span>
+</div></td></tr><tr><td valign="top" id="L_0_40" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;40&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_40"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_41" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;41&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_41"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Properly encoded lossy files can **only** come from a lossless source. Lossless encoded audio files can also be used as a source to encode other lossless files with no reduction in quality.</span>
+</div></td></tr><tr><td valign="top" id="L_0_42" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;42&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_42"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_43" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;43&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_43"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">***</span>
+</div></td></tr><tr><td valign="top" id="L_0_44" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;44&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_44"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_45" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;45&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_45"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">##The Lossy Encoding Process</span>
+</div></td></tr><tr><td valign="top" id="L_0_46" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;46&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_46"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_47" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;47&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_47"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Humans can *generally* only hear frequencies of up to around 20,000 Hz. This of course varies from person to person, and will go down with age as a person's hearing degrades.</span>
+</div></td></tr><tr><td valign="top" id="L_0_48" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;48&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_48"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_49" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;49&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_49"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">To reduce an audio file's size in order to save disk space, lossy audio files will remove high frequencies from a recording and throw the data away using something called a low pass filter. A low pass filter will remove any frequencies above a certain level while leaving the frequencies below it *relatively* untouched - enough so there is usually no audible effect if an audio signal has only undergone the filter process once. Sending audio through this process multiple times will further degrade the quality.</span>
+</div></td></tr><tr><td valign="top" id="L_0_50" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;50&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_50"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_51" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;51&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_51"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">The higher the frequency that a signal contains, the more data is required to store the signal in a digital format. This is a result of something called the [Nyquist&#8211;Shannon sampling theorem](http://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem). I won't go into detail about that here, as it is more in depth than I care to get in this guide. Just know that by throwing out the higher frequencies, we are able to greatly reduce the file size required to store an audio signal. Recall that humans can only hear up to a certain frequency, so removing the frequencies above what is audible to most humans can result in a lossy encoded audio signal that is **transparent**. A transparent lossy audio file is one that can not be *audibly* differentiated from its lossless source, though it is very easy to measure the differences between the two using a method such as spectral analysis.</span>
+</div></td></tr><tr><td valign="top" id="L_0_52" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;52&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_52"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_53" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;53&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_53"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">mp3 encoded files use a low pass filter to reduce the file size as described above. The default presets for mp3 encoders have a standard frequency cutoff specified for each bitrate, but these settings can be changed manually. What this means is that **just because the spectrals for an audio file show a filter cutoff at a certain frequency does not mean that it has been encoded at a certain bitrate.** I have provided an example later on in this study that demonstrates this point.</span>
+</div></td></tr><tr><td valign="top" id="L_0_54" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;54&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_54"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_55" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;55&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_55"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Here are the different default cutoffs for mp3 at different bitrates:</span>
+</div></td></tr><tr><td valign="top" id="L_0_56" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;56&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_56"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_57" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;57&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_57"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">320kbps - 20.5 kHz</span>
+</div></td></tr><tr><td valign="top" id="L_0_58" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;58&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_58"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_59" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;59&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_59"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">256kbps - 20 kHz</span>
+</div></td></tr><tr><td valign="top" id="L_0_60" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;60&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_60"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_61" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;61&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_61"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">192kbps - 19.5 kHz</span>
+</div></td></tr><tr><td valign="top" id="L_0_62" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;62&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_62"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_63" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;63&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_63"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">128kbps - 16 kHz</span>
+</div></td></tr><tr><td valign="top" id="L_0_64" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;64&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_64"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_65" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;65&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_65"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">One important thing to note: the low pass filter doesn't pass everything below the cutoff equally. Higher frequencies will begin to roll off as they approach the cutoff. There may be cases were you will see a properly encoded 320 kbps mp3 that appears to have a cutoff at 20 kHz - this is not uncommon. The filter will act on frequencies between 20 kHz and 20.5 kHz, and frequences in this range that are low volume may be lost completely as a result of the filtering process. </span>
+</div></td></tr><tr><td valign="top" id="L_0_66" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;66&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_66"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_67" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;67&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_67"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">***</span>
+</div></td></tr><tr><td valign="top" id="L_0_68" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;68&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_68"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_69" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;69&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_69"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">##Spectral Analysis: Spotting Transcodes</span>
+</div></td></tr><tr><td valign="top" id="L_0_70" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;70&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_70"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_71" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;71&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_71"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Spectral analysis is the usual method used for spotting transcodes. It is a great tool for analysing an audio file, however I'd like to again stress the point that **it is not always possible to tell a transcode from the spectrals.** I will show some examples to demonstrate this point below, but before I get ahead of myself I would like to give a quick intro to spectral analysis.</span>
+</div></td></tr><tr><td valign="top" id="L_0_72" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;72&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_72"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_73" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;73&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_73"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Spectral analysis involves looking at the frequencies present in an audio signal plotted over time. A typical spectral graph will look like this:</span>
+</div></td></tr><tr><td valign="top" id="L_0_74" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;74&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_74"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_75" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;75&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_75"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[Spectral](http://i.imgur.com/Y1SMPRr.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_76" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;76&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_76"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_77" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;77&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_77"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Along the bottom, you'll see the time. Along the left side, you'll see the frequencies present in the audio signal at the given time. The color of the graph indicates the dB level (aka volume). The warmer colors indicate a higher dB for a given frequency at a given time, as indicated on the right side of the graph. </span>
+</div></td></tr><tr><td valign="top" id="L_0_78" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;78&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_78"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_79" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;79&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_79"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Here are some examples of spectrals for a lossless audio file, as well as spectrals for **properly encoded** mp3s using the lossless audio as a source:</span>
+</div></td></tr><tr><td valign="top" id="L_0_80" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;80&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_80"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_81" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;81&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_81"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[Lossless spectral](http://i.imgur.com/Y1SMPRr.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_82" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;82&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_82"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_83" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;83&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_83"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[320 kbps mp3 spectral](http://i.imgur.com/TxH4jYf.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_84" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;84&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_84"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_85" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;85&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_85"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[256 kbps mp3 spectral](http://i.imgur.com/IUs8d7q.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_86" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;86&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_86"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_87" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;87&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_87"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[192 kbps mp3 spectral](http://i.imgur.com/7KMUeak.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_88" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;88&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_88"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_89" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;89&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_89"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[128 kbps mp3 spectral](http://i.imgur.com/QmwRHVV.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_90" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;90&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_90"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_91" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;91&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_91"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Spectral analysis is used to verify (though not always with 100% certainty) the quality of an audio file. Some types of transcodes can be spotted easily - others are difficult or even impossible to spot with 100% certainty.</span>
+</div></td></tr><tr><td valign="top" id="L_0_92" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;92&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_92"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_93" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;93&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_93"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">##Transcode Examples</span>
+</div></td></tr><tr><td valign="top" id="L_0_94" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;94&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_94"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_95" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;95&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_95"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">**Example 1: Transcoded Streaming Rip**</span>
+</div></td></tr><tr><td valign="top" id="L_0_96" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;96&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_96"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_97" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;97&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_97"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">By my guess this is probably the most common transcode: The Transcoded Streaming Rip. Fortunately, it is quite easy to identify this type of transcode.</span>
+</div></td></tr><tr><td valign="top" id="L_0_98" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;98&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_98"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_99" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;&nbsp;99&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_99"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Most streaming audio sites (such as Soundcloud) use a bitrate of 128 kbps. There is a lot of music that is only available to stream, and there are a few easy to use programs that will let you download the streaming audio. But 128 kbps doesn't *look* good when you're looking at an audio file's info, so some people may transcode it to 320 kbps. One might just check the bitrate, it says "320 kbps" so that means it's high quality right? </span>
+</div></td></tr><tr><td valign="top" id="L_0_100" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;100&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_100"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_101" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;101&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_101"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Weeellllll... No. Not at all. In fact, the main difference between the two is the file size - as you can see from the spectrals below, they are very similar and probably sound very close to the same. So the fake 320 kbps has (best case) nearly the same quality as the original 128, but has a filesize of over 2.5x that of the 128! On top of that, the quality is irreversibly degraded. There may be little to no *audible* difference between the two, but the quality degradation is impossible to avoid.</span>
+</div></td></tr><tr><td valign="top" id="L_0_102" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;102&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_102"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_103" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;103&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_103"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[Soundcloud rip vs 320 Transcode from Soundcloud rip](http://i.imgur.com/HRuTjBw.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_104" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;104&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_104"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_105" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;105&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_105"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Notice the cutoff at just above 16 kHz that is clearly visible in both spectrals. A properly encoded 320 kbps mp3 should not have a cutoff at this frequency.</span>
+</div></td></tr><tr><td valign="top" id="L_0_106" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;106&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_106"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_107" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;107&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_107"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_108" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;108&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_108"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Below are a couple of examples where it is very difficult to recognize a transcode:</span>
+</div></td></tr><tr><td valign="top" id="L_0_109" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;109&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_109"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_110" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;110&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_110"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">**Example 2: Mystery Transcode**</span>
+</div></td></tr><tr><td valign="top" id="L_0_111" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;111&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_111"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_112" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;112&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_112"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Shown below are 3 spectrals: a lossless audio file in aif format, and two different mp3 files encoded at 320 kbps. One of the mp3 audio files is a transcode; the other is properly encoded from the lossless aif. Can you tell which one is the transcode?</span>
+</div></td></tr><tr><td valign="top" id="L_0_113" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;113&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_113"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_114" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;114&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_114"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[Spectrals](http://i.imgur.com/gCa5Fe2.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_115" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;115&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_115"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_116" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;116&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_116"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Well both of the 320 kbps mp3 audio files show a cutoff of 20 kHz. The dB level of the frequencies in the 20-20.5 kHz range are pretty low in the lossless spectral, so the 20 kHz cutoff is not a concern. So which is the transcode, and why is it so hard to tell?</span>
+</div></td></tr><tr><td valign="top" id="L_0_117" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;117&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_117"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_118" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;118&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_118"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">The middle graph is the spectral for a 320 kbps encoded mp3 that was transcoded from a 256 kbps encoded aac file. aac is a lossy encoding format that is used for songs purchased from iTunes. Songs purchased on iTunes and transcoded to mp3 can be difficult to distinguish from a properly encoded high quality mp3. There may be things to look for that would indicate a transcode from aac to mp3, but I am not aware of a good way to identify them.</span>
+</div></td></tr><tr><td valign="top" id="L_0_119" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;119&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_119"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_120" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;120&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_120"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">By my guess, this example is one that you are likely to run into if you download enough mp3 files. Anyone who buys a song from iTunes and converts to mp3 has created one of these transcodes.</span>
+</div></td></tr><tr><td valign="top" id="L_0_121" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;121&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_121"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_122" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;122&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_122"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">**Example 3: Playing with the Filter Cutoff**</span>
+</div></td></tr><tr><td valign="top" id="L_0_123" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;123&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_123"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_124" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;124&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_124"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Shown below are 2 spectrals. One is for a song encoded to 320 kbps mp3; the other is for a song encoded to 320 kbps mp3 sourced from a 256 kbps mp3 with the filter cutoff manually changed to 20.5 kHz (same as a 320 kbps encoding). As you can see, the typical 320 kbps filter cutoff is present in both, but only the one on the left is a properly encoded high quality mp3.</span>
+</div></td></tr><tr><td valign="top" id="L_0_125" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;125&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_125"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_126" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;126&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_126"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[256 kbps mp3 w/ 20.5 kHz cutoff vs 320 kbps mp3](http://i.imgur.com/DBAsT9R.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_127" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;127&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_127"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_128" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;128&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_128"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">This example is one that you are *very* unlikely to ever encounter. Anyone who is knowledgeable enough to manually change the cutoff in encoding is likely to know why it is a bad idea to do so. I only included it to illustrate the fact that I touched on earlier: **just because the spectrals for an audio file show a filter cutoff at a certain frequency does not mean that it has been encoded at a certain bitrate.**</span>
+</div></td></tr><tr><td valign="top" id="L_0_129" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;129&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_129"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_130" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;130&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_130"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">***</span>
+</div></td></tr><tr><td valign="top" id="L_0_131" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;131&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_131"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_132" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;132&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_132"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">**The 16 kHz Shelf**</span>
+</div></td></tr><tr><td valign="top" id="L_0_133" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;133&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_133"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_134" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;134&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_134"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">By now you may have noticed something that seems a little off that I haven't explained yet. There is an obvious "cutoff" (more fittingly referred to as a **shelf**) at 16 kHz that is easily visible on most any mp3 encoded by LAME. **This is completely normal.** The reason for the 16 kHz shelf is the [LAME -Y switch](http://wiki.hydrogenaud.io/index.php?title=LAME_Y_Switch), the technical details of which I won't go into here. Simply put, LAME will decrease the accuracy of frequencies above 16 kHz in order to keep from disproportionately increasing the bitrate and overall filesize. </span>
+</div></td></tr><tr><td valign="top" id="L_0_135" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;135&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_135"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_136" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;136&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_136"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">Very low volume frequencies above 16 kHz can be quantized to zero as a result of the reduced accuracy. This is why the shelf can look like a cutoff in some places, even though it is not actually a cutoff. For example, see between 2:50 and 3:00 in the following comparison between a lossless encoded aif file (on the right) and a 256 kbps mp3 file (on the left). Note the dB level of the frequencies that get wiped away - they are in the -100 dB and below range. A change of 9 dB up or down translates to a doubling or halving of the perceived volume level, respectively - so at -100 dB and less, you are unlikely to notice any change. Remember, the primary goal of lossy formats like mp3 is to remain transparent while reducing file size as much as possible.</span>
+</div></td></tr><tr><td valign="top" id="L_0_137" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;137&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_137"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_138" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;138&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_138"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">[256 kbps mp3 vs lossless source](http://i.imgur.com/7HzkCMv.png)</span>
+</div></td></tr><tr><td valign="top" id="L_0_139" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;139&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_139"><span class=" empty_text" style="background-color: #FFFFFF; color: #000000;">&nbsp;</span>
+</div></td></tr><tr><td valign="top" id="L_0_140" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;140&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_140"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">edit: here are a couple more pages on the topic:</span>
+</div></td></tr><tr><td valign="top" id="L_0_141" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;141&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_141"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">http://www.soundonsound.com/sos/apr12/articles/lost-in-translation.htm#para7</span>
+</div></td></tr><tr><td valign="top" id="L_0_142" class="code_text code_gutter" style="background: #E5E5E5"><span style="color: #858585;">&nbsp;142&nbsp;</span></td><td valign="top" class="code_text code_line" style="background-color: #FFFFFF;"><div id="C_0_142"><span class=" real_text" style="background-color: #FFFFFF; color: #000000;">http://www.briandalessandro.com/about/publications/2009_ACM_MMSEC.pdf</span>
+</div></td></tr></table></td></tr></table></pre><div id="toolbarhide"><div id="toolbar"><img onclick="toggle_plain_text();" alt="" title="Toggle Plain" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3AofFg8dF9eGSAAAAAxpVFh0Q29tbWVudAAAAAAAvK6ymQAAANRJREFUOMvdkTFOgkEQhResaeQScAsplIRGDgKttnsIOYIUm1hQa/HfQiMFcIBt9k/UTWa/sRkbspKfzviS7eZ7M/uec39WbdsOgU/gI6V0ebZBKeVeTaWUu7PgpmkugD3wZW8XQuh3NhCRuaoq8AisVVVF5LazAfBi0JWITMzsuROccx4b8O6cc977HrAFyDmPumxfHQf3EyjwcBKOMQ6ApL8ISDHGwanqljb4VLlsY5ctqrD99c3Cm1aamZn5q/e+V6vuxgb2tc5DCH3gYAuu3f/RNzmJ99G3cZ53AAAAAElFTkSuQmCC" /><img onclick="toggle_gutter();" alt="" title="Toggle Gutter" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3AofFg8FBLseHgAAAAxpVFh0Q29tbWVudAAAAAAAvK6ymQAAAM5JREFUOMvdjzFqAlEQhuephZWNYEq9wJ4kt7C08AiyhWCXQI6xh5CtUqVJEbAU1kA6i92VzWPnmxR5gUUsfAQbf5himPm+YURumSzLetFQWZZj4Bn45DcHYFMUxfAqAbA1MwO+gHeA0L9cJfDeJ6q6yvO8LyKiqosgOKVp6qJf8t4nQfD9J42Kqi6D4DUabppmBhzNzNq2fYyC67p+AHbh+iYKrqpqAnwE+Ok/8Dr6b+AtwArsu6Wq8/P9wQXHTETEOdcTkWl3YGYjub/8ANrnvguZ++ozAAAAAElFTkSuQmCC" /><img onclick="toggle_wrapping();" alt="" title="Toggle Wrapping" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3AsBFiYl9jWoIQAAAAxpVFh0Q29tbWVudAAAAAAAvK6ymQAAAP1JREFUOMudk0FuwkAMRZ+jbCGZXADlKvS8HKG9Qa8Q1K5LSLpG+ixwUmdKQMLSSDOeb/v7e8bITJIBNWD5FTCYmaLT7gTWwDtQZQlG4A0YYiILwTvgwxNsgV+vOuEm3wDsga+ZjaQkqZN0kdT7vpXU+Grd1zumk5Rm6g44STr6PjmriEl+d3RsK8li9T/nimXFOkmp8P4mwcZc5YXit7vRjxVgBQ/MK1aPWBWu9Jw1A9c+mZ0nW7AFdLevwKCR9BPE/SdiaWaSNADntdb9jXz6eQt8L15lGFM+vsarRevjtMqg7pkXrHghZiFs+QS8xmwDHIC9PXsHK197/t5XQswlGeOCYgkAAAAASUVORK5CYII=" /><img onclick="page_print();" alt="" title="Print" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3AofFhAl8o8wSAAAAAxpVFh0Q29tbWVudAAAAAAAvK6ymQAAAQZJREFUOMulkzFSgjEUhL8X/xJ/iBegkAtQ6A08gIUehFthYykOw9BzBmwcaxGoZW1eZjIx/sC4TTJv8ja7mxfDIcmAAWDUIeDLzJQXm2w/AFZOkB8yoAU+gHtJ7yVJUnAlaS1pJOm6WN8kjSUtJQ1dLQChIvMATIEXXw9e3wMT4NnV/rKQsAcegAvgG9g5wcwv7OU51QgugSegD2yBO+DWmyLw+leINQXyW5VeoQj4qIIcW+CxPFwjSLKtEnAZOkGSSYruL3QMUxq0AERJUZKl5pV7bjsmMR+qHfAJ3DReDB4cwKLiv0R0S5Yy6ANz37ecgSZ7nui1zYm9G0B2wi+k63fyX/wA0b9vjF8iB3oAAAAASUVORK5CYII=" /></div></div>
+
+<script type="text/javascript">
+function page_print() {
+    var element = document.getElementById("toolbarhide");
+    if (!isNull(element)) {
+        element.style.display = "none";
+    }
+    if (window.print) {
+        window.print();
+    }
+    if (!isNull(element)) {
+        element.style.display = "block";
+    }
+}
+
+</script>
+
+<script type="text/javascript">
+var plain_text_clone = null;
+
+function toggle_plain_text() {
+  var lines = document.querySelectorAll(".code_line"),
+      line_len = lines.length,
+      text = "",
+      plain_pre = document.querySelectorAll("pre.simple_code_page"),
+      orig_pre, pre, i, j, spans, span_len, span;
+
+  if (plain_pre.length > 0) {
+    document.body.removeChild(plain_pre[0]);
+    document.body.appendChild(plain_text_clone);
+    document.body.className = "code_page code_text";
+  } else {
+    var re = new RegExp(String.fromCharCode(160), "g");
+    var is_empty = new RegExp("(^|\\s)empty_text(\\s|$)");
+    for (i = 0; i < line_len; i++) {
+      spans = lines[i].querySelectorAll("span.real_text, span.empty_text");
+      span_len = spans.length;
+      for (j = 0; j < span_len; j++) {
+        span = spans[j];
+        if (span.className.search(is_empty) != -1) {
+          if ("textContent" in span) {
+            text += span.textContent.replace(re, '');
+          } else {
+            text += span.innerText.replace(re, '');
+          }
+        } else {
+          if ("textContent" in span) {
+            text += span.textContent.replace(re, ' ');
+          } else {
+            text += span.innerText.replace(re, ' ');
+          }
+        }
+      }
+      text += "\n";
+    }
+    orig_pre = document.querySelectorAll("pre.code_page")[0];
+    plain_text_clone = orig_pre.cloneNode(true);
+    pre = document.createElement('pre');
+    pre.className = "simple_code_page";
+    pre.appendChild(document.createTextNode(text));
+    document.body.removeChild(orig_pre);
+    document.body.appendChild(pre);
+    document.body.className = "simple_code_page";
+  }
+}
+
+</script>
+
+<script type="text/javascript">
+var page_line_info = {
+  wrap: false,
+  ranges: null,
+  wrap_size: null,
+  tables: null,
+  header: null,
+  gutter: false,
+  table_mode: true
+};
+
+function wrap_code() {
+  var width = 0,
+      mode = null,
+      start, end, i, j, idx, el;
+
+  if (page_line_info.header) {
+    el = document.getElementById("file_info");
+    el.style.width = page_line_info.wrap_size + "px";
+    el.className = "wrap";
+  }
+  for (i = 1; i <= page_line_info.tables; i++) {
+    idx = i - 1;
+    start = page_line_info.ranges[idx][0];
+    end = page_line_info.ranges[idx][1];
+    for(j = start; j < end; j++) {
+      if (isNull(mode)) {
+        mode = true;
+        if (page_line_info.gutter) {
+          width = document.getElementById("L_" + idx + "_" + j).offsetWidth;
+        }
+      }
+      el = document.getElementById("C_" + idx + "_" + j);
+      el.style.width = (page_line_info.wrap_size - width) + "px";
+      el.className = page_line_info.table_mode ? "wrap" : "wrap code_line";
+    }
+  }
+}
+
+function toggle_gutter() {
+  var default_mode = page_line_info.table_mode ? 'table-cell' : 'inline-block',
+      mode = null,
+      i, j, rows, r, tbls, cells;
+
+  items = document.querySelectorAll('.code_gutter');
+  for (i = 0; i < items.length; ++i) {
+    if (isNull(mode)) {
+      if (page_line_info.gutter) {
+        mode = 'none';
+        page_line_info.gutter = false;
+      } else {
+        mode = 'inline-block';
+        page_line_info.gutter = true;
+      }
+    }
+    items[i].style.display = mode;
+  }
+  if (page_line_info.wrap && !isNull(mode)) {
+      setTimeout(function() {wrap_code();}, 500);
+  }
+}
+
+function unwrap_code() {
+  var i, j, idx, start, end, el;
+
+  if (page_line_info.header) {
+    document.getElementById("file_info").style.width = "100%";
+  }
+  for (i = 1; i <= page_line_info.tables; i++) {
+    idx = i - 1;
+    start = page_line_info.ranges[idx][0];
+    end = page_line_info.ranges[idx][1];
+    for(j = start; j < end; j++) {
+      el = document.getElementById("C_" + idx + "_" + j);
+      el.style.width = "100%";
+      el.className = "";
+    }
+  }
+}
+
+function toggle_wrapping() {
+  if (page_line_info.wrap) {
+    page_line_info.wrap = false;
+    unwrap_code();
+  } else {
+    page_line_info.wrap = true;
+    wrap_code();
+  }
+}
+
+
+page_line_info.wrap       = false;
+page_line_info.ranges     = [[1,143]];
+page_line_info.wrap_size  = 900;
+page_line_info.tables     = 1;
+page_line_info.header     = true;
+page_line_info.gutter     = true;
+page_line_info.table_mode = true;
+</script>
+
+<script type="text/javascript">
+toggle_wrapping();
+</script>
+
+</body>
+</html>

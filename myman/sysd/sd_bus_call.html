@@ -1,0 +1,84 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_call</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_call"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_call, sd_bus_call_async — Invoke a D-Bus method call</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">typedef int (*<b class="fsfunc">sd_bus_message_handler_t</b>)(</code></td><td>sd_bus_message *<var class="pdparam">m</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var>, </td></tr><tr><td> </td><td>sd_bus_error *<var class="pdparam">ret_error</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_call</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>sd_bus_message *<var class="pdparam">m</var>, </td></tr><tr><td> </td><td>uint64_t <var class="pdparam">usec</var>, </td></tr><tr><td> </td><td>sd_bus_error *<var class="pdparam">ret_error</var>, </td></tr><tr><td> </td><td>sd_bus_message **<var class="pdparam">reply</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_call_async</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>sd_bus_slot **<var class="pdparam">slot</var>, </td></tr><tr><td> </td><td>sd_bus_message *<var class="pdparam">m</var>, </td></tr><tr><td> </td><td>sd_bus_message_handler_t <var class="pdparam">callback</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var>, </td></tr><tr><td> </td><td>uint64_t <var class="pdparam">usec</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_call.html#Description">¶</a></h2><p><code class="function">sd_bus_call()</code> takes a complete bus message object and calls the
+    corresponding D-Bus method. On success, the response is stored in <em class="parameter"><code>reply</code></em>.
+    <em class="parameter"><code>usec</code></em> indicates the timeout in microseconds. If
+    <em class="parameter"><code>ret_error</code></em> is not <code class="constant">NULL</code> and
+    <code class="function">sd_bus_call()</code> fails (either because of an internal error or because it
+    received a D-Bus error reply), <em class="parameter"><code>ret_error</code></em> is initialized to an instance of
+    <span class="structname">sd_bus_error</span> describing the error.</p><p><code class="function">sd_bus_call_async()</code> is like <code class="function">sd_bus_call()</code> but works
+    asynchronously. The <em class="parameter"><code>callback</code></em> indicates the function to call when the response
+    arrives. The <em class="parameter"><code>userdata</code></em> pointer will be passed to the callback function, and may be
+    chosen freely by the caller. If <em class="parameter"><code>slot</code></em> is not <code class="constant">NULL</code> and
+    <code class="function">sd_bus_call_async()</code> succeeds, <em class="parameter"><code>slot</code></em> is set to a slot object
+    which can be used to cancel the method call at a later time using
+    <a href="sd_bus_slot_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_slot_unref</span>(3)</span></a>.
+    If <em class="parameter"><code>slot</code></em> is <code class="constant">NULL</code>, the lifetime of the method call is bound to
+    the lifetime of the bus object itself, and it cannot be cancelled independently. See
+    <a href="sd_bus_slot_set_floating.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_slot_set_floating</span>(3)</span></a>
+    for details. <em class="parameter"><code>callback</code></em> is called when a reply arrives with the reply,
+    <em class="parameter"><code>userdata</code></em> and an <span class="structname">sd_bus_error</span> output parameter as its
+    arguments. Unlike <code class="function">sd_bus_call()</code>, the <span class="structname">sd_bus_error</span> output
+    parameter passed to the callback will be empty. To determine whether the method call succeeded, use
+    <a href="sd_bus_message_is_method_error.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_is_method_error</span>(3)</span></a>
+    on the reply message passed to the callback instead. If the callback returns zero and the
+    <span class="structname">sd_bus_error</span> output parameter is still empty when the callback finishes, other
+    handlers registered with functions such as
+    <a href="sd_bus_add_filter.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_add_filter</span>(3)</span></a> or
+    <a href="sd_bus_add_match.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_add_match</span>(3)</span></a> are
+    given a chance to process the message. If the callback returns a non-zero value or the
+    <span class="structname">sd_bus_error</span> output parameter is not empty when the callback finishes, no
+    further processing of the message is done. Generally, you want to return zero from the callback to give
+    other registered handlers a chance to process the reply as well. (Note that the
+    <span class="structname">sd_bus_error</span> parameter is an output parameter of the callback function, not an
+    input parameter; it can be used to propagate errors from the callback handler, it will not receive any
+    error that was received as method reply.)</p><p>The message <em class="parameter"><code>m</code></em> passed to the callback is only borrowed, that is, the callback should
+    not call <a href="sd_bus_message_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_unref</span>(3)</span></a>
+    on it. If the callback wants to hold on to the message beyond the lifetime of the callback, it needs to call
+    <a href="sd_bus_message_ref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_ref</span>(3)</span></a> to create a
+    new reference.</p><p>If <em class="parameter"><code>usec</code></em> is zero, the default D-Bus method call timeout is used. See
+    <a href="sd_bus_get_method_call_timeout.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_get_method_call_timeout</span>(3)</span></a>.
+    </p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_call.html#Return%20Value">¶</a></h2><p>On success, these functions return a non-negative integer. On failure, they return a
+    negative errno-style error code.</p><div class="refsect2"><a name="errors"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_call.html#Errors">¶</a></h3><p>When <code class="function">sd_bus_call()</code> internally receives a D-Bus error reply, it will set
+      <em class="parameter"><code>ret_error</code></em> if it is not <code class="constant">NULL</code>, and will return a negative
+      value mapped from the error reply, see
+      <a href="sd_bus_error_get_errno.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_error_get_errno</span>(3)</span></a>.
+      </p><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_call.html#-EINVAL">¶</a></dt><dd><p>The input parameter <em class="parameter"><code>m</code></em> is <code class="constant">NULL</code>.
+          </p><p>The input parameter <em class="parameter"><code>m</code></em> is not a D-Bus method call.
+          To create a new D-Bus method call, use
+          <a href="sd_bus_message_new_method_call.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_new_method_call</span>(3)</span></a>.
+          </p><p>The input parameter <em class="parameter"><code>m</code></em> has the
+          <code class="constant">BUS_MESSAGE_NO_REPLY_EXPECTED</code> flag set.</p><p>The input parameter <em class="parameter"><code>error</code></em> is
+          non-<code class="constant">NULL</code> but was not set to <code class="constant">SD_BUS_ERROR_NULL</code>.
+          </p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_call.html#-ECHILD">¶</a></dt><dd><p>The bus connection was allocated in a parent process and is being reused
+          in a child process after <code class="function">fork()</code>.</p></dd><dt id="-ENOTCONN"><span class="term"><code class="constant">-ENOTCONN</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_call.html#-ENOTCONN">¶</a></dt><dd><p>The input parameter <em class="parameter"><code>bus</code></em> is
+          <code class="constant">NULL</code> or the bus is not connected.</p></dd><dt id="-ECONNRESET"><span class="term"><code class="constant">-ECONNRESET</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_call.html#-ECONNRESET">¶</a></dt><dd><p>The bus connection was closed while waiting for the response.
+          </p></dd><dt id="-ETIMEDOUT"><span class="term"><code class="constant">-ETIMEDOUT</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_call.html#-ETIMEDOUT">¶</a></dt><dd><p>A response was not received within the given timeout.</p></dd><dt id="-ELOOP"><span class="term"><code class="constant">-ELOOP</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_call.html#-ELOOP">¶</a></dt><dd><p>The message <em class="parameter"><code>m</code></em> is addressed to its own client.
+          </p></dd><dt id="-ENOMEM"><span class="term"><code class="constant">-ENOMEM</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_call.html#-ENOMEM">¶</a></dt><dd><p>Memory allocation failed.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_call.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_call.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+      <a href="sd_bus_call_method.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_call_method</span>(3)</span></a>,
+      <a href="sd_bus_call_method_async.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_call_method_async</span>(3)</span></a>,
+      <a href="sd_bus_message_new_method_call.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_new_method_call</span>(3)</span></a>,
+      <a href="sd_bus_message_append.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_append</span>(3)</span></a>,
+      <a href="sd_bus_error.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_error</span>(3)</span></a>
+    </p></div></div></body></html>

@@ -1,0 +1,113 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>kernel-install</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="kernel-install"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>kernel-install — Add and remove kernel and initramfs images to and from /boot</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">kernel-install</code>   COMMAND  [OPTIONS...]  <em class="replaceable"><code>KERNEL-VERSION</code></em>   <em class="replaceable"><code>KERNEL-IMAGE</code></em>  [<em class="replaceable"><code>INITRD-FILE</code></em>...]</p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="kernel-install.html#Description">¶</a></h2><p><span class="command"><strong>kernel-install</strong></span> is used to install and remove kernel and initramfs images to and
+    from the boot loader partition, referred to as <code class="varname">$BOOT</code> here. It will usually be one of
+    <code class="filename">/boot/</code>, <code class="filename">/efi/</code>, or <code class="filename">/boot/efi/</code>, see below.
+    </p><p><span class="command"><strong>kernel-install</strong></span> will execute the files
+    located in the directory <code class="filename">/usr/lib/kernel/install.d/</code>
+    and the local administration directory <code class="filename">/etc/kernel/install.d/</code>.
+    All files are collectively sorted and executed in lexical order, regardless of the directory in
+    which they live. However, files with identical filenames replace each other.
+    Files in <code class="filename">/etc/kernel/install.d/</code> take precedence over files with the same name
+    in <code class="filename">/usr/lib/kernel/install.d/</code>. This can be used to override a system-supplied
+    executables with a local file if needed; a symbolic link in <code class="filename">/etc/kernel/install.d/</code>
+    with the same name as an executable in <code class="filename">/usr/lib/kernel/install.d/</code>,
+    pointing to <code class="filename">/dev/null</code>, disables the executable entirely. Executables must have the
+    extension "<code class="literal">.install</code>"; other extensions are ignored.</p><p>An executable should return <code class="constant">0</code> on success. It may also
+    return <code class="constant">77</code> to cause the whole operation to terminate
+    (executables later in lexical order will be skipped).</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Commands">Commands<a class="headerlink" title="Permalink to this headline" href="kernel-install.html#Commands">¶</a></h2><p>The following commands are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="add KERNEL-VERSION KERNEL-IMAGE [INITRD-FILE ...]"><span class="term"><span class="command"><strong>add <em class="replaceable"><code>KERNEL-VERSION</code></em> <em class="replaceable"><code>KERNEL-IMAGE</code></em> [<em class="replaceable"><code>INITRD-FILE</code></em> ...]</strong></span></span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#add%20KERNEL-VERSION%20KERNEL-IMAGE%20%5BINITRD-FILE%20...%5D">¶</a></dt><dd><p>This command expects a kernel version string and a path to a kernel image file as
+          arguments. <span class="command"><strong>kernel-install</strong></span> calls the executables from
+          <code class="filename">/usr/lib/kernel/install.d/*.install</code> and
+          <code class="filename">/etc/kernel/install.d/*.install</code> with the following arguments:
+
+          </p><pre class="programlisting">add <em class="replaceable"><code>KERNEL-VERSION</code></em> <code class="filename">$BOOT/<em class="replaceable"><code>MACHINE-ID</code></em>/<em class="replaceable"><code>KERNEL-VERSION</code></em>/</code> <em class="replaceable"><code>KERNEL-IMAGE</code></em> [<em class="replaceable"><code>INITRD-FILE</code></em> ...]</pre><p>
+          </p><p>Three default plugins execute the following operations in this case:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><code class="filename">00-entry-directory.install</code> creates the directory
+            <code class="filename">$BOOT/<em class="replaceable"><code>MACHINE-ID</code></em>/<em class="replaceable"><code>KERNEL-VERSION</code></em>/</code>
+            if <code class="filename">$BOOT/<em class="replaceable"><code>MACHINE-ID</code></em>/</code> already exists.
+            </p></li><li class="listitem"><p><code class="filename">50-depmod.install</code> runs
+            <a href="http://man7.org/linux/man-pages/man8/depmod.8.html"><span class="citerefentry"><span class="refentrytitle">depmod</span>(8)</span></a> for the
+            <em class="replaceable"><code>KERNEL-VERSION</code></em>.</p></li><li class="listitem"><p><code class="filename">90-loaderentry.install</code> copies <em class="replaceable"><code>KERNEL-IMAGE</code></em>
+            to
+            <code class="filename">$BOOT/<em class="replaceable"><code>MACHINE-ID</code></em>/<em class="replaceable"><code>KERNEL-VERSION</code></em>/linux</code>.
+            If an <em class="replaceable"><code>INITRD-FILE</code></em> is provided, it also copies <em class="replaceable"><code>INITRD-FILE</code></em>
+            to
+            <code class="filename">$BOOT/<em class="replaceable"><code>MACHINE-ID</code></em>/<em class="replaceable"><code>KERNEL_VERSION</code></em>/<em class="replaceable"><code>INITRD-FILE</code></em></code>.
+            It also creates a boot loader entry according to the <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot Loader Specification</a> in
+            <code class="filename">$BOOT/loader/entries/<em class="replaceable"><code>MACHINE-ID</code></em>-<em class="replaceable"><code>KERNEL-VERSION</code></em>.conf</code>.
+            The title of the entry is the <em class="replaceable"><code>PRETTY_NAME</code></em> parameter specified in
+            <code class="filename">/etc/os-release</code> or <code class="filename">/usr/lib/os-release</code> (if the former is
+            missing), or "Linux <em class="replaceable"><code>KERNEL-VERSION</code></em>", if unset.</p><p>If the entry directory
+            <code class="filename">$BOOT/<em class="replaceable"><code>MACHINE-ID</code></em>/<em class="replaceable"><code>KERNEL-VERSION</code></em>/</code>
+            does not exist, this plugin does nothing.</p></li></ul></div></dd><dt id="remove KERNEL-VERSION"><span class="term"><span class="command"><strong>remove <em class="replaceable"><code>KERNEL-VERSION</code></em></strong></span></span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#remove%20KERNEL-VERSION">¶</a></dt><dd><p>This command expects a kernel version string as single argument. This calls executables from
+          <code class="filename">/usr/lib/kernel/install.d/*.install</code> and
+          <code class="filename">/etc/kernel/install.d/*.install</code> with the following arguments:
+
+          </p><pre class="programlisting">remove <em class="replaceable"><code>KERNEL-VERSION</code></em> <code class="filename">$BOOT/<em class="replaceable"><code>MACHINE-ID</code></em>/<em class="replaceable"><code>KERNEL-VERSION</code></em>/</code></pre><p>
+          </p><p>Afterwards, <span class="command"><strong>kernel-install</strong></span> removes the directory
+          <code class="filename">$BOOT/<em class="replaceable"><code>MACHINE-ID</code></em>/<em class="replaceable"><code>KERNEL-VERSION</code></em>/</code>
+          and its contents.</p><p>Two default plugins execute the following operations in this case:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><code class="filename">50-depmod.install</code> removes the files generated by <span class="command"><strong>depmod</strong></span> for this kernel again.</p></li><li class="listitem"><p><code class="filename">90-loaderentry.install</code> removes the file
+            <code class="filename">$BOOT/loader/entries/<em class="replaceable"><code>MACHINE-ID</code></em>-<em class="replaceable"><code>KERNEL-VERSION</code></em>.conf</code>.</p></li></ul></div></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="The $BOOT partition">The <code class="varname">$BOOT</code> partition<a class="headerlink" title="Permalink to this headline" href="kernel-install.html#The%20%24BOOT%20partition">¶</a></h2><p>The partition where the kernels and <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot
+    Loader Specification</a> snippets are located is called <code class="varname">$BOOT</code>.
+    <span class="command"><strong>kernel-install</strong></span> determines the location of this partition by checking
+    <code class="filename">/efi/</code>, <code class="filename">/boot/</code>, and <code class="filename">/boot/efi/</code>
+    in turn. The first location where <code class="filename">$BOOT/loader/entries/</code> or
+    <code class="filename">$BOOT/$MACHINE_ID/</code> exists is used.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="kernel-install.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="-v"><span class="term"><code class="option">-v</code>, </span><span class="term"><code class="option">--verbose</code></span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#-v">¶</a></dt><dd><p>Output additional information about operations being performed.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd></dl></div></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Environment variables">Environment variables<a class="headerlink" title="Permalink to this headline" href="kernel-install.html#Environment%20variables">¶</a></h2><p>If <code class="option">--verbose</code> is used, <code class="varname">$KERNEL_INSTALL_VERBOSE=1</code> will be set for
+    the plugins. They may output additional logs in this case.</p></div><div class="refsect1"><a name="id-1.10"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="kernel-install.html#Exit%20status">¶</a></h2><p>If every executable returns 0 or 77, 0 is returned, and a non-zero failure code otherwise.</p></div><div class="refsect1"><a name="id-1.11"></a><h2 id="Files">Files<a class="headerlink" title="Permalink to this headline" href="kernel-install.html#Files">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="
+          /usr/lib/kernel/install.d/*.install
+          /etc/kernel/install.d/*.install
+        "><span class="term">
+          <code class="filename">/usr/lib/kernel/install.d/*.install</code>
+          <code class="filename">/etc/kernel/install.d/*.install</code>
+        </span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#%0A%20%20%20%20%20%20%20%20%20%20/usr/lib/kernel/install.d/*.install%0A%20%20%20%20%20%20%20%20%20%20/etc/kernel/install.d/*.install%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Drop-in files which are executed by kernel-install.</p></dd><dt id="
+          /etc/kernel/cmdline
+          /proc/cmdline
+        "><span class="term">
+          <code class="filename">/etc/kernel/cmdline</code>
+          <code class="filename">/proc/cmdline</code>
+        </span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#%0A%20%20%20%20%20%20%20%20%20%20/etc/kernel/cmdline%0A%20%20%20%20%20%20%20%20%20%20/proc/cmdline%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Read by <code class="filename">90-loaderentry.install</code>. The content of the file
+            <code class="filename">/etc/kernel/cmdline</code> specifies the kernel command line to use.  If that file does not
+            exist, <code class="filename">/proc/cmdline</code> is used.</p></dd><dt id="
+          /etc/kernel/tries
+        "><span class="term">
+          <code class="filename">/etc/kernel/tries</code>
+        </span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#%0A%20%20%20%20%20%20%20%20%20%20/etc/kernel/tries%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Read by <code class="filename">90-loaderentry.install</code>. If this file exists a numeric value is read from
+            it and the naming of the generated entry file is slightly altered to include it as
+            <code class="filename">$BOOT/loader/entries/<em class="replaceable"><code>MACHINE-ID</code></em>-<em class="replaceable"><code>KERNEL-VERSION</code></em>+<em class="replaceable"><code>TRIES</code></em>.conf</code>. This
+            is useful for boot loaders such as
+            <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a> which
+            implement boot attempt counting with a counter embedded in the entry file name.</p></dd><dt id="
+          /etc/machine-id
+        "><span class="term">
+          <code class="filename">/etc/machine-id</code>
+        </span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#%0A%20%20%20%20%20%20%20%20%20%20/etc/machine-id%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>The content of this file specifies the machine identification
+            <em class="replaceable"><code>MACHINE-ID</code></em>. If it cannot read <code class="filename">/etc/machine-id</code>,
+            kernel-install will use "Linux" as the machine ID instead.</p></dd><dt id="
+          /etc/os-release
+          /usr/lib/os-release
+        "><span class="term">
+          <code class="filename">/etc/os-release</code>
+          <code class="filename">/usr/lib/os-release</code>
+        </span><a class="headerlink" title="Permalink to this term" href="kernel-install.html#%0A%20%20%20%20%20%20%20%20%20%20/etc/os-release%0A%20%20%20%20%20%20%20%20%20%20/usr/lib/os-release%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>The content of the file specifies the operating system title <em class="replaceable"><code>PRETTY_NAME</code></em>.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.12"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="kernel-install.html#See%20Also">¶</a></h2><p>
+      <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a>,
+      <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man8/depmod.8.html"><span class="citerefentry"><span class="refentrytitle">depmod</span>(8)</span></a>,
+      <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a>,
+      <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot Loader Specification</a>
+    </p></div></div></body></html>

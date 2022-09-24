@@ -1,20 +1,17 @@
 # at
 
-> Executes commands at a specified time.
-> More information: <https://man.archlinux.org/man/at.1>.
+> Execute commands once at a later time.
+> Service atd (or atrun) should be running for the actual executions.
+> More information: <https://manned.org/at>.
 
-- Open an `at` prompt to create a new set of scheduled commands, press `Ctrl + D` to save and exit:
+- Execute commands from standard input in 5 minutes (press `Ctrl + D` when done):
 
-`at {{hh:mm}}`
+`at now + 5 minutes`
 
-- Execute the commands and email the result using a local mailing program such as Sendmail:
+- Execute a command from standard input at 10:00 AM today:
 
-`at {{hh:mm}} -m`
+`echo "{{./make_db_backup.sh}}" | at 1000`
 
-- Execute a script at the given time:
+- Execute commands from a given file next Tuesday:
 
-`at {{hh:mm}} -f {{path/to/file}}`
-
-- Display a system notification at 11pm on February 18th:
-
-`echo "notify-send '{{Wake up!}}'" | at {{11pm}} {{Feb 18}}`
+`at -f {{path/to/file}} 9:30 PM Tue`

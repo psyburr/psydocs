@@ -1,0 +1,410 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>tmpfiles.d</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="tmpfiles.d"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>tmpfiles.d — Configuration for creation, deletion and cleaning of
+    volatile and temporary files</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="literallayout"><p><code class="filename">/etc/tmpfiles.d/*.conf</code><br>
+<code class="filename">/run/tmpfiles.d/*.conf</code><br>
+<code class="filename">/usr/lib/tmpfiles.d/*.conf</code><br>
+    </p></div><div class="literallayout"><p><code class="filename">~/.config/user-tmpfiles.d/*.conf</code><br>
+<code class="filename">$XDG_RUNTIME_DIR/user-tmpfiles.d/*.conf</code><br>
+<code class="filename">~/.local/share/user-tmpfiles.d/*.conf</code><br>
+<code class="filename">…</code><br>
+<code class="filename">/usr/share/user-tmpfiles.d/*.conf</code><br>
+    </p></div><pre class="programlisting">#Type Path                                     Mode User Group Age         Argument
+f     /file/to/create                          mode user group -           content
+f+    /file/to/create-or-truncate              mode user group -           content
+w     /file/to/write-to                        -    -    -     -           content
+w+    /file/to/append-to                       -    -    -     -           content
+d     /directory/to/create-and-cleanup         mode user group cleanup-age -
+D     /directory/to/create-and-remove          mode user group cleanup-age -
+e     /directory/to/cleanup                    mode user group cleanup-age -
+v     /subvolume-or-directory/to/create        mode user group -           -
+q     /subvolume-or-directory/to/create        mode user group -           -
+Q     /subvolume-or-directory/to/create        mode user group -           -
+p     /fifo/to/create                          mode user group -           -
+p+    /fifo/to/[re]create                      mode user group -           -
+L     /symlink/to/create                       -    -    -     -           symlink/target/path
+L+    /symlink/to/[re]create                   -    -    -     -           symlink/target/path
+c     /dev/char-device-to-create               mode user group -           major:minor
+c+    /dev/char-device-to-[re]create           mode user group -           major:minor
+b     /dev/block-device-to-create              mode user group -           major:minor
+b+    /dev/block-device-to-[re]create          mode user group -           major:minor
+C     /target/to/create                        -    -    -     -           /source/to/copy
+x     /path-or-glob/to/ignore/recursively      -    -    -     -           -
+X     /path-or-glob/to/ignore                  -    -    -     -           -
+r     /empty/dir/to/remove                     -    -    -     -           -
+R     /dir/to/remove/recursively               -    -    -     -           -
+z     /path-or-glob/to/adjust/mode             mode user group -           -
+Z     /path-or-glob/to/adjust/mode/recursively mode user group -           -
+t     /path-or-glob/to/set/xattrs              -    -    -     -           xattrs
+T     /path-or-glob/to/set/xattrs/recursively  -    -    -     -           xattrs
+h     /path-or-glob/to/set/attrs               -    -    -     -           file attrs
+H     /path-or-glob/to/set/attrs/recursively   -    -    -     -           file attrs
+a     /path-or-glob/to/set/acls                -    -    -     -           POSIX ACLs
+a+    /path-or-glob/to/append/acls             -    -    -     -           POSIX ACLs
+A     /path-or-glob/to/set/acls/recursively    -    -    -     -           POSIX ACLs
+A+    /path-or-glob/to/append/acls/recursively -    -    -     -           POSIX ACLs
+
+</pre></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Description">¶</a></h2><p><code class="filename">tmpfiles.d</code> configuration files provide a generic mechanism to define the
+    <span class="emphasis"><em>creation</em></span> of regular files, directories, pipes, and device nodes, adjustments to
+    their <span class="emphasis"><em>access mode, ownership, attributes, quota assignments, and contents</em></span>, and
+    finally their time-based <span class="emphasis"><em>removal</em></span>. It is mostly commonly used for volatile and
+    temporary files and directories (such as those located under <code class="filename">/run/</code>,
+    <code class="filename">/tmp/</code>, <code class="filename">/var/tmp/</code>, the API file systems such as
+    <code class="filename">/sys/</code> or <code class="filename">/proc/</code>, as well as some other directories below
+    <code class="filename">/var/</code>).</p><p><span class="command"><strong>systemd-tmpfiles</strong></span> uses this configuration to create volatile files and
+    directories during boot and to do periodic cleanup afterwards. See
+    <a href="systemd-tmpfiles.html#"><span class="citerefentry"><span class="refentrytitle">systemd-tmpfiles</span>(5)</span></a> for
+    the description of <code class="filename">systemd-tmpfiles-setup.service</code>,
+    <code class="filename">systemd-tmpfiles-clean.service</code>, and associated units.</p><p>System daemons frequently require private runtime directories below <code class="filename">/run/</code> to
+    store communication sockets and similar. For these, it is better to use
+    <code class="varname">RuntimeDirectory=</code> in their unit files (see
+    <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(5)</span></a> for
+    details), if the flexibility provided by <code class="filename">tmpfiles.d</code> is not required. The advantages
+    are that the configuration required by the unit is centralized in one place, and that the lifetime of the
+    directory is tied to the lifetime of the service itself. Similarly, <code class="varname">StateDirectory=</code>,
+    <code class="varname">CacheDirectory=</code>, <code class="varname">LogsDirectory=</code>, and
+    <code class="varname">ConfigurationDirectory=</code> should be used to create directories under
+    <code class="filename">/var/lib/</code>, <code class="filename">/var/cache/</code>, <code class="filename">/var/log/</code>, and
+    <code class="filename">/etc/</code>. <code class="filename">tmpfiles.d</code> should be used for files whose lifetime is
+    independent of any service or requires more complicated configuration.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Configuration Directories and Precedence">Configuration Directories and Precedence<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Configuration%20Directories%20and%20Precedence">¶</a></h2><p>Each configuration file shall be named in the style of
+    <code class="filename"><em class="replaceable"><code>package</code></em>.conf</code> or
+    <code class="filename"><em class="replaceable"><code>package</code></em>-<em class="replaceable"><code>part</code></em>.conf</code>.
+    The second variant should be used when it is desirable to make it
+    easy to override just this part of configuration.</p><p>Files in <code class="filename">/etc/tmpfiles.d</code> override files with the same name in
+    <code class="filename">/usr/lib/tmpfiles.d</code> and <code class="filename">/run/tmpfiles.d</code>. Files in
+    <code class="filename">/run/tmpfiles.d</code> override files with the same name in
+    <code class="filename">/usr/lib/tmpfiles.d</code>. Packages should install their configuration files in
+    <code class="filename">/usr/lib/tmpfiles.d</code>. Files in <code class="filename">/etc/tmpfiles.d</code> are reserved for
+    the local administrator, who may use this logic to override the configuration files installed by vendor
+    packages. All configuration files are sorted by their filename in lexicographic order, regardless of
+    which of the directories they reside in. If multiple files specify the same path, the entry in the file
+    with the lexicographically earliest name will be applied (note that lines suppressed due to the
+    "<code class="literal">!</code>" are filtered before application, meaning that if an early line carries the
+    exclamation mark and is suppressed because of that, a later line matching in path will be applied).  All
+    other conflicting entries will be logged as errors. When two lines are prefix path and suffix path of
+    each other, then the prefix line is always created first, the suffix later (and if removal applies to the
+    line, the order is reversed: the suffix is removed first, the prefix later). Lines that take globs are
+    applied after those accepting no globs. If multiple operations shall be applied on the same file (such as
+    ACL, xattr, file attribute adjustments), these are always done in the same fixed order. Except for those
+    cases, the files/directories are processed in the order they are listed.</p><p>If the administrator wants to disable a configuration file
+    supplied by the vendor, the recommended way is to place a symlink
+    to <code class="filename">/dev/null</code> in
+    <code class="filename">/etc/tmpfiles.d/</code> bearing the same filename.
+    </p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Configuration File Format">Configuration File Format<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Configuration%20File%20Format">¶</a></h2><p>The configuration format is one line per path, containing type, path, mode, ownership, age, and
+    argument fields. The lines are separated by newlines, the fields by whitespace:</p><pre class="programlisting">#Type Path        Mode User Group Age Argument…
+d     /run/user   0755 root root  10d -
+L     /tmp/foobar -    -    -     -   /dev/null</pre><p>Fields may contain C-style escapes. With the exception of the seventh field (the "argument") all
+    fields may be enclosed in quotes. Note that any whitespace found in the line after the beginning of the
+    argument field will be considered part of the argument field. To begin the argument field with a
+    whitespace character, use C-style escapes (e.g. "<code class="literal">\x20</code>").</p><div class="refsect2"><a name="id-1.7.5"></a><h3 id="Type">Type<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Type">¶</a></h3><p>The type consists of a single letter and optionally an exclamation mark ("<code class="literal">!</code>")
+      minus sign ("<code class="literal">-</code>"), and/or equals sign ("<code class="literal">=</code>").</p><p>The following line types are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="f"><span class="term"><code class="varname">f</code>, </span><span class="term"><code class="varname">f+</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#f">¶</a></dt><dd><p><code class="varname">f</code> will create a file if it does not exist yet. If the argument
+          parameter is given and the file did not exist yet, it will be written to the file.
+          <code class="varname">f+</code> will create or truncate the file. If the argument parameter is given, it will
+          be written to the file. Does not follow symlinks.</p></dd><dt id="w"><span class="term"><code class="varname">w</code>, </span><span class="term"><code class="varname">w+</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#w">¶</a></dt><dd><p>Write the argument parameter to a file, if the file exists.
+          If suffixed with <code class="varname">+</code>, the line will be appended to the file.
+          If your configuration writes multiple lines to the same file, use <code class="varname">w+</code>.
+          Lines of this type accept shell-style globs in place of normal path names.
+          The argument parameter will be written without a trailing newline.
+          C-style backslash escapes are interpreted. Follows symlinks.</p></dd><dt id="d"><span class="term"><code class="varname">d</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#d">¶</a></dt><dd><p>Create a directory. The mode and ownership will be adjusted if specified. Contents
+          of this directory are subject to time based cleanup if the age argument is specified.
+          </p></dd><dt id="D"><span class="term"><code class="varname">D</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#D">¶</a></dt><dd><p>Similar to <code class="varname">d</code>, but in addition the contents of the directory will
+          be removed when <code class="option">--remove</code> is used.</p></dd><dt id="e"><span class="term"><code class="varname">e</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#e">¶</a></dt><dd><p>Adjust the mode and ownership of existing directories and remove their contents
+          based on age.
+          Lines of this type accept shell-style globs in place of normal path names. Contents of the
+          directories are subject to time based cleanup if the age argument is specified. If the age argument
+          is "<code class="literal">0</code>", contents will be unconditionally deleted every time
+          <span class="command"><strong>systemd-tmpfiles --clean</strong></span> is run.</p><p>For this entry to be useful, at least one of the mode, user, group, or age arguments must be
+          specified, since otherwise this entry has no effect. As an exception, an entry with no effect may
+          be useful when combined with <code class="varname">!</code>, see the examples.</p></dd><dt id="v"><span class="term"><code class="varname">v</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#v">¶</a></dt><dd><p>Create a subvolume if the path does not exist yet, the file system supports
+          subvolumes (btrfs), and the system itself is installed into a subvolume (specifically: the root
+          directory <code class="filename">/</code> is itself a subvolume). Otherwise, create a normal directory, in
+          the same way as <code class="varname">d</code>.</p><p>A subvolume created with this line type is not assigned to any higher-level quota group. For
+          that, use <code class="varname">q</code> or <code class="varname">Q</code>, which allow creating simple quota group
+          hierarchies, see below.</p></dd><dt id="q"><span class="term"><code class="varname">q</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#q">¶</a></dt><dd><p>Create a subvolume or directory the same as <code class="varname">v</code>, but assign the
+          subvolume to the same higher-level quota groups as the parent. This ensures that higher-level
+          limits and accounting applied to the parent subvolume also include the specified subvolume. On
+          non-btrfs file systems, this line type is identical to <code class="varname">d</code>.</p><p>If the subvolume already exists, no change to the quota hierarchy is made, regardless of whether the
+          subvolume is already attached to a quota group or not. Also see <code class="varname">Q</code> below. See <a href="http://linux.die.net/man/8/btrfs-qgroup"><span class="citerefentry"><span class="refentrytitle">btrfs-qgroup</span>(8)</span></a> for
+          details about the btrfs quota group concept.</p></dd><dt id="Q"><span class="term"><code class="varname">Q</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#Q">¶</a></dt><dd><p>Create the subvolume or directory the same as <code class="varname">v</code>, but assign the
+          new subvolume to a new leaf quota group. Instead of copying the higher-level quota group
+          assignments from the parent as is done with <code class="varname">q</code>, the lowest quota group of the
+          parent subvolume is determined that is not the leaf quota group. Then, an "intermediary" quota
+          group is inserted that is one level below this level, and shares the same ID part as the specified
+          subvolume. If no higher-level quota group exists for the parent subvolume, a new quota group at
+          level 255 sharing the same ID as the specified subvolume is inserted instead. This new intermediary
+          quota group is then assigned to the parent subvolume's higher-level quota groups, and the specified
+          subvolume's leaf quota group is assigned to it.</p><p>Effectively, this has a similar effect as <code class="varname">q</code>, however introduces a new higher-level
+          quota group for the specified subvolume that may be used to enforce limits and accounting to the specified
+          subvolume and children subvolume created within it. Thus, by creating subvolumes only via
+          <code class="varname">q</code> and <code class="varname">Q</code>, a concept of "subtree quotas" is implemented. Each subvolume
+          for which <code class="varname">Q</code> is set will get a "subtree" quota group created, and all child subvolumes
+          created within it will be assigned to it. Each subvolume for which <code class="varname">q</code> is set will not get
+          such a "subtree" quota group, but it is ensured that they are added to the same "subtree" quota group as
+          their immediate parents.</p><p>It is recommended to use <code class="varname">Q</code> for subvolumes that typically contain further subvolumes,
+          and where it is desirable to have accounting and quota limits on all child subvolumes together. Examples for
+          <code class="varname">Q</code> are typically <code class="filename">/home/</code> or <code class="filename">/var/lib/machines/</code>. In
+          contrast, <code class="varname">q</code> should be used for subvolumes that either usually do not include further
+          subvolumes or where no accounting and quota limits are needed that apply to all child subvolumes
+          together. Examples for <code class="varname">q</code> are typically <code class="filename">/var/</code> or
+          <code class="filename">/var/tmp/</code>. </p><p>As with <code class="varname">q</code>, <code class="varname">Q</code> has no effect on the quota group hierarchy if the
+          subvolume already exists, regardless of whether the subvolume already belong to a quota group or not.
+          </p></dd><dt id="p"><span class="term"><code class="varname">p</code>, </span><span class="term"><code class="varname">p+</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#p">¶</a></dt><dd><p>Create a named pipe (FIFO) if it does not
+          exist yet. If suffixed with <code class="varname">+</code> and a file
+          already exists where the pipe is to be created, it will be
+          removed and be replaced by the pipe.</p></dd><dt id="L"><span class="term"><code class="varname">L</code>, </span><span class="term"><code class="varname">L+</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#L">¶</a></dt><dd><p>Create a symlink if it does not exist
+          yet. If suffixed with <code class="varname">+</code> and a file or
+          directory already exists where the symlink is to be created,
+          it will be removed and be replaced by the symlink. If the
+          argument is omitted, symlinks to files with the same name
+          residing in the directory
+          <code class="filename">/usr/share/factory/</code> are created. Note
+          that permissions and ownership on symlinks are ignored.
+          </p></dd><dt id="c"><span class="term"><code class="varname">c</code>, </span><span class="term"><code class="varname">c+</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#c">¶</a></dt><dd><p>Create a character device node if it does
+          not exist yet. If suffixed with <code class="varname">+</code> and a
+          file already exists where the device node is to be created,
+          it will be removed and be replaced by the device node. It is
+          recommended to suffix this entry with an exclamation mark to
+          only create static device nodes at boot, as udev will not
+          manage static device nodes that are created at runtime.
+          </p></dd><dt id="b"><span class="term"><code class="varname">b</code>, </span><span class="term"><code class="varname">b+</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#b">¶</a></dt><dd><p>Create a block device node if it does not
+          exist yet. If suffixed with <code class="varname">+</code> and a file
+          already exists where the device node is to be created, it
+          will be removed and be replaced by the device node. It is
+          recommended to suffix this entry with an exclamation mark to
+          only create static device nodes at boot, as udev will not
+          manage static device nodes that are created at runtime.
+          </p></dd><dt id="C"><span class="term"><code class="varname">C</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#C">¶</a></dt><dd><p>Recursively copy a file or directory, if the
+          destination files or directories do not exist yet or the
+          destination directory is empty. Note that this command will not
+          descend into subdirectories if the destination directory already
+          exists and is not empty. Instead, the entire copy operation is
+          skipped. If the argument is omitted, files from the source directory
+          <code class="filename">/usr/share/factory/</code> with the same name
+          are copied. Does not follow symlinks.</p></dd><dt id="x"><span class="term"><code class="varname">x</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#x">¶</a></dt><dd><p>Ignore a path during cleaning. Use this type
+          to exclude paths from clean-up as controlled with the Age
+          parameter. Note that lines of this type do not influence the
+          effect of <code class="varname">r</code> or <code class="varname">R</code>
+          lines. Lines of this type accept shell-style globs in place
+          of normal path names.  </p></dd><dt id="X"><span class="term"><code class="varname">X</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#X">¶</a></dt><dd><p>Ignore a path during cleaning. Use this type
+          to exclude paths from clean-up as controlled with the Age
+          parameter. Unlike <code class="varname">x</code>, this parameter will
+          not exclude the content if path is a directory, but only
+          directory itself. Note that lines of this type do not
+          influence the effect of <code class="varname">r</code> or
+          <code class="varname">R</code> lines. Lines of this type accept
+          shell-style globs in place of normal path names.
+          </p></dd><dt id="r"><span class="term"><code class="varname">r</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#r">¶</a></dt><dd><p>Remove a file or directory if it exists.
+          This may not be used to remove non-empty directories, use
+          <code class="varname">R</code> for that.  Lines of this type accept
+          shell-style globs in place of normal path
+          names. Does not follow symlinks.</p></dd><dt id="R"><span class="term"><code class="varname">R</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#R">¶</a></dt><dd><p>Recursively remove a path and all its
+          subdirectories (if it is a directory). Lines of this type
+          accept shell-style globs in place of normal path
+          names. Does not follow symlinks.</p></dd><dt id="z"><span class="term"><code class="varname">z</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#z">¶</a></dt><dd><p>Adjust the access mode, user and group ownership, and restore the SELinux security
+          context of a file or directory, if it exists. Lines of this type accept shell-style globs in place
+          of normal path names. Does not follow symlinks.</p></dd><dt id="Z"><span class="term"><code class="varname">Z</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#Z">¶</a></dt><dd><p>Recursively set the access mode, user and group ownership, and restore the SELinux
+          security context of a file or directory if it exists, as well as of its subdirectories and the
+          files contained therein (if applicable). Lines of this type accept shell-style globs in place of
+          normal path names. Does not follow symlinks.</p></dd><dt id="t"><span class="term"><code class="varname">t</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#t">¶</a></dt><dd><p>Set extended attributes, see <a href="http://man7.org/linux/man-pages/man5/attr.5.html"><span class="citerefentry"><span class="refentrytitle">attr</span>(5)</span></a> for details. The argument field should take one or more
+          assignment expressions in the form
+          <em class="replaceable"><code>namespace</code></em>.<em class="replaceable"><code>attribute</code></em>=<em class="replaceable"><code>value</code></em>,
+          for examples see below. Lines of this type accept shell-style globs in place of normal path
+          names. This can be useful for setting SMACK labels. Does not follow symlinks.</p><p>Please note that extended attributes settable with this line type are a different concept
+          from the Linux file attributes settable with <code class="varname">h</code>/<code class="varname">H</code>, see
+          below.</p></dd><dt id="T"><span class="term"><code class="varname">T</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#T">¶</a></dt><dd><p>Same as <code class="varname">t</code>, but operates recursively.</p></dd><dt id="h"><span class="term"><code class="varname">h</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#h">¶</a></dt><dd><p>Set Linux file/directory attributes. Lines of this type accept shell-style globs in
+          place of normal path names.</p><p>The format of the argument field is <code class="varname">[+-=][aAcCdDeijPsStTu]</code>. The prefix
+          <code class="varname">+</code> (the default one) causes the attribute(s) to be added; <code class="varname">-</code>
+          causes the attribute(s) to be removed; <code class="varname">=</code> causes the attributes to be set exactly
+          as the following letters. The letters "<code class="literal">aAcCdDeijPsStTu</code>" select the new attributes
+          for the files, see <a href="http://man7.org/linux/man-pages/man1/chattr.1.html"><span class="citerefentry"><span class="refentrytitle">chattr</span>(1)</span></a> for further information.
+          </p><p>Passing only <code class="varname">=</code> as argument resets all the file attributes listed above. It
+          has to be pointed out that the <code class="varname">=</code> prefix limits itself to the attributes
+          corresponding to the letters listed here. All other attributes will be left untouched. Does not
+          follow symlinks.</p><p>Please note that the Linux file attributes settable with this line type are a different
+          concept from the extended attributes settable with <code class="varname">t</code>/<code class="varname">T</code>,
+          see above.</p></dd><dt id="H"><span class="term"><code class="varname">H</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#H">¶</a></dt><dd><p>Sames as <code class="varname">h</code>, but operates recursively.</p></dd><dt id="a"><span class="term"><code class="varname">a</code>, </span><span class="term"><code class="varname">a+</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#a">¶</a></dt><dd><p>Set POSIX ACLs (access control lists), see <a href="http://man7.org/linux/man-pages/man5/acl.5.html"><span class="citerefentry"><span class="refentrytitle">acl</span>(5)</span></a>. If suffixed with <code class="varname">+</code>, the specified
+          entries will be added to the existing set. <span class="command"><strong>systemd-tmpfiles</strong></span> will automatically
+          add the required base entries for user and group based on the access mode of the file, unless base
+          entries already exist or are explicitly specified. The mask will be added if not specified
+          explicitly or already present. Lines of this type accept shell-style globs in place of normal path
+          names. This can be useful for allowing additional access to certain files. Does not follow
+          symlinks.</p></dd><dt id="A"><span class="term"><code class="varname">A</code>, </span><span class="term"><code class="varname">A+</code></span><a class="headerlink" title="Permalink to this term" href="tmpfiles.d.html#A">¶</a></dt><dd><p>Same as <code class="varname">a</code> and
+          <code class="varname">a+</code>, but recursive. Does not follow
+          symlinks.</p></dd></dl></div><p>If the exclamation mark ("<code class="literal">!</code>") is used, this line is only safe to execute during
+      boot, and can break a running system. Lines without the exclamation mark are presumed to be safe to
+      execute at any time, e.g. on package upgrades. <span class="command"><strong>systemd-tmpfiles</strong></span> will take lines with
+      an exclamation mark only into consideration, if the <code class="option">--boot</code> option is given.</p><p>For example:
+      </p><pre class="programlisting"># Make sure these are created by default so that nobody else can
+d /tmp/.X11-unix 1777 root root 10d
+
+# Unlink the X11 lock files
+r! /tmp/.X[0-9]*-lock</pre><p>
+      The second line in contrast to the first one would break a
+      running system, and will only be executed with
+      <code class="option">--boot</code>.</p><p>If the minus sign ("<code class="literal">-</code>") is used, this line failing to run successfully during
+      create (and only create) will not cause the execution of <span class="command"><strong>systemd-tmpfiles</strong></span> to return
+      an error.</p><p>For example:
+      </p><pre class="programlisting"># Modify sysfs but don't fail if we are in a container with a read-only /proc
+w- /proc/sys/vm/swappiness - - - - 10</pre><p>If the equals sign ("<code class="literal">=</code>") is used, the file types of existing objects in the specified path
+      are checked, and removed if they do not match. This includes any implicitly created parent directories (which can
+      be either directories or directory symlinks). For example, if there is a FIFO in place of one of the parent path
+      components it will be replaced with a directory.</p><p>Note that for all line types that result in creation of any kind of file node
+      (i.e. <code class="varname">f</code>/<code class="varname">F</code>,
+      <code class="varname">d</code>/<code class="varname">D</code>/<code class="varname">v</code>/<code class="varname">q</code>/<code class="varname">Q</code>,
+      <code class="varname">p</code>, <code class="varname">L</code>, <code class="varname">c</code>/<code class="varname">b</code> and <code class="varname">C</code>)
+      leading directories are implicitly created if needed, owned by root with an access mode of 0755. In order to
+      create them with different modes or ownership make sure to add appropriate <code class="varname">d</code> lines.</p></div><div class="refsect2"><a name="id-1.7.6"></a><h3 id="Path">Path<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Path">¶</a></h3><p>The file system path specification supports simple
+      specifier expansion, see below. The path (after expansion) must be
+      absolute.</p></div><div class="refsect2"><a name="id-1.7.7"></a><h3 id="Mode">Mode<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Mode">¶</a></h3><p>The file access mode to use when creating this file or
+      directory. If omitted or when set to "<code class="literal">-</code>", the
+      default is used: 0755 for directories, 0644 for all other file
+      objects.  For <code class="varname">z</code>, <code class="varname">Z</code> lines,
+      if omitted or when set to "<code class="literal">-</code>", the file access
+      mode will not be modified. This parameter is ignored for
+      <code class="varname">x</code>, <code class="varname">r</code>,
+      <code class="varname">R</code>, <code class="varname">L</code>, <code class="varname">t</code>,
+      and <code class="varname">a</code> lines.</p><p>Optionally, if prefixed with "<code class="literal">~</code>", the
+      access mode is masked based on the already set access bits for
+      existing file or directories: if the existing file has all
+      executable bits unset, all executable bits are removed from the
+      new access mode, too. Similarly, if all read bits are removed
+      from the old access mode, they will be removed from the new
+      access mode too, and if all write bits are removed, they will be
+      removed from the new access mode too. In addition, the
+      sticky/SUID/SGID bit is removed unless applied to a
+      directory. This functionality is particularly useful in
+      conjunction with <code class="varname">Z</code>.</p></div><div class="refsect2"><a name="id-1.7.8"></a><h3 id="User, Group">User, Group<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#User,%20Group">¶</a></h3><p>The user and group to use for this file or directory. This may either be a numeric ID or a
+      user/group name. If omitted or when set to "<code class="literal">-</code>", the user and group of the user who
+      invokes <span class="command"><strong>systemd-tmpfiles</strong></span> is used. For <code class="varname">z</code> and <code class="varname">Z</code>
+      lines, when omitted or when set to "<code class="literal">-</code>", the file ownership will not be modified. These
+      parameters are ignored for <code class="varname">x</code>, <code class="varname">r</code>, <code class="varname">R</code>,
+      <code class="varname">L</code>, <code class="varname">t</code>, and <code class="varname">a</code> lines.</p><p>This field should generally only reference system users/groups, i.e. users/groups that are
+      guaranteed to be resolvable during early boot. If this field references users/groups that only become
+      resolveable during later boot (i.e. after NIS, LDAP or a similar networked directory service become
+      available), execution of the operations declared by the line will likely fail. Also see <a class="ulink" href="https://systemd.io/UIDS-GIDS/#notes-on-resolvability-of-user-and-group-names" target="_top">Notes on
+      Resolvability of User and Group Names</a> for more information on requirements on system user/group
+      definitions.</p></div><div class="refsect2"><a name="id-1.7.9"></a><h3 id="Age">Age<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Age">¶</a></h3><p>The date field, when set, is used to decide what files to
+      delete when cleaning. If a file or directory is older than the
+      current time minus the age field, it is deleted. The field
+      format is a series of integers each followed by one of the
+      following suffixes for the respective time units:
+      <code class="constant">s</code>,
+      <code class="constant">m</code> or <code class="constant">min</code>,
+      <code class="constant">h</code>,
+      <code class="constant">d</code>,
+      <code class="constant">w</code>,
+      <code class="constant">ms</code>, and
+      <code class="constant">us</code>,
+      meaning seconds, minutes, hours, days, weeks,
+      milliseconds, and microseconds, respectively. Full names of the time units can
+      be used too.
+      </p><p>If multiple integers and units are specified, the time
+      values are summed. If an integer is given without a unit,
+      <code class="constant">s</code> is assumed.
+      </p><p>When the age is set to zero, the files are cleaned
+      unconditionally.</p><p>The age field only applies to lines starting with
+      <code class="varname">d</code>, <code class="varname">D</code>, <code class="varname">e</code>,
+      <code class="varname">v</code>, <code class="varname">q</code>,
+      <code class="varname">Q</code>, <code class="varname">C</code>, <code class="varname">x</code>
+      and <code class="varname">X</code>. If omitted or set to
+      "<code class="literal">-</code>", no automatic clean-up is done.</p><p>If the age field starts with a tilde character "<code class="literal">~</code>", clean-up is only applied to
+      files and directories one level inside the directory specified, but not the files and directories
+      immediately inside it.</p><p>The age of a file system entry is determined from its last
+      modification timestamp (mtime), its last access timestamp (atime),
+      and (except for directories) its last status change timestamp
+      (ctime). By default, any of these three (or two) values will
+      prevent cleanup if it is more recent than the current time minus
+      the age field. To restrict the deletion based on particular type
+      of file timestamps, the age-by argument can be used.</p><p>The age-by argument overrides the timestamp types to be used for the age check. It can be
+      specified by prefixing the age argument with a sequence of characters to specify the timestamp types
+      and a colon ("<code class="literal">:</code>"):
+      "<code class="literal"><em class="replaceable"><code>age-by</code></em>...:<em class="replaceable"><code>cleanup-age</code></em></code>".  The
+      argument can consist of <code class="constant">a</code> (<code class="constant">A</code> for directories),
+      <code class="constant">b</code> (<code class="constant">B</code> for directories), <code class="constant">c</code>
+      (<code class="constant">C</code> for directories), or <code class="constant">m</code> (<code class="constant">M</code> for
+      directories). Those respectively indicate access, creation, last status change, and last modification
+      time of a file system entry. The lower-case letter signifies that the given timestamp type should be
+      considered for files, while the upper-case letter signifies that the given timestamp type should be
+      considered for directories. See <a href="http://man7.org/linux/man-pages/man2/statx.2.html"><span class="citerefentry"><span class="refentrytitle">statx</span>(2)</span></a> file
+      timestamp fields for more details about timestamp types.</p><p>If not specified, the age-by field defaults to <code class="constant">abcmABM</code>, i.e. by default all
+      file timestamps are taken into consideration, with the exception of the last status change timestamp
+      (ctime) for directories. This is because the aging logic itself will alter the ctime whenever it
+      deletes a file inside it. To ensure that running the aging logic does not feed back into the next
+      iteration of itself, ctime for directories is ignored by default.</p><p>For example:</p><pre class="programlisting">
+# Files created and modified, and directories accessed more than
+# an hour ago in "/tmp/foo/bar", are subject to time-based cleanup.
+d /tmp/foo/bar - - - - bmA:1h -</pre><p>Note that while the aging algorithm is run a 'shared' BSD file lock (see <a href="http://man7.org/linux/man-pages/man2/flock.2.html"><span class="citerefentry"><span class="refentrytitle">flock</span>(2)</span></a>) is
+      taken on each directory the algorithm descends into (and each directory below that, and so on). If the
+      aging algorithm finds a lock is already taken on some directory, it (and everything below it) is
+      skipped. Applications may use this to temporarily exclude certain directory subtrees from the aging
+      algorithm: the applications can take a BSD file lock themselves, and as long as they keep it aging of
+      the directory and everything below it is disabled.</p></div><div class="refsect2"><a name="id-1.7.10"></a><h3 id="Argument">Argument<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Argument">¶</a></h3><p>For <code class="varname">L</code> lines determines the destination path of the symlink. For <code class="varname">c</code> and
+      <code class="varname">b</code>, determines the major/minor of the device node, with major and minor formatted as integers,
+      separated by "<code class="literal">:</code>", e.g.  "<code class="literal">1:3</code>". For <code class="varname">f</code>, <code class="varname">F</code>,
+      and <code class="varname">w</code>, the argument may be used to specify a short string that is written to the file,
+      suffixed by a newline. For <code class="varname">C</code>, specifies the source file or directory. For <code class="varname">t</code>
+      and <code class="varname">T</code>, determines extended attributes to be set. For <code class="varname">a</code> and
+      <code class="varname">A</code>, determines ACL attributes to be set. For <code class="varname">h</code> and <code class="varname">H</code>,
+      determines the file attributes to set. Ignored for all other lines.</p><p>This field can contain specifiers, see below.</p></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Specifiers">Specifiers<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Specifiers">¶</a></h2><p>Specifiers can be used in the "path" and "argument" fields.
+    An unknown or unresolvable specifier is treated as invalid configuration.
+    The following expansions are understood:</p><div class="table"><a name="id-1.8.3"></a><p class="title"><b>Table 1. Specifiers available</b></p><div class="table-contents"><table class="table" summary="Specifiers available" border="1"><colgroup><col align="left" class="spec"><col align="left" class="mean"><col align="left" class="detail"></colgroup><thead><tr><th align="left">Specifier</th><th align="left">Meaning</th><th align="left">Details</th></tr></thead><tbody><tr><td align="left"><a name="a"></a>"<code class="literal">%a</code>"</td><td align="left">Architecture</td><td align="left">A short string identifying the architecture of the local system. A string such as <code class="constant">x86</code>, <code class="constant">x86-64</code> or <code class="constant">arm64</code>. See the architectures defined for <code class="varname">ConditionArchitecture=</code> in <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a> for a full list.</td></tr><tr><td align="left"><a name="A"></a>"<code class="literal">%A</code>"</td><td align="left">Operating system image version</td><td align="left">The operating system image version identifier of the running system, as read from the <code class="varname">IMAGE_VERSION=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="b"></a>"<code class="literal">%b</code>"</td><td align="left">Boot ID</td><td align="left">The boot ID of the running system, formatted as string. See <a href="http://man7.org/linux/man-pages/man4/random.4.html"><span class="citerefentry"><span class="refentrytitle">random</span>(4)</span></a> for more information.</td></tr><tr><td align="left"><a name="B"></a>"<code class="literal">%B</code>"</td><td align="left">Operating system build ID</td><td align="left">The operating system build identifier of the running system, as read from the <code class="varname">BUILD_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left">"<code class="literal">%C</code>"</td><td align="left">System or user cache directory</td><td align="left">In <code class="option">--user</code> mode, this is the same as <code class="varname">$XDG_CACHE_HOME</code>, and <code class="filename">/var/cache</code> otherwise.</td></tr><tr><td align="left">"<code class="literal">%g</code>"</td><td align="left">User group</td><td align="left">This is the name of the group running the command. In case of the system instance this resolves to "<code class="literal">root</code>".</td></tr><tr><td align="left">"<code class="literal">%G</code>"</td><td align="left">User GID</td><td align="left">This is the numeric GID of the group running the command. In case of the system instance this resolves to <code class="constant">0</code>.</td></tr><tr><td align="left">"<code class="literal">%h</code>"</td><td align="left">User home directory</td><td align="left">This is the home directory of the user running the command. In case of the system instance this resolves to "<code class="literal">/root</code>".</td></tr><tr><td align="left"><a name="H"></a>"<code class="literal">%H</code>"</td><td align="left">Host name</td><td align="left">The hostname of the running system.</td></tr><tr><td align="left"><a name="l"></a>"<code class="literal">%l</code>"</td><td align="left">Short host name</td><td align="left">The hostname of the running system, truncated at the first dot to remove any domain component.</td></tr><tr><td align="left">"<code class="literal">%L</code>"</td><td align="left">System or user log directory</td><td align="left">In <code class="option">--user</code> mode, this is the same as <code class="varname">$XDG_CONFIG_HOME</code> with <code class="filename">/log</code> appended, and <code class="filename">/var/log</code> otherwise.</td></tr><tr><td align="left"><a name="m"></a>"<code class="literal">%m</code>"</td><td align="left">Machine ID</td><td align="left">The machine ID of the running system, formatted as string. See <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="M"></a>"<code class="literal">%M</code>"</td><td align="left">Operating system image identifier</td><td align="left">The operating system image identifier of the running system, as read from the <code class="varname">IMAGE_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="o"></a>"<code class="literal">%o</code>"</td><td align="left">Operating system ID</td><td align="left">The operating system identifier of the running system, as read from the <code class="varname">ID=</code> field of <code class="filename">/etc/os-release</code>. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left">"<code class="literal">%S</code>"</td><td align="left">System or user state directory</td><td align="left">In <code class="option">--user</code> mode, this is the same as <code class="varname">$XDG_CONFIG_HOME</code>, and <code class="filename">/var/lib</code> otherwise.</td></tr><tr><td align="left">"<code class="literal">%t</code>"</td><td align="left">System or user runtime directory</td><td align="left">In <code class="option">--user</code> mode, this is the same <code class="varname">$XDG_RUNTIME_DIR</code>, and <code class="filename">/run/</code> otherwise.</td></tr><tr><td align="left"><a name="T"></a>"<code class="literal">%T</code>"</td><td align="left">Directory for temporary files</td><td align="left">This is either <code class="filename">/tmp</code> or the path "<code class="literal">$TMPDIR</code>", "<code class="literal">$TEMP</code>" or "<code class="literal">$TMP</code>" are set to. (Note that the directory may be specified without a trailing slash.)</td></tr><tr><td align="left">"<code class="literal">%u</code>"</td><td align="left">User name</td><td align="left">This is the name of the user running the command. In case of the system instance this resolves to "<code class="literal">root</code>".</td></tr><tr><td align="left">"<code class="literal">%U</code>"</td><td align="left">User UID</td><td align="left">This is the numeric UID of the user running the command. In case of the system instance this resolves to <code class="constant">0</code>.</td></tr><tr><td align="left"><a name="v"></a>"<code class="literal">%v</code>"</td><td align="left">Kernel release</td><td align="left">Identical to <span class="command"><strong>uname -r</strong></span> output.</td></tr><tr><td align="left"><a name="V"></a>"<code class="literal">%V</code>"</td><td align="left">Directory for larger and persistent temporary files</td><td align="left">This is either <code class="filename">/var/tmp</code> or the path "<code class="literal">$TMPDIR</code>", "<code class="literal">$TEMP</code>" or "<code class="literal">$TMP</code>" are set to. (Note that the directory may be specified without a trailing slash.)</td></tr><tr><td align="left"><a name="w"></a>"<code class="literal">%w</code>"</td><td align="left">Operating system version ID</td><td align="left">The operating system version identifier of the running system, as read from the <code class="varname">VERSION_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="W"></a>"<code class="literal">%W</code>"</td><td align="left">Operating system variant ID</td><td align="left">The operating system variant identifier of the running system, as read from the <code class="varname">VARIANT_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="percent"></a>"<code class="literal">%%</code>"</td><td align="left">Single percent sign</td><td align="left">Use "<code class="literal">%%</code>" in place of "<code class="literal">%</code>" to specify a single percent sign.</td></tr></tbody></table></div></div><br class="table-break"></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#Examples">¶</a></h2><div class="example"><a name="id-1.9.2"></a><p class="title"><b>Example 1. Create directories with specific mode and ownership</b></p><div class="example-contents"><p>
+      <a href="http://linux.die.net/man/1/screen"><span class="citerefentry"><span class="refentrytitle">screen</span>(1)</span></a>,
+      needs two directories created at boot with specific modes and ownership:</p><pre class="programlisting"># /usr/lib/tmpfiles.d/screen.conf
+d /run/screens  1777 root screen 10d
+d /run/uscreens 0755 root screen 10d12h
+</pre><p>Contents of <code class="filename">/run/screens</code> and /run/uscreens will
+      be cleaned up after 10 and 10½ days, respectively.</p></div></div><br class="example-break"><div class="example"><a name="id-1.9.3"></a><p class="title"><b>Example 2. Create a directory with a SMACK attribute</b></p><div class="example-contents"><pre class="programlisting">D /run/cups - - - -
+t /run/cups - - - - security.SMACK64=printing user.attr-with-spaces="foo bar"
+      </pre><p>The directory will be owned by root and have default mode. Its contents are
+      not subject to time based cleanup, but will be obliterated when
+      <span class="command"><strong>systemd-tmpfiles --remove</strong></span> runs.</p></div></div><br class="example-break"><div class="example"><a name="id-1.9.4"></a><p class="title"><b>Example 3. Create a directory and prevent its contents from cleanup</b></p><div class="example-contents"><p>
+      <a href="http://linux.die.net/man/1/abrt"><span class="citerefentry"><span class="refentrytitle">abrt</span>(1)</span></a>,
+      needs a directory created at boot with specific mode and ownership and its content
+      should be preserved from the automatic cleanup applied to the contents of
+      <code class="filename">/var/tmp</code>:</p><pre class="programlisting"># /usr/lib/tmpfiles.d/tmp.conf
+d /var/tmp 1777 root root 30d
+</pre><pre class="programlisting"># /usr/lib/tmpfiles.d/abrt.conf
+d /var/tmp/abrt 0755 abrt abrt -
+</pre></div></div><br class="example-break"><div class="example"><a name="id-1.9.5"></a><p class="title"><b>Example 4. Apply clean up during boot and based on time</b></p><div class="example-contents"><pre class="programlisting"># /usr/lib/tmpfiles.d/dnf.conf
+r! /var/cache/dnf/*/*/download_lock.pid
+r! /var/cache/dnf/*/*/metadata_lock.pid
+r! /var/lib/dnf/rpmdb_lock.pid
+e  /var/cache/dnf/ - - - 30d
+</pre><p>The lock files will be removed during boot. Any files and directories in
+     <code class="filename">/var/cache/dnf/</code> will be removed after they have not been
+     accessed in 30 days.</p></div></div><br class="example-break"><div class="example"><a name="id-1.9.6"></a><p class="title"><b>Example 5. Empty the contents of a cache directory on boot</b></p><div class="example-contents"><pre class="programlisting"># /usr/lib/tmpfiles.d/krb5rcache.conf
+e! /var/cache/krb5rcache - - - 0
+</pre><p>Any files and subdirectories in <code class="filename">/var/cache/krb5rcache/</code>
+      will be removed on boot. The directory will not be created.
+      </p></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.10"></a><h2 id="/run/ and /var/run/"><code class="filename">/run/</code> and <code class="filename">/var/run/</code><a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#/run/%20and%20/var/run/">¶</a></h2><p><code class="filename">/var/run/</code> is a deprecated symlink to <code class="filename">/run/</code>, and
+    applications should use the latter. <span class="command"><strong>systemd-tmpfiles</strong></span> will warn if
+    <code class="filename">/var/run/</code> is used.</p></div><div class="refsect1"><a name="id-1.11"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="tmpfiles.d.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-tmpfiles.html#"><span class="citerefentry"><span class="refentrytitle">systemd-tmpfiles</span>(8)</span></a>,
+      <a href="systemd-delta.html#"><span class="citerefentry"><span class="refentrytitle">systemd-delta</span>(1)</span></a>,
+      <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(5)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/attr.5.html"><span class="citerefentry"><span class="refentrytitle">attr</span>(5)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/getfattr.1.html"><span class="citerefentry"><span class="refentrytitle">getfattr</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/setfattr.1.html"><span class="citerefentry"><span class="refentrytitle">setfattr</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/setfacl.1.html"><span class="citerefentry"><span class="refentrytitle">setfacl</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/getfacl.1.html"><span class="citerefentry"><span class="refentrytitle">getfacl</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/chattr.1.html"><span class="citerefentry"><span class="refentrytitle">chattr</span>(1)</span></a>,
+      <a href="http://linux.die.net/man/8/btrfs-subvolume"><span class="citerefentry"><span class="refentrytitle">btrfs-subvolume</span>(8)</span></a>,
+      <a href="http://linux.die.net/man/8/btrfs-qgroup"><span class="citerefentry"><span class="refentrytitle">btrfs-qgroup</span>(8)</span></a>
+    </p></div></div></body></html>

@@ -1,0 +1,85 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>pam_systemd_home</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="pam_systemd_home"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>pam_systemd_home — Automatically mount home directories managed by <code class="filename">systemd-homed.service</code> on
+    login, and unmount them on logout</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">pam_systemd_home.so</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="pam_systemd_home.html#Description">¶</a></h2><p><span class="command"><strong>pam_systemd_home</strong></span> ensures that home directories managed by
+    <a href="systemd-homed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-homed.service</span>(8)</span></a>
+    are automatically activated (mounted) on user login, and are deactivated (unmounted) when the last
+    session of the user ends.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="pam_systemd_home.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="suspend="><span class="term"><code class="varname">suspend=</code></span><a class="headerlink" title="Permalink to this term" href="pam_systemd_home.html#suspend=">¶</a></dt><dd><p>Takes a boolean argument. If true, the home directory of the user will be suspended
+        automatically during system suspend; if false it will remain active. Automatic suspending of the home
+        directory improves security substantially as secret key material is automatically removed from memory
+        before the system is put to sleep and must be re-acquired (through user re-authentication) when
+        coming back from suspend. It is recommended to set this parameter for all PAM applications that have
+        support for automatically re-authenticating via PAM on system resume. If multiple sessions of the
+        same user are open in parallel the user's home directory will be left unsuspended on system suspend
+        as long as at least one of the sessions does not set this parameter to on. Defaults to
+        off.</p><p>Note that TTY logins generally do not support re-authentication on system resume.
+        Re-authentication on system resume is primarily a concept implementable in graphical environments, in
+        the form of lock screens brought up automatically when the system goes to sleep. This means that if a
+        user concurrently uses graphical login sessions that implement the required re-authentication
+        mechanism and console logins that do not, the home directory is not locked during suspend, due to the
+        logic explained above. That said, it is possible to set this field for TTY logins too, ignoring the
+        fact that TTY logins actually don't support the re-authentication mechanism. In that case the TTY
+        sessions will appear hung until the user logs in on another virtual terminal (regardless if via
+        another TTY session or graphically) which will resume the home directory and unblock the original TTY
+        session. (Do note that lack of screen locking on TTY sessions means even though the TTY session
+        appears hung, keypresses can still be queued into it, and the existing screen contents be read
+        without re-authentication; this limitation is unrelated to the home directory management
+        <span class="command"><strong>pam_systemd_home</strong></span> and <code class="filename">systemd-homed.service</code> implement.)</p><p>Turning this option on by default is highly recommended for all sessions, but only if the
+        service managing these sessions correctly implements the aforementioned re-authentication. Note that
+        the re-authentication must take place from a component running outside of the user's context, so that
+        it does not require access to the user's home directory for operation. Traditionally, most desktop
+        environments do not implement screen locking this way, and need to be updated
+        accordingly.</p><p>This setting may also be controlled via the <code class="varname">$SYSTEMD_HOME_SUSPEND</code>
+        environment variable (see below), which <span class="command"><strong>pam_systemd_home</strong></span> reads during initialization and sets
+        for sessions. If both the environment variable is set and the module parameter specified the latter
+        takes precedence.</p></dd><dt id="debug="><span class="term"><code class="varname">debug</code>[<span class="optional">=</span>]</span><a class="headerlink" title="Permalink to this term" href="pam_systemd_home.html#debug=">¶</a></dt><dd><p>Takes an optional boolean argument. If yes or without the argument, the module will log
+        debugging information as it operates.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Module Types Provided">Module Types Provided<a class="headerlink" title="Permalink to this headline" href="pam_systemd_home.html#Module%20Types%20Provided">¶</a></h2><p>The module provides all four management operations: <code class="option">auth</code>, <code class="option">account</code>,
+    <code class="option">session</code>, <code class="option">password</code>.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Environment">Environment<a class="headerlink" title="Permalink to this headline" href="pam_systemd_home.html#Environment">¶</a></h2><p>The following environment variables are initialized by the module and available to the processes of the
+    user's session:</p><div class="variablelist"><dl class="variablelist"><dt id="$SYSTEMD_HOME=1"><span class="term"><code class="varname">$SYSTEMD_HOME=1</code></span><a class="headerlink" title="Permalink to this term" href="pam_systemd_home.html#%24SYSTEMD_HOME=1">¶</a></dt><dd><p>Indicates that the user's home directory is managed by <code class="filename">systemd-homed.service</code>.</p></dd><dt id="$SYSTEMD_HOME_SUSPEND="><span class="term"><code class="varname">$SYSTEMD_HOME_SUSPEND=</code></span><a class="headerlink" title="Permalink to this term" href="pam_systemd_home.html#%24SYSTEMD_HOME_SUSPEND=">¶</a></dt><dd><p>Indicates whether the session has been registered with the suspend mechanism enabled
+        or disabled (see above). The variable's value is either "<code class="literal">0</code>" or
+        "<code class="literal">1</code>". Note that the module both reads the variable when initializing, and sets it for
+        sessions.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Example">Example<a class="headerlink" title="Permalink to this headline" href="pam_systemd_home.html#Example">¶</a></h2><p>Here's an example PAM configuration fragment that permits users managed by
+    <code class="filename">systemd-homed.service</code> to log in:</p><pre class="programlisting">#%PAM-1.0
+auth      sufficient pam_unix.so
+<span class="command"><strong>-auth     sufficient pam_systemd_home.so</strong></span>
+auth      required   pam_deny.so
+
+account   required   pam_nologin.so
+<span class="command"><strong>-account  sufficient pam_systemd_home.so</strong></span>
+account   sufficient pam_unix.so
+account   required   pam_permit.so
+
+<span class="command"><strong>-password sufficient pam_systemd_home.so</strong></span>
+password  sufficient pam_unix.so sha512 shadow try_first_pass use_authtok
+password  required   pam_deny.so
+
+-session  optional   pam_keyinit.so revoke
+-session  optional   pam_loginuid.so
+<span class="command"><strong>-session  optional   pam_systemd_home.so</strong></span>
+-session  optional   pam_systemd.so
+session   required   pam_unix.so</pre></div><div class="refsect1"><a name="id-1.10"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="pam_systemd_home.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-homed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-homed.service</span>(8)</span></a>,
+      <a href="homed.conf.html#"><span class="citerefentry"><span class="refentrytitle">homed.conf</span>(5)</span></a>,
+      <a href="homectl.html#"><span class="citerefentry"><span class="refentrytitle">homectl</span>(1)</span></a>,
+      <a href="pam_systemd.html#"><span class="citerefentry"><span class="refentrytitle">pam_systemd</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/pam.conf.5.html"><span class="citerefentry"><span class="refentrytitle">pam.conf</span>(5)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/pam.d.5.html"><span class="citerefentry"><span class="refentrytitle">pam.d</span>(5)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man8/pam.8.html"><span class="citerefentry"><span class="refentrytitle">pam</span>(8)</span></a>
+    </p></div></div></body></html>

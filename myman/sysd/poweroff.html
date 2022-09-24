@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>halt</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="halt"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>halt, poweroff, reboot — Halt, power-off or reboot the machine</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">halt</code>  [OPTIONS...]</p></div><div class="cmdsynopsis"><p><code class="command">poweroff</code>  [OPTIONS...]</p></div><div class="cmdsynopsis"><p><code class="command">reboot</code>  [OPTIONS...]</p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="poweroff.html#Description">¶</a></h2><p><span class="command"><strong>halt</strong></span>, <span class="command"><strong>poweroff</strong></span>, <span class="command"><strong>reboot</strong></span> may be used to
+    halt, power-off, or reboot the machine. All three commands take the same options.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="poweroff.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--help"><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#--help">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--halt"><span class="term"><code class="option">--halt</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#--halt">¶</a></dt><dd><p>Halt the machine, regardless of which one of
+        the three commands is invoked.</p></dd><dt id="-p"><span class="term"><code class="option">-p</code>, </span><span class="term"><code class="option">--poweroff</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#-p">¶</a></dt><dd><p>Power-off the machine, regardless of which one
+        of the three commands is invoked.</p></dd><dt id="--reboot"><span class="term"><code class="option">--reboot</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#--reboot">¶</a></dt><dd><p>Reboot the machine, regardless of which one of
+        the three commands is invoked.</p></dd><dt id="-f"><span class="term"><code class="option">-f</code>, </span><span class="term"><code class="option">--force</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#-f">¶</a></dt><dd><p>Force immediate halt, power-off, or reboot. When
+        specified once, this results in an immediate but clean shutdown
+        by the system manager. When specified twice, this results in an
+        immediate shutdown without contacting the system manager. See the
+        description of <code class="option">--force</code> in
+        <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>
+        for more details.</p></dd><dt id="-w"><span class="term"><code class="option">-w</code>, </span><span class="term"><code class="option">--wtmp-only</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#-w">¶</a></dt><dd><p>Only write wtmp shutdown entry, do not
+        actually halt, power-off, reboot.</p></dd><dt id="-d"><span class="term"><code class="option">-d</code>, </span><span class="term"><code class="option">--no-wtmp</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#-d">¶</a></dt><dd><p>Do not write wtmp shutdown
+        entry.</p></dd><dt id="-n"><span class="term"><code class="option">-n</code>, </span><span class="term"><code class="option">--no-sync</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#-n">¶</a></dt><dd><p>Don't sync hard disks/storage media before
+        halt, power-off, reboot.</p></dd><dt id="--no-wall"><span class="term"><code class="option">--no-wall</code></span><a class="headerlink" title="Permalink to this term" href="poweroff.html#--no-wall">¶</a></dt><dd><p>Do not send wall message before halt,
+        power-off, reboot.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="poweroff.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code
+    otherwise.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="poweroff.html#Notes">¶</a></h2><p>These commands are implemented in a way that preserves basic compatibility with the original SysV
+    commands.  <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>
+    verbs <span class="command"><strong>halt</strong></span>, <span class="command"><strong>poweroff</strong></span>, <span class="command"><strong>reboot</strong></span> provide the same
+    functionality with some additional features.</p><p>Note that on many SysV systems <span class="command"><strong>halt</strong></span> used to be synonymous to
+    <span class="command"><strong>poweroff</strong></span>, i.e. both commands would equally result in powering the machine off. systemd
+    is more accurate here, and <span class="command"><strong>halt</strong></span> results in halting the machine only (leaving power
+    on), and <span class="command"><strong>poweroff</strong></span> is required to actually power it off.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="poweroff.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>,
+      <a href="shutdown.html#"><span class="citerefentry"><span class="refentrytitle">shutdown</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/wall.1.html"><span class="citerefentry"><span class="refentrytitle">wall</span>(1)</span></a>
+    </p></div></div></body></html>

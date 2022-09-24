@@ -1,0 +1,90 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-sysusers</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-sysusers"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-sysusers, systemd-sysusers.service — Allocate system users and groups</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">systemd-sysusers</code>  [OPTIONS...] [<em class="replaceable"><code>CONFIGFILE</code></em>...]</p></div><p><code class="filename">systemd-sysusers.service</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-sysusers.html#Description">¶</a></h2><p><span class="command"><strong>systemd-sysusers</strong></span> creates system users and
+    groups, based on the file format and location specified in
+    <a href="sysusers.d.html#"><span class="citerefentry"><span class="refentrytitle">sysusers.d</span>(5)</span></a>.
+    </p><p>If invoked with no arguments, it applies all directives from all files
+    found in the directories specified by
+    <a href="sysusers.d.html#"><span class="citerefentry"><span class="refentrytitle">sysusers.d</span>(5)</span></a>.
+    When invoked with positional arguments, if option
+    <code class="option">--replace=<em class="replaceable"><code>PATH</code></em></code> is specified, arguments
+    specified on the command line are used instead of the configuration file
+    <em class="replaceable"><code>PATH</code></em>. Otherwise, just the configuration specified by
+    the command line arguments is executed. The string "<code class="literal">-</code>" may be
+    specified instead of a filename to instruct <span class="command"><strong>systemd-sysusers</strong></span>
+    to read the configuration from standard input. If only the basename of a file is
+    specified, all configuration directories are searched for a matching file and
+    the file found that has the highest priority is executed.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="systemd-sysusers.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--root=root"><span class="term"><code class="option">--root=<em class="replaceable"><code>root</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#--root=root">¶</a></dt><dd><p>Takes a directory path as an argument. All
+        paths will be prefixed with the given alternate
+        <em class="replaceable"><code>root</code></em> path, including config search
+        paths. </p></dd><dt id="--image=image"><span class="term"><code class="option">--image=<em class="replaceable"><code>image</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#--image=image">¶</a></dt><dd><p>Takes a path to a disk image file or block device node. If specified all operations
+        are applied to file system in the indicated disk image. This is similar to <code class="option">--root=</code>
+        but operates on file systems stored in disk images or block devices. The disk image should either
+        contain just a file system or a set of file systems within a GPT partition table, following the
+        <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions
+        Specification</a>. For further information on supported disk images, see
+        <a href="systemd-nspawn.html#"><span class="citerefentry"><span class="refentrytitle">systemd-nspawn</span>(1)</span></a>'s
+        switch of the same name.</p></dd><dt id="--replace=PATH"><span class="term"><code class="option">--replace=<em class="replaceable"><code>PATH</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#--replace=PATH">¶</a></dt><dd><p>When this option is given, one ore more positional arguments
+        must be specified. All configuration files found in the directories listed in
+        <a href="sysusers.d.html#"><span class="citerefentry"><span class="refentrytitle">sysusers.d</span>(5)</span></a>
+        will be read, and the configuration given on the command line will be
+        handled instead of and with the same priority as the configuration file
+        <em class="replaceable"><code>PATH</code></em>.</p><p>This option is intended to be used when package installation scripts
+        are running and files belonging to that package are not yet available on
+        disk, so their contents must be given on the command line, but the admin
+        configuration might already exist and should be given higher priority.
+        </p><div class="example"><a name="id-1.6.3.3.2.3"></a><p class="title"><b>Example 1. RPM installation script for radvd</b></p><div class="example-contents"><pre class="programlisting">echo 'u radvd - "radvd daemon"' | \
+          systemd-sysusers --replace=/usr/lib/sysusers.d/radvd.conf -</pre><p>This will create the radvd user as if
+          <code class="filename">/usr/lib/sysusers.d/radvd.conf</code> was already on disk.
+          An admin might override the configuration specified on the command line by
+          placing <code class="filename">/etc/sysusers.d/radvd.conf</code> or even
+          <code class="filename">/etc/sysusers.d/00-overrides.conf</code>.</p><p>Note that this is the expanded form, and when used in a package, this
+          would be written using a macro with "radvd" and a file containing the
+          configuration line as arguments.</p></div></div><br class="example-break"></dd><dt id="--inline"><span class="term"><code class="option">--inline</code></span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#--inline">¶</a></dt><dd><p>Treat each positional argument as a separate configuration
+        line instead of a file name.</p></dd><dt id="--cat-config"><span class="term"><code class="option">--cat-config</code></span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#--cat-config">¶</a></dt><dd><p>Copy the contents of config files to standard output.
+      Before each file, the filename is printed as a comment.</p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Credentials">Credentials<a class="headerlink" title="Permalink to this headline" href="systemd-sysusers.html#Credentials">¶</a></h2><p><span class="command"><strong>systemd-sysusers</strong></span> supports the service credentials logic as implemented by
+    <code class="varname">LoadCredential=</code>/<code class="varname">SetCredential=</code> (see
+    <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(1)</span></a> for
+    details). The following credentials are used when passed in:</p><div class="variablelist"><dl class="variablelist"><dt id="passwd.hashed-password.user"><span class="term">"<code class="literal">passwd.hashed-password.<em class="replaceable"><code>user</code></em></code>"</span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#passwd.hashed-password.user">¶</a></dt><dd><p>A UNIX hashed password string to use for the specified user, when creating an entry
+        for it. This is particularly useful for the "<code class="literal">root</code>" user as it allows provisioning
+        the default root password to use via a unit file drop-in or from a container manager passing in this
+        credential. Note that setting this credential has no effect if the specified user account already
+        exists. This credential is hence primarily useful in first boot scenarios or systems that are fully
+        stateless and come up with an empty <code class="filename">/etc/</code> on every boot.</p></dd><dt id="passwd.plaintext-password.user"><span class="term">"<code class="literal">passwd.plaintext-password.<em class="replaceable"><code>user</code></em></code>"</span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#passwd.plaintext-password.user">¶</a></dt><dd><p>Similar to "<code class="literal">passwd.hashed-password.<em class="replaceable"><code>user</code></em></code>"
+        but expect a literal, plaintext password, which is then automatically hashed before used for the user
+        account. If both the hashed and the plaintext credential are specified for the same user the
+        former takes precedence. It's generally recommended to specify the hashed version; however in test
+        environments with weaker requirements on security it might be easier to pass passwords in plaintext
+        instead.</p></dd><dt id="passwd.shell.user"><span class="term">"<code class="literal">passwd.shell.<em class="replaceable"><code>user</code></em></code>"</span><a class="headerlink" title="Permalink to this term" href="systemd-sysusers.html#passwd.shell.user">¶</a></dt><dd><p>Specifies the shell binary to use for the specified account when creating it.</p></dd></dl></div><p>Note that by default the <code class="filename">systemd-sysusers.service</code> unit file is set up to
+    inherit the "<code class="literal">passwd.hashed-password.root</code>",
+    "<code class="literal">passwd.plaintext-password.root</code>" and "<code class="literal">passwd.shell.root</code>" credentials
+    from the service manager. Thus, when invoking a container with an unpopulated <code class="filename">/etc/</code>
+    for the first time it is possible to configure the root user's password to be "<code class="literal">systemd</code>"
+    like this:</p><pre class="programlisting"># systemd-nspawn --image=… --set-credential=passwd.hashed-password.root:'$y$j9T$yAuRJu1o5HioZAGDYPU5d.$F64ni6J2y2nNQve90M/p0ZP0ECP/qqzipNyaY9fjGpC' …</pre><p>Note again that the data specified in these credentials is consulted only when creating an account
+    for the first time, it may not be used for changing the password or shell of an account that already
+    exists.</p><p>Use <a href="https://www.freedesktop.org/software/systemd/man/mkpasswd.html#"><span class="citerefentry"><span class="refentrytitle">mkpasswd</span>(1)</span></a>
+    for generating UNIX password hashes from the command line.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="systemd-sysusers.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code
+    otherwise.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-sysusers.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sysusers.d.html#"><span class="citerefentry"><span class="refentrytitle">sysusers.d</span>(5)</span></a>,
+      <a class="ulink" href="https://systemd.io/UIDS-GIDS" target="_top">Users, Groups, UIDs and GIDs on systemd systems</a>,
+      <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(1)</span></a>,
+      <a href="https://www.freedesktop.org/software/systemd/man/mkpasswd.html#"><span class="citerefentry"><span class="refentrytitle">mkpasswd</span>(1)</span></a>
+    </p></div></div></body></html>

@@ -1,0 +1,51 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_event_source_set_floating</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_event_source_set_floating"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_event_source_set_floating, sd_event_source_get_floating — Set or retrieve 'floating' state of event sources</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-event.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_source_set_floating</b>(</code></td><td>sd_event_source *<var class="pdparam">source</var>, </td></tr><tr><td> </td><td>int <var class="pdparam">floating</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_source_get_floating</b>(</code></td><td>sd_event_source *<var class="pdparam">source</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_event_source_set_floating.html#Description">¶</a></h2><p><code class="function">sd_event_source_set_floating()</code> takes a boolean and sets the 'floating' state
+    of the specified event source object. This is used to change the direction of reference counts for the
+    object and the event loop it is associated with. In non-floating mode, the event source object holds a
+    reference to the event loop object, but not vice versa. The creator of the event source object must hold
+    a reference to it as long as the source should exist. In floating mode, the event loop holds a reference
+    to the source object, and will decrease the reference count when being freed. This means that a reference
+    to the event loop should be held to prevent both from being destroyed.</p><p>Various calls that allocate event source objects (i.e.
+    <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+    <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a> and
+    similar) will automatically set an event source object to 'floating' mode if the caller passed
+    <code class="constant">NULL</code> in the parameter used to return a reference to the event source object.
+    Nevertheless, it may be necessary to gain temporary access to the source object, for example to adjust
+    event source properties after allocation (e.g. its priority or description string). In those cases the
+    object may be created in non-floating mode, and the returned reference used to adjust the properties, and
+    the object marked as floating afterwards, and the reference in the caller dropped.</p><p><code class="function">sd_event_source_get_floating()</code> may be used to query the current 'floating'
+    state of the event source object <em class="parameter"><code>source</code></em>. It returns zero if 'floating' mode is
+    off, positive if it is on.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_event_source_set_floating.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_event_source_set_floating()</code> and
+    <code class="function">sd_event_source_get_floating()</code> return a non-negative integer. On failure, they
+    return a negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_event_source_set_floating.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_set_floating.html#-EINVAL">¶</a></dt><dd><p><em class="parameter"><code>source</code></em> is not a valid pointer to an
+          <span class="structname">sd_event_source</span> object.</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_set_floating.html#-ECHILD">¶</a></dt><dd><p>The event loop has been created in a different process.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_event_source_set_floating.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_event_source_set_floating.html#See%20Also">¶</a></h2><p>
+      <a href="sd-event.html#"><span class="citerefentry"><span class="refentrytitle">sd-event</span>(3)</span></a>,
+      <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+      <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+      <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>,
+      <a href="sd_event_add_child.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_child</span>(3)</span></a>,
+      <a href="sd_event_add_inotify.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_inotify</span>(3)</span></a>,
+      <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>,
+      <a href="sd_event_source_set_description.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_description</span>(3)</span></a>,
+      <a href="sd_event_source_set_priority.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_priority</span>(3)</span></a>
+    </p></div></div></body></html>

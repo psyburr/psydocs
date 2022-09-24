@@ -1,20 +1,24 @@
 # script
 
-> Record all terminal output to file.
+> Make a typescript file of a terminal session.
 > More information: <https://manned.org/script>.
 
-- Record a new session to a file named `typescript` in the current directory:
+- Start recording in file named "typescript":
 
 `script`
 
-- Record a new session to a custom filepath:
+- Stop recording:
 
-`script {{path/to/session.out}}`
+`exit`
 
-- Record a new session, appending to an existing file:
+- Start recording in a given file:
 
-`script -a {{path/to/session.out}}`
+`script {{logfile.log}}`
 
-- Record timing information (data is outputted to the standard error):
+- Append to an existing file:
 
-`script -t 2> {{path/to/timingfile}}`
+`script -a {{logfile.log}}`
+
+- Execute quietly without start and done messages:
+
+`script -q {{logfile.log}}`

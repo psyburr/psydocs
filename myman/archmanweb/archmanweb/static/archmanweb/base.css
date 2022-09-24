@@ -1,0 +1,329 @@
+#archnavbar form {
+    display: inline-block !important;
+    font-size: 14px !important;
+    line-height: 14px !important;
+    padding: 14px 15px 0px !important;
+}
+#archnavbar input {
+    border: none;
+    height: 17px;
+    line-height: 14px !important;
+}
+
+/* simple reset */
+* {
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
+}
+
+/* general styling */
+body {
+/*    background: #f6f9fc; */
+    color: #222;
+    font: normal 100% sans-serif;
+    /* set min-width to prevent over-shrinking of the body when
+     * a flex-container child refuses to shrink */
+    min-width: min-content;
+}
+
+p {
+    margin: .33em 0 1em;
+}
+
+ol,
+ul {
+    margin-bottom: 1em;
+    padding-left: 2em;
+}
+
+ul {
+    list-style: square;
+}
+
+code {
+    font: 1.2em monospace;
+    background: #ffd;
+    padding: 0.15em 0.25em;
+}
+
+pre {
+    font: 1.2em monospace;
+    border: 1px solid #bdb;
+    background: #dfd;
+    padding: 0.5em;
+    margin: 1em;
+    overflow: auto;
+    white-space: pre-wrap;
+}
+
+pre code {
+    display: block;
+    background: none;
+    overflow: auto;
+    white-space: pre-wrap;
+}
+
+nav {
+    margin-bottom: 1em;
+}
+
+/* forms and input styling */
+form p {
+    margin: 0.5em 0;
+}
+
+form ul.errorlist {
+    color: red;
+    margin: 0.5em 0;
+}
+
+fieldset {
+    border: 0;
+}
+
+label {
+    vertical-align: top;
+    display: inline-block;
+}
+
+input {
+    vertical-align: middle;
+}
+
+input[type=text],
+input[type=search] {
+    padding: 0.10em;
+}
+
+input[type=submit] {
+    padding: 0.1em 0.6em;
+}
+
+select[multiple] {
+    padding: 1px 0;
+}
+
+select[multiple] option {
+    padding: 0 0.5em 0 0.3em;
+}
+
+/* search and listing filter parameters */
+.filter-parameters {
+    margin-bottom: 1em;
+}
+
+.filter-parameters h3 {
+    font-size: 1em;
+    margin-top: 0;
+}
+
+.filter-parameters div.flex-container {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    /* compensate for the margin-bottom of the flex-container items */
+    margin-bottom: -0.85em;
+}
+
+.filter-parameters .flex-container div {
+    margin-bottom: 1em;
+    font-size: 0.85em;
+}
+
+.filter-parameters .flex-container div:not(:last-child) {
+    margin-right: 1.65em;
+}
+
+.filter-parameters legend {
+    display: none;
+}
+
+.filter-parameters label {
+    display: block;
+}
+
+/* scale fonts down to a sane default (16 * .875 = 14px) */
+#content {
+    font-size: 0.875em;
+}
+
+/* Arch style for links */
+a {
+    text-decoration: none;
+}
+
+a:link,
+th a:visited {
+    color: #07b;
+}
+
+a:visited {
+    color: #666;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #666;
+}
+
+a:active {
+    color: #e90;
+}
+
+/* headings */
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid #888;
+}
+
+h3 {
+    font-size: 1.25em;
+    margin-top: .5em;
+}
+
+h4 {
+    font-size: 1.15em;
+    margin-top: 1em;
+}
+
+h5 {
+    font-size: 1em;
+    margin-top: 1em;
+}
+
+/* general layout */
+main#content {
+    display: flex;
+    margin: 1em;
+    justify-content: center;
+}
+
+#content-left {
+    display: block;
+    order: 1;
+    /* max-width of the content has to be specified here to make it play nice
+     * with flex. Setting it to max-content would prevent growing beyond the
+     * largest child element. */
+    max-width: 80ch;
+    /* set min-width to prevent excessive shrinking
+     * (and to force shrinking in case there is an element which refuses to
+     * shrink, e.g. a very long line in a <pre> tag) */
+    min-width: 40ch;
+    /* set initial/ideal width to 70% */
+    flex-basis: 70%;
+    /* shrink factor of 0 effectively means that it will not shrink below 70% of
+     * the available space (the sidebar will be shrinked instead) */
+    flex-shrink: 0;
+    /* increase grow factor to expand into the extra space at the cost of the
+     * sidebar */
+    flex-grow: 1;
+}
+
+#sidebar {
+    display: block;
+    order: 2;
+    margin-left: 2em;
+    /* set min-width to prevent excessive shrinking
+     * (and to force shrinking in case there is an element which refuses to
+     * shrink, e.g. a very long word) */
+    min-width: 20ch;
+    /* set max-width to prevent excessive growing */
+    max-width: 40ch;
+    /* sets flex base width to 30% (complement of the main content's base) */
+    flex-basis: 30%;
+}
+#sidebar > * {
+    margin-bottom: 1em;
+}
+
+/* responsive layout */
+@media only screen and (max-width: 700px) {
+    main#content {
+        /* place the items in vertical direction */
+        flex-direction: column;
+    }
+
+    #content-left,
+    #sidebar {
+        margin: 0 0 1rem;
+    }
+}
+
+/* footer */
+footer {
+    clear: both;
+    margin: 2em 1em 1em;
+}
+
+footer p {
+    margin: .5em 0;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.box {
+    margin-bottom: 1.5em;
+    padding: 0.65em;
+    background: #ecf2f5;
+    border: 1px solid #bcd;
+}
+
+/* package info definition list */
+.package-info > dl {
+    padding-left: 1em;
+}
+.package-info dd {
+    padding-left: 1em;
+    word-break: break-word;
+}
+
+/* workaround for multi-column lists in the listing view
+ * (width needs to be explicit because the main#content has display:flex) */
+article.single-column-content {
+    width: 100%;
+}
+
+/* multi-column lists (used for listings) */
+ul.multi-column,
+ol.multi-column {
+    column-width: 20em;
+    column-gap: 1.5em;
+    padding-left: 0.5em;
+}
+ul.multi-column > li,
+ol.multi-column > li {
+    /* needed to preserve bullets/numbers in multi-column layout */
+    margin-left: 2em;
+}
+
+/* styled tables */
+table.styled-table {
+    background: #ecf2f5 none repeat scroll 0 0;
+    border: 1px solid #bcd;
+    margin-bottom: 1.5em;
+    padding: 0.65em;
+    font-size: 1.00em;
+    border-collapse: collapse;
+}
+
+table.styled-table tr td,
+table.styled-table th {
+    padding: 0.35em 0.90em;
+    text-align: left;
+    /*white-space: nowrap;*/
+}
+
+table.styled-table th {
+    background: rgb(217, 230, 236) none repeat scroll 0 0;
+    border-bottom: 1px solid #bcd;
+}
+
+table.styled-table tr:hover {
+    background-color: rgb(228, 237, 241)
+}
+
+table.styled-table tr td {
+    border-top: 1px dotted #bcd;
+}

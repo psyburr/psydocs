@@ -1,0 +1,122 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-fstab-generator</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-fstab-generator"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-fstab-generator — Unit generator for /etc/fstab</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">/usr/lib/systemd/system-generators/systemd-fstab-generator</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-fstab-generator.html#Description">¶</a></h2><p><code class="filename">systemd-fstab-generator</code> is a generator
+    that translates <code class="filename">/etc/fstab</code> (see
+    <a href="http://man7.org/linux/man-pages/man5/fstab.5.html"><span class="citerefentry"><span class="refentrytitle">fstab</span>(5)</span></a>
+    for details) into native systemd units early at boot and when
+    configuration of the system manager is reloaded. This will
+    instantiate mount and swap units as necessary.</p><p>The <code class="varname">passno</code> field is treated like a simple
+    boolean, and the ordering information is discarded. However, if
+    the root file system is checked, it is checked before all the
+    other file systems.</p><p>See
+    <a href="systemd.mount.html#"><span class="citerefentry"><span class="refentrytitle">systemd.mount</span>(5)</span></a>
+    and
+    <a href="systemd.swap.html#"><span class="citerefentry"><span class="refentrytitle">systemd.swap</span>(5)</span></a>
+    for more information about special <code class="filename">/etc/fstab</code>
+    mount options this generator understands.</p><p>One special topic is handling of symbolic links.  Historical init
+    implementations supported symlinks in <code class="filename">/etc/fstab</code>.
+    Because mount units will refuse mounts where the target is a symbolic link,
+    this generator will resolve any symlinks as far as possible when processing
+    <code class="filename">/etc/fstab</code> in order to enhance backwards compatibility.
+    If a symlink target does not exist at the time that this generator runs, it
+    is assumed that the symlink target is the final target of the mount.</p><p><code class="filename">systemd-fstab-generator</code> implements
+    <a href="systemd.generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd.generator</span>(7)</span></a>.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Kernel Command Line">Kernel Command Line<a class="headerlink" title="Permalink to this headline" href="systemd-fstab-generator.html#Kernel%20Command%20Line">¶</a></h2><p><code class="filename">systemd-fstab-generator</code> understands the
+    following kernel command line parameters:</p><div class="variablelist"><dl class="variablelist"><dt id="fstab="><span class="term"><code class="varname">fstab=</code>, </span><span class="term"><code class="varname">rd.fstab=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#fstab=">¶</a></dt><dd><p>Takes a boolean argument. Defaults to
+        "<code class="literal">yes</code>". If "<code class="literal">no</code>", causes the
+        generator to ignore any mounts or swap devices configured in
+        <code class="filename">/etc/fstab</code>. <code class="varname">rd.fstab=</code>
+        is honored only by the initial RAM disk (initrd) while
+        <code class="varname">fstab=</code> is honored by both the main system
+        and the initrd.</p></dd><dt id="root="><span class="term"><code class="varname">root=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#root=">¶</a></dt><dd><p>Configures the operating system's root filesystem to mount when running in the
+        initrd. This accepts a device node path (usually <code class="filename">/dev/disk/by-uuid/…</code> or
+        <code class="filename">/dev/disk/by-label/…</code> or similar), or the special values "<code class="literal">gpt-auto</code>"
+        and "<code class="literal">tmpfs</code>".</p><p>Use "<code class="literal">gpt-auto</code>" to explicitly request automatic root file system discovery via
+        <a href="systemd-gpt-auto-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-gpt-auto-generator</span>(8)</span></a>.</p><p>Use "<code class="literal">tmpfs</code>" in order to mount a <a href="http://man7.org/linux/man-pages/man5/tmpfs.5.html"><span class="citerefentry"><span class="refentrytitle">tmpfs</span>(5)</span></a> file
+        system as root file system of the OS. This is useful in combination with
+        <code class="varname">mount.usr=</code> (see below) in order to combine a volatile root file system with a
+        separate, immutable <code class="filename">/usr/</code> file system. Also see
+        <code class="varname">systemd.volatile=</code> below.</p></dd><dt id="rootfstype="><span class="term"><code class="varname">rootfstype=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#rootfstype=">¶</a></dt><dd><p>Takes the root filesystem type that will be
+        passed to the mount command. <code class="varname">rootfstype=</code> is
+        honored by the initrd.</p></dd><dt id="rootflags="><span class="term"><code class="varname">rootflags=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#rootflags=">¶</a></dt><dd><p>Takes the root filesystem mount options to use. <code class="varname">rootflags=</code> is
+        honored by the initrd.</p><p>Note that unlike most kernel command line options this setting does not override settings made
+        in configuration files (specifically: the mount option string in
+        <code class="filename">/etc/fstab</code>). See
+        <a href="systemd-remount-fs.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-remount-fs.service</span>(8)</span></a>.</p></dd><dt id="mount.usr="><span class="term"><code class="varname">mount.usr=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#mount.usr=">¶</a></dt><dd><p>Takes the <code class="filename">/usr/</code> filesystem
+        to be mounted by the initrd. If
+        <code class="varname">mount.usrfstype=</code> or
+        <code class="varname">mount.usrflags=</code> is set, then
+        <code class="varname">mount.usr=</code> will default to the value set in
+        <code class="varname">root=</code>.</p><p>Otherwise, this parameter defaults to the
+        <code class="filename">/usr/</code> entry found in
+        <code class="filename">/etc/fstab</code> on the root filesystem.</p><p><code class="varname">mount.usr=</code> is honored by the initrd.
+        </p></dd><dt id="mount.usrfstype="><span class="term"><code class="varname">mount.usrfstype=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#mount.usrfstype=">¶</a></dt><dd><p>Takes the <code class="filename">/usr/</code> filesystem
+        type that will be passed to the mount command. If
+        <code class="varname">mount.usr=</code> or
+        <code class="varname">mount.usrflags=</code> is set, then
+        <code class="varname">mount.usrfstype=</code> will default to the value
+        set in <code class="varname">rootfstype=</code>.</p><p>Otherwise, this value will be read from the
+        <code class="filename">/usr/</code> entry in
+        <code class="filename">/etc/fstab</code> on the root filesystem.</p><p><code class="varname">mount.usrfstype=</code> is honored by the
+        initrd.</p></dd><dt id="mount.usrflags="><span class="term"><code class="varname">mount.usrflags=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#mount.usrflags=">¶</a></dt><dd><p>Takes the <code class="filename">/usr/</code> filesystem
+        mount options to use. If <code class="varname">mount.usr=</code> or
+        <code class="varname">mount.usrfstype=</code> is set, then
+        <code class="varname">mount.usrflags=</code> will default to the value
+        set in <code class="varname">rootflags=</code>.</p><p>Otherwise, this value will be read from the
+        <code class="filename">/usr/</code> entry in
+        <code class="filename">/etc/fstab</code> on the root filesystem.</p><p><code class="varname">mount.usrflags=</code> is honored by the
+        initrd.</p></dd><dt id="systemd.volatile="><span class="term"><code class="varname">systemd.volatile=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#systemd.volatile=">¶</a></dt><dd><p>Controls whether the system shall boot up in volatile mode. Takes a boolean argument or the
+        special value <code class="option">state</code>.</p><p>If false (the default), this generator makes no changes to the mount tree and the system is booted up in
+        normal mode.</p><p>If true the generator ensures
+        <a href="systemd-volatile-root.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-volatile-root.service</span>(8)</span></a>
+        is run as part of the initial RAM disk ("initrd"). This service changes the mount table before transitioning to
+        the host system, so that a volatile memory file system ("<code class="literal">tmpfs</code>") is used as root directory,
+        with only <code class="filename">/usr/</code> mounted into it from the configured root file system, in read-only
+        mode. This way the system operates in fully stateless mode, with all configuration and state reset at boot and
+        lost at shutdown, as <code class="filename">/etc/</code> and <code class="filename">/var/</code> will be served from the (initially
+        unpopulated) volatile memory file system.</p><p>If set to <code class="option">state</code> the generator will leave the root directory mount point unaltered,
+        however will mount a "<code class="literal">tmpfs</code>" file system to <code class="filename">/var/</code>. In this mode the normal
+        system configuration (i.e. the contents of "<code class="literal">/etc/</code>") is in effect (and may be modified during
+        system runtime), however the system state (i.e. the contents of "<code class="literal">/var/</code>") is reset at boot and
+        lost at shutdown.</p><p>If this setting is set to "<code class="literal">overlay</code>" the root file system is set up as
+        "<code class="literal">overlayfs</code>" mount combining the read-only root directory with a writable
+        "<code class="literal">tmpfs</code>", so that no modifications are made to disk, but the file system may be modified
+        nonetheless with all changes being lost at reboot.</p><p>Note that in none of these modes the root directory, <code class="filename">/etc/</code>, <code class="filename">/var/</code>
+        or any other resources stored in the root file system are physically removed. It's thus safe to boot a system
+        that is normally operated in non-volatile mode temporarily into volatile mode, without losing data.</p><p>Note that with the exception of "<code class="literal">overlay</code>" mode, enabling this setting will
+        only work correctly on operating systems that can boot up with only <code class="filename">/usr/</code>
+        mounted, and are able to automatically populate <code class="filename">/etc/</code>, and also
+        <code class="filename">/var/</code> in case of "<code class="literal">systemd.volatile=yes</code>".</p><p>Also see <code class="varname">root=tmpfs</code> above, for a method to combine a
+        "<code class="literal">tmpfs</code>" file system with a regular <code class="filename">/usr/</code> file system (as
+        configured via <code class="varname">mount.usr=</code>). The main distinction between
+        <code class="varname">systemd.volatile=yes</code>, and <code class="varname">root=tmpfs</code> in combination
+        <code class="varname">mount.usr=</code> is that the former operates on top of a regular root file system and
+        temporarily obstructs the files and directories above its <code class="filename">/usr/</code> subdirectory,
+        while the latter does not hide any files, but simply mounts a unpopulated tmpfs as root file system
+        and combines it with a user picked <code class="filename">/usr/</code> file system.</p></dd><dt id="systemd.swap"><span class="term"><code class="varname">systemd.swap</code></span><a class="headerlink" title="Permalink to this term" href="systemd-fstab-generator.html#systemd.swap">¶</a></dt><dd><p>Takes a boolean argument or enables the option if specified
+        without an argument. If disabled, causes the generator to ignore
+        any swap devices configured in <code class="filename">/etc/fstab</code>.
+        Defaults to enabled.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-fstab-generator.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/fstab.5.html"><span class="citerefentry"><span class="refentrytitle">fstab</span>(5)</span></a>,
+      <a href="systemd.mount.html#"><span class="citerefentry"><span class="refentrytitle">systemd.mount</span>(5)</span></a>,
+      <a href="systemd.swap.html#"><span class="citerefentry"><span class="refentrytitle">systemd.swap</span>(5)</span></a>,
+      <a href="systemd-cryptsetup-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptsetup-generator</span>(8)</span></a>,
+      <a href="systemd-gpt-auto-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-gpt-auto-generator</span>(8)</span></a>,
+      <a href="kernel-command-line.html#"><span class="citerefentry"><span class="refentrytitle">kernel-command-line</span>(7)</span></a>
+    </p></div></div></body></html>

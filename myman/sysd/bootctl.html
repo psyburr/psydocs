@@ -1,0 +1,108 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>bootctl</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="bootctl"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>bootctl — Control EFI firmware boot settings and manage boot loader</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">bootctl</code>  [OPTIONS...] {COMMAND}</p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="bootctl.html#Description">¶</a></h2><p><span class="command"><strong>bootctl</strong></span> can check the EFI firmware and boot loader status, list and manage
+    available boot loaders and boot loader entries, and install, update, or remove the
+    <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a> boot
+    loader on the current system.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Generic EFI Firmware/Boot Loader Commands">Generic EFI Firmware/Boot Loader Commands<a class="headerlink" title="Permalink to this headline" href="bootctl.html#Generic%20EFI%20Firmware/Boot%20Loader%20Commands">¶</a></h2><p>These commands are available on any EFI system, regardless of the boot loader used.</p><div class="variablelist"><dl class="variablelist"><dt id="status"><span class="term"><code class="option">status</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#status">¶</a></dt><dd><p>Shows brief information about the system firmware, the boot loader that was used to boot the
+        system, the boot loaders currently available in the ESP, the boot loaders listed in the firmware's list of boot
+        loaders and the current default boot loader entry. If no command is specified, this is the implied
+        default.</p></dd></dl></div><dt id="reboot-to-firmware BOOL"><span class="term"><code class="option">reboot-to-firmware</code> [<span class="optional"><em class="replaceable"><code>BOOL</code></em></span>]</span><a class="headerlink" title="Permalink to this term" href="bootctl.html#reboot-to-firmware%20BOOL">¶</a></dt><dd><p>Query or set the "Reboot-Into-Firmware-Setup" flag of the EFI firmware. Takes a
+      boolean argument which controls whether to show the firmware setup on next system reboot. If the
+      argument is omitted shows the current status of the flag, or whether the flag is supported. This
+      controls the same flag as <span class="command"><strong>systemctl reboot --firmware-setup</strong></span>, but is more
+      low-level and allows setting the flag independently from actually requesting a
+      reboot.</p></dd><dt id="systemd-efi-options STRING"><span class="term"><code class="option">systemd-efi-options</code> [<span class="optional"><em class="replaceable"><code>STRING</code></em></span>]</span><a class="headerlink" title="Permalink to this term" href="bootctl.html#systemd-efi-options%20STRING">¶</a></dt><dd><p>When called without the optional argument, prints the current value of the
+      "<code class="literal">SystemdOptions</code>" EFI variable. When called with an argument, sets the
+      variable to that value. See
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>
+      for the meaning of that variable.</p></dd></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Boot Loader Specification Commands">Boot Loader Specification Commands<a class="headerlink" title="Permalink to this headline" href="bootctl.html#Boot%20Loader%20Specification%20Commands">¶</a></h2><p>These commands are available for all boot loaders that implement the <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot Loader Specification</a> and/or the <a class="ulink" href="https://systemd.io/BOOT_LOADER_INTERFACE" target="_top">Boot Loader Interface</a>, such as
+    <span class="command"><strong>systemd-boot</strong></span>.</p><div class="variablelist"><dl class="variablelist"><dt id="list"><span class="term"><code class="option">list</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#list">¶</a></dt><dd><p>Shows all available boot loader entries implementing the <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot Loader Specification</a>, as well as any
+        other entries discovered or automatically generated by a boot loader implementing the <a class="ulink" href="https://systemd.io/BOOT_LOADER_INTERFACE" target="_top">Boot Loader
+        Interface</a>.</p></dd><dt id="set-default ID"><span class="term"><code class="option">set-default</code> <em class="replaceable"><code>ID</code></em>, </span><span class="term"><code class="option">set-oneshot</code> <em class="replaceable"><code>ID</code></em></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#set-default%20ID">¶</a></dt><dd><p>Sets the default boot loader entry. Takes a single boot loader entry ID string as
+        argument. The <code class="option">set-oneshot</code> command will set the default entry only for the next boot,
+        the <code class="option">set-default</code> will set it persistently for all future boots.</p><p>Optionally, the boot loader entry ID may be specified as one of: <code class="option">@default</code>,
+        <code class="option">@oneshot</code> or <code class="option">@current</code>, which correspond to the current default boot loader
+        entry for all future boots, the current default boot loader entry for the next boot, and the currently booted
+        boot loader entry. These special IDs are resolved to the current values of the EFI variables
+        <code class="varname">LoaderEntryDefault</code>, <code class="varname">LoaderEntryOneShot</code> and <code class="varname">LoaderEntrySelected</code>,
+        see <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot Loader Specification</a> for details.
+        These special IDs are primarily useful as a quick way to persistently make the currently booted boot loader
+        entry the default choice, or to upgrade the default boot loader entry for the next boot to the default boot
+        loader entry for all future boots, but may be used for other operations too.
+        When an empty string ("") is specified as an ID, then the corresponding EFI variable will be unset.
+        </p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="systemd-boot Commands"><span class="command"><strong>systemd-boot</strong></span> Commands<a class="headerlink" title="Permalink to this headline" href="bootctl.html#systemd-boot%20Commands">¶</a></h2><p>These commands manage the <span class="command"><strong>systemd-boot</strong></span> EFI boot loader, and do not work in
+    conjunction with other boot loaders.</p><div class="variablelist"><dl class="variablelist"><dt id="install"><span class="term"><code class="option">install</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#install">¶</a></dt><dd><p>Installs <span class="command"><strong>systemd-boot</strong></span> into the EFI system partition. A copy of
+        <span class="command"><strong>systemd-boot</strong></span> will be stored as the EFI default/fallback loader at
+        <code class="filename"><em class="replaceable"><code>ESP</code></em>/EFI/BOOT/BOOT*.EFI</code>. The boot loader is then added
+        to the top of the firmware's boot loader list.</p></dd><dt id="update"><span class="term"><code class="option">update</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#update">¶</a></dt><dd><p>Updates all installed versions of
+        <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a>, if the
+        available version is newer than the version installed in the EFI system partition. This also includes the EFI
+        default/fallback loader at <code class="filename"><em class="replaceable"><code>ESP</code></em>/EFI/BOOT/BOOT*.EFI</code>. The boot
+        loader is then added to end of the firmware's boot loader list if missing.</p></dd><dt id="remove"><span class="term"><code class="option">remove</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#remove">¶</a></dt><dd><p>Removes all installed versions of <span class="command"><strong>systemd-boot</strong></span> from the EFI system partition
+        and the firmware's boot loader list.</p></dd><dt id="is-installed"><span class="term"><code class="option">is-installed</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#is-installed">¶</a></dt><dd><p>Checks whether <span class="command"><strong>systemd-boot</strong></span> is installed in the ESP. Note that a
+        single ESP might host multiple boot loaders; this hence checks whether
+        <span class="command"><strong>systemd-boot</strong></span> is one (of possibly many) installed boot loaders — and neither
+        whether it is the default nor whether it is registered in any EFI variables.</p></dd><dt id="random-seed"><span class="term"><code class="option">random-seed</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#random-seed">¶</a></dt><dd><p>Generates a random seed and stores it in the EFI System Partition, for use by the
+        <span class="command"><strong>systemd-boot</strong></span> boot loader. Also, generates a random 'system token' and stores it
+        persistently as an EFI variable, if one has not been set before. If the boot loader finds the random
+        seed in the ESP and the system token in the EFI variable it will derive a random seed to pass to the
+        OS and a new seed to store in the ESP from the combination of both. The random seed passed to the OS
+        is credited to the kernel's entropy pool by the system manager during early boot, and permits
+        userspace to boot up with an entropy pool fully initialized very early on. Also see
+        <a href="systemd-boot-system-token.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot-system-token.service</span>(8)</span></a>.</p><p>See <a class="ulink" href="https://systemd.io/RANDOM_SEEDS" target="_top">Random Seeds</a> for further
+        information.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="bootctl.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--esp-path="><span class="term"><code class="option">--esp-path=</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#--esp-path=">¶</a></dt><dd><p>Path to the EFI System Partition (ESP). If not specified, <code class="filename">/efi/</code>,
+        <code class="filename">/boot/</code>, and <code class="filename">/boot/efi/</code> are checked in turn.  It is
+        recommended to mount the ESP to <code class="filename">/efi/</code>, if possible.</p></dd><dt id="--boot-path="><span class="term"><code class="option">--boot-path=</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#--boot-path=">¶</a></dt><dd><p>Path to the Extended Boot Loader partition, as defined in the <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot Loader Specification</a>. If not
+        specified, <code class="filename">/boot/</code> is checked.  It is recommended to mount the Extended Boot
+        Loader partition to <code class="filename">/boot/</code>, if possible.</p></dd><dt id="-p"><span class="term"><code class="option">-p</code>, </span><span class="term"><code class="option">--print-esp-path</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#-p">¶</a></dt><dd><p>This option modifies the behaviour of <span class="command"><strong>status</strong></span>. Only prints the path
+        to the EFI System Partition (ESP) to standard output and exits.</p></dd><dt id="-x"><span class="term"><code class="option">-x</code>, </span><span class="term"><code class="option">--print-boot-path</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#-x">¶</a></dt><dd><p>This option modifies the behaviour of <span class="command"><strong>status</strong></span>. Only prints the path
+        to the Extended Boot Loader partition if it exists, and the path to the ESP otherwise to standard
+        output and exit. This command is useful to determine where to place boot loader entries, as they are
+        preferably placed in the Extended Boot Loader partition if it exists and in the ESP otherwise.</p><p>Boot Loader Specification Type #1 entries should generally be placed in the directory
+        "<code class="literal">$(bootctl -x)/loader/entries/</code>". Existence of that directory may also be used as
+        indication that boot loader entry support is available on the system. Similarly, Boot Loader
+        Specification Type #2 entries should be placed in the directory "<code class="literal">$(bootctl
+        -x)/EFI/Linux/</code>".</p><p>Note that this option (similar to the <code class="option">--print-booth-path</code> option mentioned
+        above), is available independently from the boot loader used, i.e. also without
+        <span class="command"><strong>systemd-boot</strong></span> being installed.</p></dd><dt id="--no-variables"><span class="term"><code class="option">--no-variables</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#--no-variables">¶</a></dt><dd><p>Do not touch the firmware's boot loader list stored in EFI variables.</p></dd><dt id="--graceful"><span class="term"><code class="option">--graceful</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#--graceful">¶</a></dt><dd><p>Ignore failure when the EFI System Partition cannot be found, when EFI variables
+        cannot be written, or a different or newer boot loader is already installed. Currently only applies
+        to random seed and update operations.</p></dd><dt id="--make-machine-id-directory=yes|no|auto"><span class="term"><code class="option">--make-machine-id-directory=yes|no|auto</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#--make-machine-id-directory=yes%7Cno%7Cauto">¶</a></dt><dd><p>Control creation and deletion of the top-level machine ID directory on the file
+        system containing boot loader entries (i.e. beneath the file system returned by the
+        <code class="option">--print-boot-path</code> option, see above) during <code class="option">install</code> and
+        <code class="option">remove</code>, respectively.  "<code class="literal">auto</code>" is equivalent to
+        "<code class="literal">yes</code>" if <code class="filename">/etc/machine-id</code> resides on a filesystem other than
+        tmpfs and "<code class="literal">no</code>" otherwise (in the latter case the machine ID is likely transient and
+        hence should not be used persistently in the ESP). Defaults to "<code class="literal">auto</code>". See
+        <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a> for
+        details about the machine ID concept and file.</p><p>Overriding this may be desirable to hide the machine ID from the (unencrypted) ESP, configure a
+        <a href="kernel-install.html#"><span class="citerefentry"><span class="refentrytitle">kernel-install</span>(8)</span></a>
+        script, or, conversely, commit a transient machine ID.</p><p>The top-level machine ID directory is useful to allow smooth multi-boot installations: each
+        installed OS instance will have a different machine ID and thus a separate directory to place its
+        boot-time resources in. If this feature is turned off with this option, care needs to be taken that
+        multiple OS instances do not place conflicting files on the shared ESP and Extended Boot Loader
+        Partitions, or that multiple OS instances are not possible.</p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="bootctl.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.10"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="bootctl.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code otherwise.</p></div><div class="refsect1"><a name="id-1.11"></a><h2 id="Environment">Environment<a class="headerlink" title="Permalink to this headline" href="bootctl.html#Environment">¶</a></h2><p>If <code class="varname">$SYSTEMD_RELAX_ESP_CHECKS=1</code> is set the validation checks for the ESP are
+    relaxed, and the path specified with <code class="option">--esp-path=</code> may refer to any kind of file system on
+    any kind of partition.</p><p>Similarly, <code class="varname">$SYSTEMD_RELAX_XBOOTLDR_CHECKS=1</code> turns off some validation checks for
+    the Extended Boot Loader partition.</p></div><div class="refsect1"><a name="id-1.12"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="bootctl.html#See%20Also">¶</a></h2><p>
+      <a href="systemd-boot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot</span>(7)</span></a>,
+      <a class="ulink" href="https://systemd.io/BOOT_LOADER_SPECIFICATION" target="_top">Boot Loader Specification</a>,
+      <a class="ulink" href="https://systemd.io/BOOT_LOADER_INTERFACE" target="_top">Boot Loader Interface</a>,
+      <a href="systemd-boot-system-token.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-boot-system-token.service</span>(8)</span></a>
+    </p></div></div></body></html>

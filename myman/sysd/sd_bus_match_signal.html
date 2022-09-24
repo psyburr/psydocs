@@ -1,0 +1,66 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_add_match</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_add_match"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_add_match, sd_bus_add_match_async, sd_bus_match_signal, sd_bus_match_signal_async — Add a match rule for incoming message dispatching</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">typedef int (*<b class="fsfunc">sd_bus_message_handler_t</b>)(</code></td><td>sd_bus_message *<var class="pdparam">m</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var>, </td></tr><tr><td> </td><td>sd_bus_error *<var class="pdparam">ret_error</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_add_match</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>sd_bus_slot **<var class="pdparam">slot</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">match</var>, </td></tr><tr><td> </td><td>sd_bus_message_handler_t <var class="pdparam">callback</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_add_match_async</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>sd_bus_slot **<var class="pdparam">slot</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">match</var>, </td></tr><tr><td> </td><td>sd_bus_message_handler_t <var class="pdparam">callback</var>, </td></tr><tr><td> </td><td>sd_bus_message_handler_t <var class="pdparam">install_callback</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_match_signal</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>sd_bus_slot **<var class="pdparam">slot</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">sender</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">path</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">interface</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">member</var>, </td></tr><tr><td> </td><td>sd_bus_message_handler_t <var class="pdparam">callback</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_match_signal_async</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>sd_bus_slot **<var class="pdparam">slot</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">sender</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">path</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">interface</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">member</var>, </td></tr><tr><td> </td><td>sd_bus_message_handler_t <var class="pdparam">callback</var>, </td></tr><tr><td> </td><td>sd_bus_message_handler_t <var class="pdparam">install_callback</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_match_signal.html#Description">¶</a></h2><p><code class="function">sd_bus_add_match()</code> installs a match rule for messages received on the specified bus
+    connection object <em class="parameter"><code>bus</code></em>. The syntax of the match rule expression passed in
+    <em class="parameter"><code>match</code></em> is described in the <a class="ulink" href="https://dbus.freedesktop.org/doc/dbus-specification.html" target="_top">D-Bus Specification</a>. The specified handler
+    function <em class="parameter"><code>callback</code></em> is called for each incoming message matching the specified expression,
+    the <em class="parameter"><code>userdata</code></em> parameter is passed as-is to the callback function. The match is installed
+    synchronously when connected to a bus broker, i.e. the call sends a control message requested the match to be added
+    to the broker and waits until the broker confirms the match has been installed successfully.</p><p><code class="function">sd_bus_add_match_async()</code> operates very similar to
+    <code class="function">sd_bus_add_match()</code>, however it installs the match asynchronously, in a non-blocking
+    fashion: a request is sent to the broker, but the call does not wait for a response. The
+    <em class="parameter"><code>install_callback</code></em> function is called when the response is later received, with the response
+    message from the broker as parameter. If this function is specified as <code class="constant">NULL</code> a default
+    implementation is used that terminates the bus connection should installing the match fail.</p><p><code class="function">sd_bus_match_signal()</code> is very similar to <code class="function">sd_bus_add_match()</code>, but
+    only matches signals, and instead of a match expression accepts four parameters: <em class="parameter"><code>sender</code></em> (the
+    service name of the sender), <em class="parameter"><code>path</code></em> (the object path of the emitting object),
+    <em class="parameter"><code>interface</code></em> (the interface the signal belongs to), <em class="parameter"><code>member</code></em> (the signal
+    name), from which the match string is internally generated. Optionally, these parameters may be specified as
+    <code class="constant">NULL</code> in which case the relevant field of incoming signals is not tested.</p><p><code class="function">sd_bus_match_signal_async()</code> combines the signal matching logic of
+    <code class="function">sd_bus_match_signal()</code> with the asynchronous behaviour of
+    <code class="function">sd_bus_add_match_async()</code>.</p><p>On success, and if non-<code class="constant">NULL</code>, the <em class="parameter"><code>slot</code></em> return parameter will be
+    set to a slot object that may be used as a reference to the installed match, and may be utilized to remove it again
+    at a later time with
+    <a href="sd_bus_slot_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_slot_unref</span>(3)</span></a>. If specified
+    as <code class="constant">NULL</code> the lifetime of the match is bound to the lifetime of the bus object itself, and the
+    match is generally not removed independently. See
+    <a href="sd_bus_slot_set_floating.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_slot_set_floating</span>(3)</span></a> for
+    details.</p><p>The message <em class="parameter"><code>m</code></em> passed to the callback is only borrowed, that is, the callback should
+    not call <a href="sd_bus_message_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_unref</span>(3)</span></a>
+    on it. If the callback wants to hold on to the message beyond the lifetime of the callback, it needs to call
+    <a href="sd_bus_message_ref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_ref</span>(3)</span></a> to create a
+    new reference.</p><p>If an error occurs during the callback invocation, the callback should return a negative error number
+    (optionally, a more precise error may be returned in <em class="parameter"><code>ret_error</code></em>, as well). If it wants other
+    callbacks that match the same rule to be called, it should return 0. Otherwise it should return a positive integer.
+    </p><p>If the <em class="parameter"><code>bus</code></em> refers to a direct connection (i.e. not a bus connection, as set with
+    <a href="sd_bus_set_bus_client.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_set_bus_client</span>(3)</span></a>) the
+    match is only installed on the client side, and the synchronous and asynchronous functions operate the same.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_match_signal.html#Return%20Value">¶</a></h2><p>
+      On success, <code class="function">sd_bus_add_match()</code> and the other calls return 0 or a positive integer. On
+      failure, they return a negative errno-style error code.
+    </p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_match_signal.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_match_signal.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+      <a href="sd_bus_slot_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_slot_unref</span>(3)</span></a>,
+      <a href="sd_bus_message_ref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_ref</span>(3)</span></a>,
+      <a href="sd_bus_set_bus_client.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_set_bus_client</span>(3)</span></a>,
+      <a href="sd_bus_slot_set_floating.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_slot_set_floating</span>(3)</span></a>
+    </p></div></div></body></html>

@@ -1,0 +1,34 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_slot_get_bus</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_slot_get_bus"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_slot_get_bus, sd_bus_slot_get_current_handler, sd_bus_slot_get_current_message, sd_bus_slot_get_current_userdata — Query information attached to a bus slot object</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">typedef int (*<b class="fsfunc">sd_bus_message_handler_t</b>)(</code></td><td>sd_bus_message *<var class="pdparam">m</var>, </td></tr><tr><td> </td><td>void *<var class="pdparam">userdata</var>, </td></tr><tr><td> </td><td>sd_bus_error *<var class="pdparam">ret_error</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">sd_bus *<b class="fsfunc">sd_bus_slot_get_bus</b>(</code></td><td>sd_bus_slot *<var class="pdparam">slot</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">sd_bus_message_handler_t <b class="fsfunc">sd_bus_slot_get_current_handler</b>
+        (</code></td><td>sd_bus_slot *<var class="pdparam">slot</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">sd_bus_message *<b class="fsfunc">sd_bus_slot_get_current_message</b>(</code></td><td>sd_bus_slot *<var class="pdparam">slot</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">void *<b class="fsfunc">sd_bus_slot_get_current_userdata</b>(</code></td><td>sd_bus_slot *<var class="pdparam">slot</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_slot_get_bus.html#Description">¶</a></h2><p><code class="function">sd_bus_slot_get_bus()</code> returns the bus object that message
+    <em class="parameter"><code>slot</code></em> is attached to.</p><p><code class="function">sd_bus_slot_get_current_handler()</code>,
+    <code class="function">sd_bus_slot_get_current_message()</code> and
+    <code class="function">sd_bus_slot_get_current_userdata()</code> return the current handler, message and
+    userdata respectively of the bus <em class="parameter"><code>slot</code></em> is attached to if we're currently
+    executing the callback associated with <em class="parameter"><code>slot</code></em>.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_slot_get_bus.html#Return%20Value">¶</a></h2><p><code class="function">sd_bus_slot_get_bus()</code> always returns the bus object.</p><p>On success, <code class="function">sd_bus_slot_get_current_handler()</code>,
+    <code class="function">sd_bus_slot_get_current_message()</code> and
+    <code class="function">sd_bus_slot_get_current_userdata()</code> return the requested object. On failure,
+    they return <code class="constant">NULL</code>.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_slot_get_bus.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_slot_get_bus.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+    </p></div></div></body></html>

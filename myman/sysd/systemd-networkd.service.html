@@ -1,0 +1,62 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-networkd.service</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-networkd.service"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-networkd.service, systemd-networkd — Network manager</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">systemd-networkd.service</code></p><p><code class="filename">/usr/lib/systemd/systemd-networkd</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-networkd.service.html#Description">¶</a></h2><p><span class="command"><strong>systemd-networkd</strong></span> is a system service that
+    manages networks. It detects and configures network devices as
+    they appear, as well as creating virtual network devices.</p><p>To configure low-level link settings independently of
+    networks, see
+    <a href="systemd.link.html#"><span class="citerefentry"><span class="refentrytitle">systemd.link</span>(5)</span></a>.</p><p><span class="command"><strong>systemd-networkd</strong></span> will create network devices based
+    on the configuration in
+    <a href="systemd.netdev.html#"><span class="citerefentry"><span class="refentrytitle">systemd.netdev</span>(5)</span></a>
+    files, respecting the [Match] sections in those files.</p><p><span class="command"><strong>systemd-networkd</strong></span> will manage network addresses and
+    routes for any link for which it finds a <code class="filename">.network</code> file
+    with an appropriate [Match] section, see
+    <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>.
+    For those links, it will flush existing network addresses and routes when
+    bringing up the device. Any links not matched by one of the
+    <code class="filename">.network</code> files will be ignored. It is also possible to
+    explicitly tell <code class="filename">systemd-networkd</code> to ignore a link by
+    using <code class="varname">Unmanaged=yes</code> option, see
+    <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>.
+    </p><p>When <code class="filename">systemd-networkd</code> exits, it generally leaves
+    existing network devices and configuration intact. This makes it possible to
+    transition from the initramfs and to restart the service without breaking
+    connectivity. This also means that when configuration is updated and
+    <code class="filename">systemd-networkd</code> is restarted, netdev interfaces for
+    which configuration was removed will not be dropped, and may need to be
+    cleaned up manually.</p><p><span class="command"><strong>systemd-networkd</strong></span> may be introspected and controlled at runtime using
+    <a href="networkctl.html#"><span class="citerefentry"><span class="refentrytitle">networkctl</span>(1)</span></a>.
+    </p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Configuration Files">Configuration Files<a class="headerlink" title="Permalink to this headline" href="systemd-networkd.service.html#Configuration%20Files">¶</a></h2><p>The configuration files are read from the files located in the
+    system network directory <code class="filename">/usr/lib/systemd/network</code>,
+    the volatile runtime network directory
+    <code class="filename">/run/systemd/network</code> and the local administration
+    network directory <code class="filename">/etc/systemd/network</code>.</p><p>Networks are configured in <code class="filename">.network</code>
+    files, see
+    <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>,
+    and virtual network devices are configured in
+    <code class="filename">.netdev</code> files, see
+    <a href="systemd.netdev.html#"><span class="citerefentry"><span class="refentrytitle">systemd.netdev</span>(5)</span></a>.
+    </p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-networkd.service.html#See%20Also">¶</a></h2><p>
+      <a href="networkctl.html#"><span class="citerefentry"><span class="refentrytitle">networkctl</span>(1)</span></a>,
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd.link.html#"><span class="citerefentry"><span class="refentrytitle">systemd.link</span>(5)</span></a>,
+      <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>,
+      <a href="systemd.netdev.html#"><span class="citerefentry"><span class="refentrytitle">systemd.netdev</span>(5)</span></a>,
+      <a href="systemd-networkd-wait-online.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-networkd-wait-online.service</span>(8)</span></a>,
+      <a href="systemd-network-generator.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-network-generator.service</span>(8)</span></a>
+    </p></div></div></body></html>

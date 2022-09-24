@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_event_source_set_ratelimit</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_event_source_set_ratelimit"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_event_source_set_ratelimit, sd_event_source_get_ratelimit, sd_event_source_is_ratelimited — Configure rate limiting on event sources</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-event.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_source_set_ratelimit</b>(</code></td><td>sd_event_source *<var class="pdparam">source</var>, </td></tr><tr><td> </td><td>uint64_t <var class="pdparam">interval_usec</var>, </td></tr><tr><td> </td><td>unsigned <var class="pdparam">burst</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_source_get_ratelimit</b>(</code></td><td>sd_event_source *<var class="pdparam">source</var>, </td></tr><tr><td> </td><td>uint64_t* <var class="pdparam">ret_interval_usec</var>, </td></tr><tr><td> </td><td>unsigned* <var class="pdparam">ret_burst</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_source_is_ratelimited</b>(</code></td><td>sd_event_source *<var class="pdparam">source</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_event_source_is_ratelimited.html#Description">¶</a></h2><p><code class="function">sd_event_source_set_ratelimit()</code> may be used to enforce rate limiting on an
+    event source. When used an event source will be temporarily turned off when it fires more often then a
+    specified burst number within a specified time interval. This is useful as simple mechanism to avoid
+    event source starvation if high priority event sources fire very frequently.</p><p>Pass the event source to operate on as first argument, a time interval in microseconds as second
+    argument and a maximum dispatch limit ("burst") as third parameter. Whenever the event source is
+    dispatched more often than the specified burst within the specified interval it is placed in a mode
+    similar to being disabled with
+    <a href="sd_event_source_set_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_enabled</span>(3)</span></a>
+    and the <code class="constant">SD_EVENT_OFF</code> parameter. However it is disabled only temporarily – once the
+    specified interval is over regular operation resumes. It is again disabled temporarily once the specified rate
+    limiting is hit the next time. If either the interval or the burst value are specified as zero, rate
+    limiting is turned off. By default event sources do not have rate limiting enabled. Note that rate
+    limiting and disabling via <code class="function">sd_event_source_set_enabled()</code> are independent of each
+    other, and an event source will only effect event loop wake-ups and is dispatched while it both is
+    enabled and rate limiting is not in effect.</p><p><code class="function">sd_event_source_get_ratelimit()</code> may be used to query the current rate limiting
+    parameters set on the event source object <em class="parameter"><code>source</code></em>. The previously set interval and
+    burst vales are returned in the second and third argument.</p><p><code class="function">sd_event_source_is_ratelimited()</code> may be used to query whether the event source
+    is currently affected by rate limiting, i.e. it has recently hit the rate limit and is currently
+    temporarily disabled due to that.</p><p>Rate limiting is currently implemented for I/O, timer, signal, defer and inotify event
+    sources.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_event_source_is_ratelimited.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_event_source_set_ratelimit()</code> and
+    <code class="function">sd_event_source_get_ratelimit()</code> return a non-negative integer. On failure, they
+    return a negative errno-style error code. <code class="function">sd_event_source_is_ratelimited</code> returns
+    zero if rate limiting is currently not in effect and greater than zero if it is in effect; it returns a
+    negative errno-style error code on failure.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_event_source_is_ratelimited.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_is_ratelimited.html#-EINVAL">¶</a></dt><dd><p><em class="parameter"><code>source</code></em> is not a valid pointer to an
+          <span class="structname">sd_event_source</span> object.
+          </p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_is_ratelimited.html#-ECHILD">¶</a></dt><dd><p>The event loop has been created in a different process.</p></dd><dt id="-EDOM"><span class="term"><code class="constant">-EDOM</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_is_ratelimited.html#-EDOM">¶</a></dt><dd><p>It was attempted to use the rate limiting feature on an event source type that does
+          not support rate limiting.</p></dd><dt id="-ENOEXEC"><span class="term"><code class="constant">-ENOEXEC</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_is_ratelimited.html#-ENOEXEC">¶</a></dt><dd><p><code class="function">sd_event_source_get_ratelimit()</code> was called on an event source
+          that doesn't have rate limiting configured.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_event_source_is_ratelimited.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_event_source_is_ratelimited.html#See%20Also">¶</a></h2><p>
+      <a href="sd-event.html#"><span class="citerefentry"><span class="refentrytitle">sd-event</span>(3)</span></a>,
+      <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+      <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+      <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>,
+      <a href="sd_event_add_inotify.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_inotify</span>(3)</span></a>,
+      <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>,
+      <a href="sd_event_source_set_enabled.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_enabled</span>(3)</span></a>
+    </p></div></div></body></html>

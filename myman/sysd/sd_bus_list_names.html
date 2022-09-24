@@ -1,0 +1,37 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_list_names</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_list_names"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_list_names — Retrieve information about registered names on a bus</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_list_names</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>char ***<var class="pdparam">acquired</var>, </td></tr><tr><td> </td><td>char ***<var class="pdparam">activatable</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_list_names.html#Description">¶</a></h2><p><code class="function">sd_bus_list_names()</code> retrieves information about the registered names on a bus.
+    If <em class="parameter"><code>acquired</code></em> is not <code class="constant">NULL</code>, this function calls
+    <a class="ulink" href="https://dbus.freedesktop.org/doc/dbus-specification.html#bus-messages-list-names" target="_top">
+    org.freedesktop.DBus.ListNames</a> to retrieve the list of currently-owned names on the bus. If
+    <em class="parameter"><code>acquired</code></em> is not <code class="constant">NULL</code>, the function calls
+    <a class="ulink" href="https://dbus.freedesktop.org/doc/dbus-specification.html#bus-messages-list-activatable-names" target="_top">
+    org.freedesktop.DBus.ListActivableNames</a> to retrieve the list of all names on the bus that can be
+    activated. Note that ownership of the arrays returned by <code class="function">sd_bus_list_names()</code> in
+    <em class="parameter"><code>acquired</code></em> and <em class="parameter"><code>activatable</code></em> is transferred to the caller and
+    hence, the caller is responsible for freeing these arrays and their contents.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_list_names.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_bus_list_names()</code> returns a non-negative integer. On failure,
+    it returns a negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_list_names.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_list_names.html#-EINVAL">¶</a></dt><dd><p><em class="parameter"><code>bus</code></em> or both <em class="parameter"><code>acquired</code></em> and
+          <em class="parameter"><code>activatable</code></em> were <code class="constant">NULL</code>.
+          </p></dd><dt id="-ENOPKG"><span class="term"><code class="constant">-ENOPKG</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_list_names.html#-ENOPKG">¶</a></dt><dd><p>The bus cannot be resolved.</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_list_names.html#-ECHILD">¶</a></dt><dd><p>The bus was created in a different process.</p></dd><dt id="-ENOMEM"><span class="term"><code class="constant">-ENOMEM</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_list_names.html#-ENOMEM">¶</a></dt><dd><p>Memory allocation failed.</p></dd><dt id="-ENOTCONN"><span class="term"><code class="constant">-ENOTCONN</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_list_names.html#-ENOTCONN">¶</a></dt><dd><p>The bus is not connected.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_list_names.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_list_names.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>
+    </p></div></div></body></html>

@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-oomd.service</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-oomd.service"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-oomd.service, systemd-oomd — A userspace out-of-memory (OOM) killer</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">systemd-oomd.service</code></p><p><code class="filename">/usr/lib/systemd/systemd-oomd</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-oomd.service.html#Description">¶</a></h2><p><span class="command"><strong>systemd-oomd</strong></span> is a system service that uses cgroups-v2 and pressure stall information (PSI)
+    to monitor and take action on processes before an OOM occurs in kernel space.</p><p>You can enable monitoring and actions on units by setting <code class="varname">ManagedOOMSwap=</code> and/or
+    <code class="varname">ManagedOOMMemoryPressure=</code> to the appropriate value. <span class="command"><strong>systemd-oomd</strong></span> will
+    periodically poll enabled units' cgroup data to detect when corrective action needs to occur. When an action needs
+    to happen, it will only be performed on the descendant cgroups of the enabled units. More precisely, only cgroups with
+    <code class="filename">memory.oom.group</code> set to <code class="constant">1</code> and leaf cgroup nodes are eligible candidates.
+    Action will be taken recursively on all of the processes under the chosen candidate.</p><p>See
+    <a href="oomd.conf.html#"><span class="citerefentry"><span class="refentrytitle">oomd.conf</span>(5)</span></a>
+    for more information about the configuration of this service.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Setup Information">Setup Information<a class="headerlink" title="Permalink to this headline" href="systemd-oomd.service.html#Setup%20Information">¶</a></h2><p>The system must be running systemd with a full unified cgroup hierarchy for the expected cgroups-v2 features.
+    Furthermore, memory accounting must be turned on for all units monitored by <span class="command"><strong>systemd-oomd</strong></span>.
+    The easiest way to turn on memory accounting is by ensuring the value for <code class="varname">DefaultMemoryAccounting=</code>
+    is set to <code class="constant">true</code> in
+    <a href="systemd-system.conf.html#"><span class="citerefentry"><span class="refentrytitle">systemd-system.conf</span>(5)</span></a>.</p><p>You will need a kernel compiled with PSI support. This is available in Linux 4.20 and above.</p><p>It is highly recommended for the system to have swap enabled for <span class="command"><strong>systemd-oomd</strong></span> to function
+    optimally. With swap enabled, the system spends enough time swapping pages to let <span class="command"><strong>systemd-oomd</strong></span> react.
+    Without swap, the system enters a livelocked state much more quickly and may prevent <span class="command"><strong>systemd-oomd</strong></span>
+    from responding in a reasonable amount of time. See
+    <a class="ulink" href="https://chrisdown.name/2018/01/02/in-defence-of-swap.html" target="_top">"In defence of swap: common misconceptions"</a>
+    for more details on swap. Any swap-based actions on systems without swap will be ignored. While
+    <span class="command"><strong>systemd-oomd</strong></span> can perform pressure-based actions on a system without swap, the pressure increases
+    will be more abrupt and may require more tuning to get the desired thresholds and behavior.</p><p>Be aware that if you intend to enable monitoring and actions on <code class="filename">user.slice</code>,
+    <code class="filename">user-$UID.slice</code>, or their ancestor cgroups, it is highly recommended that your programs be
+    managed by the systemd user manager to prevent running too many processes under the same session scope (and thus
+    avoid a situation where memory intensive tasks trigger <span class="command"><strong>systemd-oomd</strong></span> to kill everything under the
+    cgroup). If you're using a desktop environment like GNOME, it already spawns many session components with the
+    systemd user manager.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Usage Recommendations">Usage Recommendations<a class="headerlink" title="Permalink to this headline" href="systemd-oomd.service.html#Usage%20Recommendations">¶</a></h2><p><code class="varname">ManagedOOMSwap=</code> works with the system-wide swap values, so setting it on the root slice
+    <code class="filename">-.slice</code>, and allowing all descendant cgroups to be eligible candidates may make the most
+    sense.</p><p><code class="varname">ManagedOOMMemoryPressure=</code> tends to work better on the cgroups below the root slice
+    <code class="filename">-.slice</code>. For units which tend to have processes that are less latency sensitive (e.g.
+    <code class="filename">system.slice</code>), a higher limit like the default of 60% may be acceptable, as those processes
+    can usually ride out slowdowns caused by lack of memory without serious consequences. However, something like
+    <code class="filename">user@$UID.service</code> may prefer a much lower value like 40%.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-oomd.service.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-system.conf.html#"><span class="citerefentry"><span class="refentrytitle">systemd-system.conf</span>(5)</span></a>,
+      <a href="systemd.resource-control.html#"><span class="citerefentry"><span class="refentrytitle">systemd.resource-control</span>(5)</span></a>,
+      <a href="oomd.conf.html#"><span class="citerefentry"><span class="refentrytitle">oomd.conf</span>(5)</span></a>,
+      <a href="oomctl.html#"><span class="citerefentry"><span class="refentrytitle">oomctl</span>(1)</span></a>
+    </p></div></div></body></html>

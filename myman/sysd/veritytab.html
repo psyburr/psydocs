@@ -1,0 +1,86 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>veritytab</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="veritytab"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>veritytab — Configuration for verity block devices</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">/etc/veritytab</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="veritytab.html#Description">¶</a></h2><p>The <code class="filename">/etc/veritytab</code> file describes
+    verity integrity protected block devices that are set up during
+    system boot.</p><p>Empty lines and lines starting with the "<code class="literal">#</code>"
+    character are ignored. Each of the remaining lines describes one
+    verity integrity protected block device. Fields are delimited by
+    white space.</p><p>Each line is in the form</p><pre class="programlisting"><em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>data-device</code></em> <em class="replaceable"><code>hash-device</code></em> <em class="replaceable"><code>roothash</code></em> <em class="replaceable"><code>options</code></em></pre><p>
+    The first four fields are mandatory, the remaining one is optional.</p><p>The first field contains the name of the resulting verity volume; its block device is set up
+    below <code class="filename">/dev/mapper/</code>.</p><p>The second field contains a path to the underlying block data device, or a specification of a block device via
+    "<code class="literal">UUID=</code>" followed by the UUID.</p><p>The third field contains a path to the underlying block hash device, or a specification of a block device via
+    "<code class="literal">UUID=</code>" followed by the UUID.</p><p>The fourth field is the "<code class="literal">roothash</code>" in hexadecimal.</p><p>The fifth field, if present, is a comma-delimited list of options. The following options are
+    recognized:</p><div class="variablelist"><dl class="variablelist"><dt id="ignore-corruption"><span class="term"><code class="option">ignore-corruption</code>, </span><span class="term"><code class="option">restart-on-corruption</code>, </span><span class="term"><code class="option">panic-on-corruption</code></span><a class="headerlink" title="Permalink to this term" href="veritytab.html#ignore-corruption">¶</a></dt><dd><p>Defines what to do if data integrity problem is detected (data corruption). Without these
+        options kernel fails the IO operation with I/O error. With "<code class="literal">--ignore-corruption</code>" option the
+        corruption is only logged. With "<code class="literal">--restart-on-corruption</code>" or
+        "<code class="literal">--panic-on-corruption</code>" the kernel is restarted (panicked) immediately.
+
+        (You have to provide way how to avoid restart loops.)</p></dd><dt id="ignore-zero-blocks"><span class="term"><code class="option">ignore-zero-blocks</code></span><a class="headerlink" title="Permalink to this term" href="veritytab.html#ignore-zero-blocks">¶</a></dt><dd><p>Instruct kernel to not verify blocks that are expected to contain zeroes and always directly
+        return zeroes instead.
+
+        WARNING: Use this option only in very specific cases. This option is available since Linux kernel version 4.5.
+        </p></dd><dt id="check-at-most-once"><span class="term"><code class="option">check-at-most-once</code></span><a class="headerlink" title="Permalink to this term" href="veritytab.html#check-at-most-once">¶</a></dt><dd><p>Instruct kernel to verify blocks only the first time they are read from the data device, rather
+        than every time.
+
+        WARNING: It provides a reduced level of security because only offline tampering of the data device's content
+        will be detected, not online tampering. This option is available since Linux kernel version 4.17.
+        </p></dd><dt id="root-hash-signature="><span class="term"><code class="option">root-hash-signature=</code></span><a class="headerlink" title="Permalink to this term" href="veritytab.html#root-hash-signature=">¶</a></dt><dd><p>A base64 string encoding the root hash signature prefixed by "<code class="literal">base64:</code>" or a
+        path to roothash signature file used to verify the root hash (in kernel). This feature requires Linux kernel
+        version 5.4 or more recent.</p></dd><dt id="_netdev"><span class="term"><code class="option">_netdev</code></span><a class="headerlink" title="Permalink to this term" href="veritytab.html#_netdev">¶</a></dt><dd><p>Marks this veritysetup device as requiring network. It will be
+        started after the network is available, similarly to
+        <a href="systemd.mount.html#"><span class="citerefentry"><span class="refentrytitle">systemd.mount</span>(5)</span></a>
+        units marked with <code class="option">_netdev</code>. The service unit to set up this device
+        will be ordered between <code class="filename">remote-fs-pre.target</code> and
+        <code class="filename">remote-veritysetup.target</code>, instead of
+        <code class="filename">veritysetup-pre.target</code> and
+        <code class="filename">veritysetup.target</code>.</p><p>Hint: if this device is used for a mount point that is specified in
+        <a href="http://man7.org/linux/man-pages/man5/fstab.5.html"><span class="citerefentry"><span class="refentrytitle">fstab</span>(5)</span></a>,
+        the <code class="option">_netdev</code> option should also be used for the mount
+        point. Otherwise, a dependency loop might be created where the mount point
+        will be pulled in by <code class="filename">local-fs.target</code>, while the
+        service to configure the network is usually only started <span class="emphasis"><em>after</em></span>
+        the local file system has been mounted.</p></dd><dt id="noauto"><span class="term"><code class="option">noauto</code></span><a class="headerlink" title="Permalink to this term" href="veritytab.html#noauto">¶</a></dt><dd><p>This device will not be added to <code class="filename">veritysetup.target</code>.
+        This means that it will not be automatically enabled on boot, unless something else pulls
+        it in. In particular, if the device is used for a mount point, it'll be enabled
+        automatically during boot, unless the mount point itself is also disabled with
+        <code class="option">noauto</code>.</p></dd><dt id="nofail"><span class="term"><code class="option">nofail</code></span><a class="headerlink" title="Permalink to this term" href="veritytab.html#nofail">¶</a></dt><dd><p>This device will not be a hard dependency of
+        <code class="filename">veritysetup.target</code>. It'll still be pulled in and started, but the system
+        will not wait for the device to show up and be enabled, and boot will not fail if this is
+        unsuccessful. Note that other units that depend on the enabled device may still fail. In
+        particular, if the device is used for a mount point, the mount point itself also needs to
+        have the <code class="option">nofail</code> option, or the boot will fail if the device is not enabled
+        successfully.</p></dd><dt id="x-initrd.attach"><span class="term"><code class="option">x-initrd.attach</code></span><a class="headerlink" title="Permalink to this term" href="veritytab.html#x-initrd.attach">¶</a></dt><dd><p>Setup this verity integrity protected block device in the initramfs, similarly to
+        <a href="systemd.mount.html#"><span class="citerefentry"><span class="refentrytitle">systemd.mount</span>(5)</span></a>
+        units marked with <code class="option">x-initrd.mount</code>.</p><p>Although it's not necessary to mark the mount entry for the root file system with
+        <code class="option">x-initrd.mount</code>, <code class="option">x-initrd.attach</code> is still recommended with
+        the verity integrity protected block device containing the root file system as otherwise systemd
+        will attempt to detach the device during the regular system shutdown while it's still in
+        use. With this option the device will still be detached but later after the root file
+        system is unmounted.</p><p>All other verity integrity protected block devices that contain file systems mounted in the
+        initramfs should use this option.</p></dd></dl></div><p>At early boot and when the system manager configuration is
+    reloaded, this file is translated into native systemd units by
+    <a href="systemd-veritysetup-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-veritysetup-generator</span>(8)</span></a>.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="veritytab.html#Examples">¶</a></h2><div class="example"><a name="id-1.6.2"></a><p class="title"><b>Example 1. /etc/veritytab example</b></p><div class="example-contents"><p>Set up two verity integrity protected block devices. One using device blocks, another using files.</p><pre class="programlisting">usr  PARTUUID=783e45ae-7aa3-484a-beef-a80ff9c19cbb PARTUUID=21dc1dfe-4c33-8b48-98a9-918a22eb3e37 36e3f740ad502e2c25e2a23d9c7c17bf0fdad2300b7580842d4b7ec1fb0fa263 auto
+data /etc/data /etc/hash a5ee4b42f70ae1f46a08a7c92c2e0a20672ad2f514792730f5d49d7606ab8fdf auto
+</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.7"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="veritytab.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-veritysetup@.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-veritysetup@.service</span>(8)</span></a>,
+      <a href="systemd-veritysetup-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-veritysetup-generator</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/fstab.5.html"><span class="citerefentry"><span class="refentrytitle">fstab</span>(5)</span></a>,
+      <a href="http://linux.die.net/man/8/veritysetup"><span class="citerefentry"><span class="refentrytitle">veritysetup</span>(8)</span></a>,
+    </p></div></div></body></html>

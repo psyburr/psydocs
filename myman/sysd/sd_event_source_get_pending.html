@@ -1,0 +1,55 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_event_source_get_pending</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_event_source_get_pending"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_event_source_get_pending — Determine pending state of event sources</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-event.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_source_get_pending</b>(</code></td><td>sd_event_source *<var class="pdparam">source</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_event_source_get_pending.html#Description">¶</a></h2><p><code class="function">sd_event_source_get_pending()</code> may be
+    used to determine whether the event source object specified as
+    <em class="parameter"><code>source</code></em> has seen events but has not been
+    dispatched yet (and thus is marked "pending").</p><p>Event source objects initially are not marked pending, when
+    they are created with calls such as
+    <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+    <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+    with the exception of those created with
+    <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>
+    which are immediately marked pending, and
+    <a href="sd_event_add_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_exit</span>(3)</span></a>
+    for which the "pending" concept is not defined. For details see
+    the respective manual pages.</p><p>In each event loop iteration one event source of those
+    marked pending is dispatched, in the order defined by the event
+    source priority, as set with
+    <a href="sd_event_source_set_priority.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_set_priority</span>(3)</span></a>.</p><p>For I/O event sources, as created with
+    <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+    the call
+    <a href="sd_event_source_get_io_revents.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_get_io_revents</span>(3)</span></a>
+    may be used to query the type of event pending in more
+    detail.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_event_source_get_pending.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_event_source_get_pending()</code> returns an integer greater than zero
+    when the event source is marked pending, and zero when the event source is not marked pending. On
+    failure, it returns a negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_event_source_get_pending.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_get_pending.html#-EINVAL">¶</a></dt><dd><p><em class="parameter"><code>source</code></em> is not a valid pointer to an
+          <span class="structname">sd_event_source</span> object.</p></dd><dt id="-EDOM"><span class="term"><code class="constant">-EDOM</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_get_pending.html#-EDOM">¶</a></dt><dd><p><em class="parameter"><code>source</code></em> refers to an event source object created with
+          <a href="sd_event_add_exit.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_exit</span>(3)</span></a>.</p></dd><dt id="-ENOMEM"><span class="term"><code class="constant">-ENOMEM</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_get_pending.html#-ENOMEM">¶</a></dt><dd><p>Not enough memory.</p></dd><dt id="-ESTALE"><span class="term"><code class="constant">-ESTALE</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_get_pending.html#-ESTALE">¶</a></dt><dd><p>The event loop is already terminated.</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_source_get_pending.html#-ECHILD">¶</a></dt><dd><p>The event loop has been created in a different process.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_event_source_get_pending.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_event_source_get_pending.html#See%20Also">¶</a></h2><p>
+      <a href="sd-event.html#"><span class="citerefentry"><span class="refentrytitle">sd-event</span>(3)</span></a>,
+      <a href="sd_event_add_io.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_io</span>(3)</span></a>,
+      <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+      <a href="sd_event_add_signal.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_signal</span>(3)</span></a>,
+      <a href="sd_event_add_child.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_child</span>(3)</span></a>,
+      <a href="sd_event_add_inotify.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_inotify</span>(3)</span></a>,
+      <a href="sd_event_add_defer.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_defer</span>(3)</span></a>,
+      <a href="sd_event_source_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_source_unref</span>(3)</span></a>
+    </p></div></div></body></html>

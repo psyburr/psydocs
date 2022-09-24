@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-cryptsetup@.service</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-cryptsetup@.service"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-cryptsetup@.service, systemd-cryptsetup — Full disk decryption logic</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">systemd-cryptsetup@.service</code></p><p><code class="filename">system-systemd\x2dcryptsetup.slice</code></p><p><code class="filename">/usr/lib/systemd/systemd-cryptsetup</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-cryptsetup.html#Description">¶</a></h2><p><code class="filename">systemd-cryptsetup@.service</code> is a service responsible for setting up encrypted
+    block devices. It is instantiated for each device that requires decryption for access.</p><p><code class="filename">systemd-cryptsetup@.service</code> instances are part of the
+    <code class="filename">system-systemd\x2dcryptsetup.slice</code> slice, which is destroyed only very late in the
+    shutdown procedure. This allows the encrypted devices to remain up until filesystems have been unmounted.
+    </p><p><code class="filename">systemd-cryptsetup@.service</code> will ask
+    for hard disk passwords via the <a class="ulink" href="https://systemd.io/PASSWORD_AGENTS/" target="_top">password agent logic</a>, in
+    order to query the user for the password using the right mechanism at boot
+    and during runtime.</p><p>At early boot and when the system manager configuration is reloaded, <code class="filename">/etc/crypttab</code> is
+    translated into <code class="filename">systemd-cryptsetup@.service</code> units by
+    <a href="systemd-cryptsetup-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptsetup-generator</span>(8)</span></a>.</p><p>In order to unlock a volume a password or binary key is
+    required. <code class="filename">systemd-cryptsetup@.service</code> tries to acquire a suitable password or binary
+    key via the following mechanisms, tried in order:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>If a key file is explicitly configured (via the third column in
+      <code class="filename">/etc/crypttab</code>), a key read from it is used. If a PKCS#11 token, FIDO2 token or
+      TPM2 device is configured (using the <code class="varname">pkcs11-uri=</code>, <code class="varname">fido2-device=</code>,
+      <code class="varname">tpm2-device=</code> options) the key is decrypted before use.</p></li><li class="listitem"><p>If no key file is configured explicitly this way, a key file is automatically loaded
+      from <code class="filename">/etc/cryptsetup-keys.d/<em class="replaceable"><code>volume</code></em>.key</code> and
+      <code class="filename">/run/cryptsetup-keys.d/<em class="replaceable"><code>volume</code></em>.key</code>, if present. Here
+      too, if a PKCS#11/FIDO2/TPM2 token/device is configured, any key found this way is decrypted before
+      use.</p></li><li class="listitem"><p>If the <code class="varname">try-empty-password</code> option is specified it is then attempted
+      to unlock the volume with an empty password.</p></li><li class="listitem"><p>The kernel keyring is then checked for a suitable cached password from previous
+      attempts.</p></li><li class="listitem"><p>Finally, the user is queried for a password, possibly multiple times, unless
+      the <code class="varname">headless</code> option is set.</p></li></ol></div><p>If no suitable key may be acquired via any of the mechanisms describes above, volume activation fails.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-cryptsetup.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-cryptsetup-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptsetup-generator</span>(8)</span></a>,
+      <a href="crypttab.html#"><span class="citerefentry"><span class="refentrytitle">crypttab</span>(5)</span></a>,
+      <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>,
+      <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+     </p></div></div></body></html>

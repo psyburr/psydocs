@@ -1,0 +1,109 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_message_open_container</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_message_open_container"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_message_open_container, sd_bus_message_close_container, sd_bus_message_enter_container, sd_bus_message_exit_container — Create and move between containers in D-Bus messages</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int sd_bus_message_open_container(</code></td><td>sd_bus_message *<var class="pdparam">m</var>, </td></tr><tr><td> </td><td>char <var class="pdparam">type</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">contents</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int sd_bus_message_close_container(</code></td><td>sd_bus_message *<var class="pdparam">m</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int sd_bus_message_enter_container(</code></td><td>sd_bus_message *<var class="pdparam">m</var>, </td></tr><tr><td> </td><td>char <var class="pdparam">type</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">contents</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int sd_bus_message_exit_container(</code></td><td>sd_bus_message *<var class="pdparam">m</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_close_container.html#Description">¶</a></h2><p><code class="function">sd_bus_message_open_container()</code> appends a new container to the message
+    <em class="parameter"><code>m</code></em>. After opening a new container, it can be filled with content using
+    <a href="sd_bus_message_append.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_append</span>(3)</span></a>
+    and similar functions. Containers behave like a stack. To nest containers inside each other, call
+    <code class="function">sd_bus_message_open_container()</code> multiple times without calling
+    <code class="function">sd_bus_message_close_container()</code> in between. Each container will be nested inside the
+    previous container. <em class="parameter"><code>type</code></em> represents the container type and should be one of
+    "<code class="literal">r</code>", "<code class="literal">a</code>", "<code class="literal">v</code>" or "<code class="literal">e</code>" as described in
+    <a href="sd_bus_message_append.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_append</span>(3)</span></a>.
+    Instead of literals, the corresponding constants <code class="constant">SD_BUS_TYPE_STRUCT</code>,
+    <code class="constant">SD_BUS_TYPE_ARRAY</code>, <code class="constant">SD_BUS_TYPE_VARIANT</code> or
+    <code class="constant">SD_BUS_TYPE_DICT_ENTRY</code> can also be used. <em class="parameter"><code>contents</code></em> describes
+    the type of the container's elements and should be a D-Bus type string following the rules described in
+    <a href="sd_bus_message_append.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_append</span>(3)</span></a>.
+    </p><p><code class="function">sd_bus_message_close_container()</code> closes the last container opened with
+    <code class="function">sd_bus_message_open_container()</code>. On success, the write pointer of the message
+    <em class="parameter"><code>m</code></em> is positioned after the closed container in its parent container or in
+    <em class="parameter"><code>m</code></em> itself if there is no parent container.</p><p><code class="function">sd_bus_message_enter_container()</code> enters the next container of the message
+    <em class="parameter"><code>m</code></em> for reading. It behaves mostly the same as
+    <code class="function">sd_bus_message_open_container()</code>. Entering a container allows reading its contents
+    with
+    <a href="sd_bus_message_read.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_read</span>(3)</span></a>
+    and similar functions. <em class="parameter"><code>type</code></em> and <em class="parameter"><code>contents</code></em> are the same as in
+    <code class="function">sd_bus_message_open_container()</code>.</p><p><code class="function">sd_bus_message_exit_container()</code> exits the scope of the last container entered
+    with <code class="function">sd_bus_message_enter_container()</code>. It behaves mostly the same as
+    <code class="function">sd_bus_message_close_container()</code>. Note that
+    <code class="function">sd_bus_message_exit_container()</code> may only be called after iterating through all
+    members of the container, i.e. reading or skipping them. Use
+    <a href="sd_bus_message_skip.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_skip</span>(3)</span></a>
+    to skip over felds of a container in order to be able to exit the container with
+    <code class="function">sd_bus_message_exit_container()</code> without reading all members.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_close_container.html#Return%20Value">¶</a></h2><p>On success, these functions return a non-negative integer.
+    <code class="function">sd_bus_message_open_container()</code> and <code class="function">sd_bus_message_close_container()</code>
+    return 0.
+    <code class="function">sd_bus_message_enter_container()</code> returns 1 if it successfully opened a new container, and 0 if
+    that was not possible because the end of the currently open container or message was reached.
+    <code class="function">sd_bus_message_exit_container()</code> returns 1 on success.
+    On failure, all of these functions return a negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_close_container.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_message_close_container.html#-EINVAL">¶</a></dt><dd><p><em class="parameter"><code>m</code></em> or <em class="parameter"><code>contents</code></em> are
+          <code class="constant">NULL</code> or <em class="parameter"><code>type</code></em> is invalid.</p></dd><dt id="-EPERM"><span class="term"><code class="constant">-EPERM</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_message_close_container.html#-EPERM">¶</a></dt><dd><p>The message <em class="parameter"><code>m</code></em> is already sealed.</p></dd><dt id="-ESTALE"><span class="term"><code class="constant">-ESTALE</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_message_close_container.html#-ESTALE">¶</a></dt><dd><p>The message <em class="parameter"><code>m</code></em> is in an invalid state.</p></dd><dt id="-ENOMEM"><span class="term"><code class="constant">-ENOMEM</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_message_close_container.html#-ENOMEM">¶</a></dt><dd><p>Memory allocation failed.</p></dd><dt id="-EBUSY"><span class="term"><code class="constant">-EBUSY</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_message_close_container.html#-EBUSY">¶</a></dt><dd><p><code class="function">sd_bus_message_exit_container()</code> was called but there are
+          unread members left in the container.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_close_container.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_close_container.html#Examples">¶</a></h2><div class="example"><a name="id-1.8.2"></a><p class="title"><b>Example 1. Append an array of strings to a message</b></p><div class="example-contents"><pre class="programlisting">#include &lt;systemd/sd-bus.h&gt;
+
+int append_strings_to_message(sd_bus_message *m, const char *const *arr) {
+  int r;
+
+  r = sd_bus_message_open_container(m, 'a', "s");
+  if (r &lt; 0)
+    return r;
+
+  for (const char *s = *arr; *s; s++) {
+    r = sd_bus_message_append(m, "s", s);
+    if (r &lt; 0)
+      return r;
+  }
+
+  return sd_bus_message_close_container(m);
+}
+</pre></div></div><br class="example-break"><div class="example"><a name="id-1.8.3"></a><p class="title"><b>Example 2. Read an array of strings from a message</b></p><div class="example-contents"><pre class="programlisting">#include &lt;stdio.h&gt;
+
+#include &lt;systemd/sd-bus.h&gt;
+
+int read_strings_from_message(sd_bus_message *m) {
+  int r;
+
+  r = sd_bus_message_enter_container(m, 'a', "s");
+  if (r &lt; 0)
+    return r;
+
+  for (;;) {
+    const char *s;
+
+    r = sd_bus_message_read(m, "s", &amp;s);
+    if (r &lt; 0)
+      return r;
+    if (r == 0)
+      break;
+
+    printf("%s\n", s);
+  }
+
+  return sd_bus_message_exit_container(m);
+}
+</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_close_container.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+      <a href="sd_bus_message_append.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_append</span>(3)</span></a>,
+      <a href="sd_bus_message_read.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_read</span>(3)</span></a>,
+      <a href="sd_bus_message_skip.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_skip</span>(3)</span></a>,
+      <a class="ulink" href="https://dbus.freedesktop.org/doc/dbus-specification.html" target="_top">The D-Bus specification</a>
+    </p></div></div></body></html>

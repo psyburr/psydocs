@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_message_get_signature</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_message_get_signature"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_message_get_signature, sd_bus_message_is_empty, sd_bus_message_has_signature — Query bus message signature</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">const char* <b class="fsfunc">sd_bus_message_get_signature</b>(</code></td><td>sd_bus_message *<var class="pdparam">message</var>, </td></tr><tr><td> </td><td>int <var class="pdparam">complete</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_message_is_empty</b>(</code></td><td>sd_bus_message *<var class="pdparam">message</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_message_has_signature</b>(</code></td><td>sd_bus_message *<var class="pdparam">message</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">signature</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_get_signature.html#Description">¶</a></h2><p><code class="function">sd_bus_message_get_signature()</code> returns the signature of message
+    <em class="parameter"><code>message</code></em>. If <em class="parameter"><code>complete</code></em> is true, the signature of the
+    whole message is returned, and just the signature of the currently open container otherwise.
+    </p><p><code class="function">sd_bus_message_is_empty()</code> returns true if the message is empty,
+    i.e. when its signature is empty.</p><p><code class="function">sd_bus_message_has_signature()</code> returns true if the signature of the
+    message <em class="parameter"><code>message</code></em> matches given <em class="parameter"><code>signature</code></em>. Parameter
+    <em class="parameter"><code>signature</code></em> may be <code class="constant">NULL</code>, this is treated the same as
+    an empty string, which is equivalent to calling <code class="function">sd_bus_message_is_empty()</code>.
+    </p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_get_signature.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_bus_message_get_signature()</code> returns
+    the signature, and <code class="constant">NULL</code> on error.</p><p>The other functions return 0 or a positive integer on success. On failure, they return a
+    negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.4"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_get_signature.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_message_get_signature.html#-EINVAL">¶</a></dt><dd><p>The <em class="parameter"><code>message</code></em> parameter is <code class="constant">NULL</code>.
+          </p></dd><dt id="NULL"><span class="term"><code class="constant">NULL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_message_get_signature.html#NULL">¶</a></dt><dd><p>The <em class="parameter"><code>message</code></em> parameter is <code class="constant">NULL</code>.
+          </p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_get_signature.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_message_get_signature.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+      <a href="sd_bus_message_new.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_message_new</span>(3)</span></a>
+    </p></div></div></body></html>

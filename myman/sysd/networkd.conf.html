@@ -1,0 +1,108 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>networkd.conf</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="networkd.conf"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>networkd.conf, networkd.conf.d — Global Network configuration files</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">/etc/systemd/networkd.conf</code></p><p><code class="filename">/etc/systemd/networkd.conf.d/*.conf</code></p><p><code class="filename">/usr/lib/systemd/networkd.conf.d/*.conf</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="networkd.conf.html#Description">¶</a></h2><p>These configuration files control global network parameters.
+    Currently the DHCP Unique Identifier (DUID).</p></div><div class="refsection"><a name="main-conf"></a><h2>Configuration Directories and Precedence</h2><p>The default configuration is set during compilation, so configuration is only needed when it is
+    necessary to deviate from those defaults. Initially, the main configuration file in
+    <code class="filename">/etc/systemd/</code> contains commented out entries showing the defaults as a guide to the
+    administrator. Local overrides can be created by editing this file or by creating drop-ins, as described
+    below. Using drop-ins for local configuration is recommended over modifications to the main configuration
+    file.</p><p>In addition to the "main" configuration file, drop-in configuration snippets are read from
+    <code class="filename">/usr/lib/systemd/*.conf.d/</code>, <code class="filename">/usr/local/lib/systemd/*.conf.d/</code>,
+    and <code class="filename">/etc/systemd/*.conf.d/</code>. Those drop-ins have higher precedence and override the
+    main configuration file. Files in the <code class="filename">*.conf.d/</code> configuration subdirectories are
+    sorted by their filename in lexicographic order, regardless of in which of the subdirectories they
+    reside. When multiple files specify the same option, for options which accept just a single value, the
+    entry in the file sorted last takes precedence, and for options which accept a list of values, entries
+    are collected as they occur in the sorted files.</p><p>When packages need to customize the configuration, they can install drop-ins under
+    <code class="filename">/usr/</code>. Files in <code class="filename">/etc/</code> are reserved for the local administrator,
+    who may use this logic to override the configuration files installed by vendor packages. Drop-ins have to
+    be used to override package drop-ins, since the main configuration file has lower precedence. It is
+    recommended to prefix all filenames in those subdirectories with a two-digit number and a dash, to
+    simplify the ordering of the files.</p><p>To disable a configuration file supplied by the vendor, the recommended way is to place a symlink
+    to <code class="filename">/dev/null</code> in the configuration directory in <code class="filename">/etc/</code>, with the
+    same filename as the vendor configuration file.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="[Network] Section Options">[Network] Section Options<a class="headerlink" title="Permalink to this headline" href="networkd.conf.html#%5BNetwork%5D%20Section%20Options">¶</a></h2><p>The following options are available in the [Network] section:</p><div class="variablelist"><dl class="variablelist"><dt id="SpeedMeter="><span class="term"><code class="varname">SpeedMeter=</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#SpeedMeter=">¶</a></dt><dd><p>Takes a boolean. If set to yes, then <span class="command"><strong>systemd-networkd</strong></span>
+        measures the traffic of each interface, and
+        <span class="command"><strong>networkctl status <em class="replaceable"><code>INTERFACE</code></em></strong></span> shows the measured speed.
+        Defaults to no.</p></dd><dt id="SpeedMeterIntervalSec="><span class="term"><code class="varname">SpeedMeterIntervalSec=</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#SpeedMeterIntervalSec=">¶</a></dt><dd><p>Specifies the time interval to calculate the traffic speed of each interface.
+        If <code class="varname">SpeedMeter=no</code>, the value is ignored. Defaults to 10sec.</p></dd><dt id="ManageForeignRoutingPolicyRules="><span class="term"><code class="varname">ManageForeignRoutingPolicyRules=</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#ManageForeignRoutingPolicyRules=">¶</a></dt><dd><p>A boolean. When true, <span class="command"><strong>systemd-networkd</strong></span> will remove rules
+        that are not configured in .network files (except for rules with protocol
+        "<code class="literal">kernel</code>"). When false, it will not remove any foreign rules, keeping them even
+        if they are not configured in a .network file. Defaults to yes.
+        </p></dd><dt id="ManageForeignRoutes="><span class="term"><code class="varname">ManageForeignRoutes=</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#ManageForeignRoutes=">¶</a></dt><dd><p>A boolean. When true, <span class="command"><strong>systemd-networkd</strong></span> will remove routes
+        that are not configured in .network files (except for routes with protocol
+        "<code class="literal">kernel</code>", "<code class="literal">dhcp</code>" when <code class="varname">KeepConfiguration=</code>
+        is true or "<code class="literal">dhcp</code>", and "<code class="literal">static</code>" when
+        <code class="varname">KeepConfiguration=</code> is true or "<code class="literal">static</code>"). When false, it will
+        not remove any foreign routes, keeping them even if they are not configured in a .network file.
+        Defaults to yes.</p></dd><dt id="RouteTable="><span class="term"><code class="varname">RouteTable=</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#RouteTable=">¶</a></dt><dd><p>Defines the route table name. Takes a whitespace-separated list of the pairs of
+        route table name and number. The route table name and number in each pair are separated with a
+        colon, i.e., "<code class="literal"><em class="replaceable"><code>name</code></em>:<em class="replaceable"><code>number</code></em></code>".
+        The route table name must not be "<code class="literal">default</code>", "<code class="literal">main</code>", or
+        "<code class="literal">local</code>", as these route table names are predefined with route table number 253,
+        254, and 255, respectively. The route table number must be an integer in the range 1…4294967295.
+        This setting can be specified multiple times. If an empty string is specified, then the list
+        specified earlier are cleared. Defaults to unset.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="[DHCPv4] Section Options">[DHCPv4] Section Options<a class="headerlink" title="Permalink to this headline" href="networkd.conf.html#%5BDHCPv4%5D%20Section%20Options">¶</a></h2><p>This section configures the DHCP Unique Identifier (DUID) value used by DHCP protocol. DHCPv4
+    client protocol sends IAID and DUID to the DHCP server when acquiring a dynamic IPv4 address if
+    <code class="option">ClientIdentifier=duid</code>. IAID and DUID allows a DHCP server to uniquely identify the
+    machine and the interface requesting a DHCP IP address. To configure IAID and ClientIdentifier, see
+    <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>.
+    </p><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="DUIDType="><span class="term"><code class="varname">DUIDType=</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#DUIDType=">¶</a></dt><dd><p>Specifies how the DUID should be generated. See
+        <a class="ulink" href="https://tools.ietf.org/html/rfc3315#section-9" target="_top">RFC 3315</a>
+        for a description of all the options.</p><p>The following values are understood:
+        </p><div class="variablelist"><dl class="variablelist"><dt id="vendor"><span class="term"><code class="option">vendor</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#vendor">¶</a></dt><dd><p>If "<code class="literal">DUIDType=vendor</code>", then the DUID value will be generated using
+            "<code class="literal">43793</code>" as the vendor identifier (systemd) and hashed contents of
+            <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a>.
+            This is the default if <code class="varname">DUIDType=</code> is not specified.
+            </p></dd><dt id="uuid"><span class="term"><code class="option">uuid</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#uuid">¶</a></dt><dd><p>If "<code class="literal">DUIDType=uuid</code>", and <code class="varname">DUIDRawData=</code> is not set,
+            then the product UUID is used as a DUID value. If a system does not have valid product UUID, then
+            an application-specific
+            <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a>
+            is used as a DUID value. About the application-specific machine ID, see
+            <a href="sd_id128_get_machine_app_specific.html#"><span class="citerefentry"><span class="refentrytitle">sd_id128_get_machine_app_specific</span>(3)</span></a>.
+            </p></dd><dt id="link-layer-time[:TIME]"><span class="term"><code class="option">link-layer-time[:<em class="replaceable"><code>TIME</code></em>]</code>, </span><span class="term"><code class="option">link-layer</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#link-layer-time%5B:TIME%5D">¶</a></dt><dd><p>If "<code class="literal">link-layer-time</code>" or "<code class="literal">link-layer</code>" is specified,
+            then the MAC address of the interface is used as a DUID value. The value "<code class="literal">link-layer-time</code>"
+            can take additional time value after a colon, e.g. "<code class="literal">link-layer-time:2018-01-23 12:34:56 UTC</code>".
+            The default time value is "<code class="literal">2000-01-01 00:00:00 UTC</code>".
+            </p></dd></dl></div><p>
+        </p><p>In all cases, <code class="varname">DUIDRawData=</code> can be used to override the
+        actual DUID value that is used.</p></dd><dt id="DUIDRawData="><span class="term"><code class="varname">DUIDRawData=</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#DUIDRawData=">¶</a></dt><dd><p>Specifies the DHCP DUID value as a single newline-terminated, hexadecimal string, with each
+        byte separated by "<code class="literal">:</code>". The DUID that is sent is composed of the DUID type specified by
+        <code class="varname">DUIDType=</code> and the value configured here.</p><p>The DUID value specified here overrides the DUID that
+        <a href="systemd-networkd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-networkd.service</span>(8)</span></a>
+        generates from the machine ID. To configure DUID per-network, see
+        <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>.
+        The configured DHCP DUID should conform to the specification in
+        <a class="ulink" href="http://tools.ietf.org/html/rfc3315#section-9" target="_top">RFC 3315</a>,
+        <a class="ulink" href="http://tools.ietf.org/html/rfc6355" target="_top">RFC 6355</a>. To configure IAID, see
+        <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>.</p><div class="example"><a name="id-1.8.4.2.2.3"></a><p class="title"><b>Example 1. A <code class="option">DUIDType=vendor</code> with a custom value</b></p><div class="example-contents"><pre class="programlisting">DUIDType=vendor
+DUIDRawData=00:00:ab:11:f9:2a:c2:77:29:f9:5c:00</pre><p>This specifies a 14 byte DUID, with the type DUID-EN ("<code class="literal">00:02</code>"), enterprise number
+          43793 ("<code class="literal">00:00:ab:11</code>"), and identifier value "<code class="literal">f9:2a:c2:77:29:f9:5c:00</code>".
+          </p></div></div><br class="example-break"></dd></dl></div></div><div class="refsect1"><a name="id-1.9"></a><h2 id="[DHCPv6] Section Options">[DHCPv6] Section Options<a class="headerlink" title="Permalink to this headline" href="networkd.conf.html#%5BDHCPv6%5D%20Section%20Options">¶</a></h2><p>This section configures the DHCP Unique Identifier (DUID) value used by DHCPv6 protocol.
+    DHCPv6 client protocol sends the DHCP Unique Identifier and the interface Identity Association
+    Identifier (IAID) to a DHCPv6 server when acquiring a dynamic IPv6 address. IAID and DUID allows a
+    DHCPv6 server to uniquely identify the machine and the interface requesting a DHCP IP address. To
+    configure IAID, see
+    <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>.
+    </p><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="DUIDType=1"><span class="term"><code class="varname">DUIDType=</code>, </span><span class="term"><code class="varname">DUIDRawData=</code></span><a class="headerlink" title="Permalink to this term" href="networkd.conf.html#DUIDType=1">¶</a></dt><dd><p>As in the [DHCPv4] section.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.10"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="networkd.conf.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>,
+      <a href="systemd-networkd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-networkd.service</span>(8)</span></a>,
+      <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a>,
+      <a href="sd_id128_get_machine_app_specific.html#"><span class="citerefentry"><span class="refentrytitle">sd_id128_get_machine_app_specific</span>(3)</span></a>
+      </p></div></div></body></html>

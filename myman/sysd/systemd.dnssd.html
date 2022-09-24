@@ -1,0 +1,92 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd.dnssd</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd.dnssd"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd.dnssd — DNS-SD configuration</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename"><em class="replaceable"><code>network_service</code></em>.dnssd</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd.dnssd.html#Description">¶</a></h2><p>DNS-SD setup is performed by
+    <a href="systemd-resolved.html#"><span class="citerefentry"><span class="refentrytitle">systemd-resolved</span>(8)</span></a>.
+    </p><p>The main network service file must have the extension <code class="filename">.dnssd</code>; other
+    extensions are ignored.</p><p>The <code class="filename">.dnssd</code> files are read from the files located in the system network
+    directories <code class="filename">/usr/lib/systemd/dnssd</code> and
+    <code class="filename">/usr/local/lib/systemd/dnssd</code>, the volatile runtime network directory
+    <code class="filename">/run/systemd/dnssd</code> and the local administration network directory
+    <code class="filename">/etc/systemd/dnssd</code>. All configuration files are collectively sorted and processed in
+    lexical order, regardless of the directories in which they live. However, files with identical filenames
+    replace each other. Files in <code class="filename">/etc/</code> have the highest priority, files in
+    <code class="filename">/run/</code> take precedence over files with the same name in
+    <code class="filename">/usr/lib/</code>. This can be used to override a system-supplied configuration file with a
+    local file if needed.</p><p>Along with the network service file <code class="filename">foo.dnssd</code>, a "drop-in" directory
+    <code class="filename">foo.dnssd.d/</code> may exist. All files with the suffix
+    "<code class="literal">.conf</code>" from this directory will be parsed after the file itself is
+    parsed. This is useful to alter or add configuration settings, without having to modify the main
+    configuration file. Each drop-in file must have appropriate section headers.</p><p>In addition to <code class="filename">/etc/systemd/dnssd</code>, drop-in "<code class="literal">.d</code>" directories
+    can be placed in <code class="filename">/usr/lib/systemd/dnssd</code> or <code class="filename">/run/systemd/dnssd</code>
+    directories. Drop-in files in <code class="filename">/etc/</code> take precedence over those in
+    <code class="filename">/run/</code> which in turn take precedence over those in <code class="filename">/usr/lib/</code> or
+    <code class="filename">/usr/local/lib</code>. Drop-in files under any of these directories take precedence over
+    the main network service file wherever located.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="[Service] Section Options">[Service] Section Options<a class="headerlink" title="Permalink to this headline" href="systemd.dnssd.html#%5BService%5D%20Section%20Options">¶</a></h2><p>The network service file contains a [Service]
+      section, which specifies a discoverable network service announced in a
+      local network with Multicast DNS broadcasts.</p><div class="variablelist"><dl class="variablelist"><dt id="Name="><span class="term"><code class="varname">Name=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.dnssd.html#Name=">¶</a></dt><dd><p>An instance name of the network service as defined in the section 4.1.1 of <a class="ulink" href="https://tools.ietf.org/html/rfc6763" target="_top">RFC 6763</a>, e.g. "<code class="literal">webserver</code>".</p><p>The option supports simple specifier expansion. The following expansions are understood:</p><div class="table"><a name="id-1.6.3.1.2.3"></a><p class="title"><b>Table 1. Specifiers available</b></p><div class="table-contents"><table class="table" summary="Specifiers available" border="1"><colgroup><col align="left" class="spec"><col align="left" class="mean"><col align="left" class="detail"></colgroup><thead><tr><th align="left">Specifier</th><th align="left">Meaning</th><th align="left">Details</th></tr></thead><tbody><tr><td align="left"><a name="a"></a>"<code class="literal">%a</code>"</td><td align="left">Architecture</td><td align="left">A short string identifying the architecture of the local system. A string such as <code class="constant">x86</code>, <code class="constant">x86-64</code> or <code class="constant">arm64</code>. See the architectures defined for <code class="varname">ConditionArchitecture=</code> in <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a> for a full list.</td></tr><tr><td align="left"><a name="A"></a>"<code class="literal">%A</code>"</td><td align="left">Operating system image version</td><td align="left">The operating system image version identifier of the running system, as read from the <code class="varname">IMAGE_VERSION=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="b"></a>"<code class="literal">%b</code>"</td><td align="left">Boot ID</td><td align="left">The boot ID of the running system, formatted as string. See <a href="http://man7.org/linux/man-pages/man4/random.4.html"><span class="citerefentry"><span class="refentrytitle">random</span>(4)</span></a> for more information.</td></tr><tr><td align="left"><a name="B"></a>"<code class="literal">%B</code>"</td><td align="left">Operating system build ID</td><td align="left">The operating system build identifier of the running system, as read from the <code class="varname">BUILD_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="H"></a>"<code class="literal">%H</code>"</td><td align="left">Host name</td><td align="left">The hostname of the running system.</td></tr><tr><td align="left"><a name="m"></a>"<code class="literal">%m</code>"</td><td align="left">Machine ID</td><td align="left">The machine ID of the running system, formatted as string. See <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="M"></a>"<code class="literal">%M</code>"</td><td align="left">Operating system image identifier</td><td align="left">The operating system image identifier of the running system, as read from the <code class="varname">IMAGE_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="o"></a>"<code class="literal">%o</code>"</td><td align="left">Operating system ID</td><td align="left">The operating system identifier of the running system, as read from the <code class="varname">ID=</code> field of <code class="filename">/etc/os-release</code>. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="v"></a>"<code class="literal">%v</code>"</td><td align="left">Kernel release</td><td align="left">Identical to <span class="command"><strong>uname -r</strong></span> output.</td></tr><tr><td align="left"><a name="w"></a>"<code class="literal">%w</code>"</td><td align="left">Operating system version ID</td><td align="left">The operating system version identifier of the running system, as read from the <code class="varname">VERSION_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="W"></a>"<code class="literal">%W</code>"</td><td align="left">Operating system variant ID</td><td align="left">The operating system variant identifier of the running system, as read from the <code class="varname">VARIANT_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="percent"></a>"<code class="literal">%%</code>"</td><td align="left">Single percent sign</td><td align="left">Use "<code class="literal">%%</code>" in place of "<code class="literal">%</code>" to specify a single percent sign.</td></tr></tbody></table></div></div><br class="table-break"></dd><dt id="Type="><span class="term"><code class="varname">Type=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.dnssd.html#Type=">¶</a></dt><dd><p>A type of the network service as defined in the section 4.1.2 of <a class="ulink" href="https://tools.ietf.org/html/rfc6763" target="_top">RFC 6763</a>, e.g. "<code class="literal">_http._tcp</code>".
+            </p></dd><dt id="Port="><span class="term"><code class="varname">Port=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.dnssd.html#Port=">¶</a></dt><dd><p>An IP port number of the network service.</p></dd><dt id="Priority="><span class="term"><code class="varname">Priority=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.dnssd.html#Priority=">¶</a></dt><dd><p>A priority number set in <code class="constant">SRV</code> resource records corresponding
+            to the network service.</p></dd><dt id="Weight="><span class="term"><code class="varname">Weight=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.dnssd.html#Weight=">¶</a></dt><dd><p>A weight number set in <code class="constant">SRV</code> resource records corresponding
+            to the network service.</p></dd><dt id="TxtText="><span class="term"><code class="varname">TxtText=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.dnssd.html#TxtText=">¶</a></dt><dd><p>A whitespace-separated list of arbitrary key/value pairs
+            conveying additional information about the named service in the corresponding TXT resource record,
+            e.g. "<code class="literal">path=/portal/index.html</code>". Keys and values can contain C-style escape
+            sequences which get translated upon reading configuration files.
+            </p><p>This option together with <code class="varname">TxtData=</code> may be specified more than once, in which
+            case multiple TXT resource records will be created for the service. If the empty string is assigned to
+            this option, the list is reset and all prior assignments will have no effect.
+            </p></dd><dt id="TxtData="><span class="term"><code class="varname">TxtData=</code></span><a class="headerlink" title="Permalink to this term" href="systemd.dnssd.html#TxtData=">¶</a></dt><dd><p>A whitespace-separated list of arbitrary key/value pairs
+            conveying additional information about the named service in the corresponding TXT resource record
+            where values are base64-encoded string representing any binary data,
+            e.g. "<code class="literal">data=YW55IGJpbmFyeSBkYXRhCg==</code>". Keys can contain C-style escape
+            sequences which get translated upon reading configuration files.
+            </p><p>This option together with <code class="varname">TxtText=</code> may be specified more than once, in which
+            case multiple TXT resource records will be created for the service. If the empty string is assigned to
+            this option, the list is reset and all prior assignments will have no effect.
+            </p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="systemd.dnssd.html#Examples">¶</a></h2><div class="example"><a name="id-1.7.2"></a><p class="title"><b>Example 1. HTTP service</b></p><div class="example-contents"><pre class="programlisting"># /etc/systemd/dnssd/http.dnssd
+[Service]
+Name=%H
+Type=_http._tcp
+Port=80
+TxtText=path=/stats/index.html t=temperature_sensor</pre><p>This makes the http server running on the host discoverable in the local network
+      given MulticastDNS is enabled on the network interface.</p><p>Now the utility "<code class="literal">resolvectl</code>" should be able to resolve the
+      service to the host's name:</p><pre class="programlisting">$ resolvectl service meteo._http._tcp.local
+meteo._http._tcp.local: meteo.local:80 [priority=0, weight=0]
+                        169.254.208.106%senp0s21f0u2u4
+                        fe80::213:3bff:fe49:8aa%senp0s21f0u2u4
+                        path=/stats/index.html
+                        t=temperature_sensor
+                        (meteo/_http._tcp/local)
+
+-- Information acquired via protocol mDNS/IPv6 in 4.0ms.
+-- Data is authenticated: yes</pre><p>"<code class="literal">Avahi</code>" running on a different host in the same local network should see the service as well:</p><pre class="programlisting">$ avahi-browse -a -r
++ enp3s0 IPv6 meteo                                         Web Site             local
++ enp3s0 IPv4 meteo                                         Web Site             local
+= enp3s0 IPv6 meteo                                         Web Site             local
+   hostname = [meteo.local]
+   address = [fe80::213:3bff:fe49:8aa]
+   port = [80]
+   txt = ["path=/stats/index.html" "t=temperature_sensor"]
+= enp3s0 IPv4 meteo                                         Web Site             local
+   hostname = [meteo.local]
+   address = [169.254.208.106]
+   port = [80]
+   txt = ["path=/stats/index.html" "t=temperature_sensor"]</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd.dnssd.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-resolved.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-resolved.service</span>(8)</span></a>,
+      <a href="resolvectl.html#"><span class="citerefentry"><span class="refentrytitle">resolvectl</span>(1)</span></a>
+    </p></div></div></body></html>

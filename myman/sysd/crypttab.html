@@ -1,0 +1,404 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>crypttab</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="crypttab"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>crypttab — Configuration for encrypted block devices</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">/etc/crypttab</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="crypttab.html#Description">¶</a></h2><p>The <code class="filename">/etc/crypttab</code> file describes
+    encrypted block devices that are set up during system boot.</p><p>Empty lines and lines starting with the "<code class="literal">#</code>"
+    character are ignored. Each of the remaining lines describes one
+    encrypted block device. Fields are delimited by white space.</p><p>Each line is in the form</p><pre class="programlisting"><em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>encrypted-device</code></em> <em class="replaceable"><code>key-file</code></em> <em class="replaceable"><code>options</code></em></pre><p>
+    The first two fields are mandatory, the remaining two are
+    optional.</p><p>Setting up encrypted block devices using this file supports four encryption modes: LUKS, TrueCrypt,
+    BitLocker and plain. See <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a> for
+    more information about each mode. When no mode is specified in the options field and the block device
+    contains a LUKS signature, it is opened as a LUKS device; otherwise, it is assumed to be in raw dm-crypt
+    (plain mode) format.</p><p>The four fields of <code class="filename">/etc/crypttab</code> are defined as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>The first field contains the name of the resulting volume with decrypted data; its
+      block device is set up below <code class="filename">/dev/mapper/</code>.</p></li><li class="listitem"><p>The second field contains a path to the underlying block
+      device or file, or a specification of a block device via
+      "<code class="literal">UUID=</code>" followed by the UUID.</p></li><li class="listitem"><p>The third field specifies an absolute path to a file with the encryption
+      key. Optionally, the path may be followed by "<code class="literal">:</code>" and an
+      <code class="filename">/etc/fstab</code> style device specification (e.g. starting with
+      "<code class="literal">LABEL=</code>" or similar); in which case the path is taken relative to the specified
+      device's file system root. If the field is not present or is "<code class="literal">none</code>" or
+      "<code class="literal">-</code>", a key file named after the volume to unlock (i.e. the first column of the line),
+      suffixed with <code class="filename">.key</code> is automatically loaded from the
+      <code class="filename">/etc/cryptsetup-keys.d/</code> and <code class="filename">/run/cryptsetup-keys.d/</code>
+      directories, if present. Otherwise, the password has to be manually entered during system boot. For
+      swap encryption, <code class="filename">/dev/urandom</code> may be used as key file, resulting in a randomized
+      key.</p><p>If the specified key file path refers to an <code class="constant">AF_UNIX</code> stream socket in the
+      file system, the key is acquired by connecting to the socket and reading it from the connection. This
+      allows the implementation of a service to provide key information dynamically, at the moment when it is
+      needed. For details see below.</p></li><li class="listitem"><p>The fourth field, if present, is a comma-delimited list of options. The supported
+      options are listed below.</p></li></ol></div></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Key Acquisition">Key Acquisition<a class="headerlink" title="Permalink to this headline" href="crypttab.html#Key%20Acquisition">¶</a></h2><p>Six different mechanisms for acquiring the decryption key or passphrase unlocking the encrypted
+    volume are supported. Specifically:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Most prominently, the user may be queried interactively during volume activation
+      (i.e. typically at boot), asking them to type in the necessary passphrase(s).</p></li><li class="listitem"><p>The (unencrypted) key may be read from a file on disk, possibly on removable media. The third field
+      of each line encodes the location, for details see above.</p></li><li class="listitem"><p>The (unencrypted) key may be requested from another service, by specifying an
+      <code class="constant">AF_UNIX</code> file system socket in place of a key file in the third field. For details
+      see above and below.</p></li><li class="listitem"><p>The key may be acquired via a PKCS#11 compatible hardware security token or
+      smartcard. In this case an encrypted key is stored on disk/removable media, acquired via
+      <code class="constant">AF_UNIX</code>, or stored in the LUKS2 JSON token metadata header. The encrypted key is
+      then decrypted by the PKCS#11 token with an RSA key stored on it, and then used to unlock the encrypted
+      volume. Use the <code class="option">pkcs11-uri=</code> option described below to use this mechanism.</p></li><li class="listitem"><p>Similar, the key may be acquired via a FIDO2 compatible hardware security token (which
+      must implement the "hmac-secret" extension). In this case a (during enrollment) randomly generated key
+      is stored on disk/removable media, acquired via <code class="constant">AF_UNIX</code>, or stored in the LUKS2
+      JSON token metadata header. The random key is hashed via a keyed hash function (HMAC) on the FIDO2
+      token, using a secret key stored on the token that never leaves it. The resulting hash value is then
+      used as key to unlock the encrypted volume. Use the <code class="option">fido2-device=</code> option described
+      below to use this mechanism.</p></li><li class="listitem"><p>Similar, the key may be acquired via a TPM2 security chip. In this case a (during
+      enrollment) randomly generated key — encrypted by an asymmetric key derived from the TPM2 chip's seed
+      key — is stored on disk/removable media, acquired via <code class="constant">AF_UNIX</code>, or stored in the
+      LUKS2 JSON token metadata header. Use the <code class="option">tpm2-device=</code> option described below to use
+      this mechanism.</p></li></ol></div><p>For the latter five mechanisms the source for the key material used for unlocking the volume is
+    primarily configured in the third field of each <code class="filename">/etc/crypttab</code> line, but may also
+    configured in <code class="filename">/etc/cryptsetup-keys.d/</code> and
+    <code class="filename">/run/cryptsetup-keys.d/</code> (see above) or in the LUKS2 JSON token header (in case of
+    the latter three). Use the
+    <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+    tool to enroll PKCS#11, FIDO2 and TPM2 devices in LUKS2 volumes.</p></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Supported Options">Supported Options<a class="headerlink" title="Permalink to this headline" href="crypttab.html#Supported%20Options">¶</a></h2><p>The following options may be used in the fourth field of each line:</p><div class="variablelist"><dl class="variablelist"><dt id="cipher="><span class="term"><code class="option">cipher=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#cipher=">¶</a></dt><dd><p>Specifies the cipher to use. See <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for possible values and the default value of this option. A cipher with unpredictable IV values, such
+        as "<code class="literal">aes-cbc-essiv:sha256</code>", is recommended. Embedded commas in the cipher
+        specification need to be escaped by preceding them with a backslash, see example below.</p></dd><dt id="discard"><span class="term"><code class="option">discard</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#discard">¶</a></dt><dd><p>Allow discard requests to be passed through the encrypted block
+        device. This improves performance on SSD storage but has security implications.
+        </p></dd><dt id="hash="><span class="term"><code class="option">hash=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#hash=">¶</a></dt><dd><p>Specifies the hash to use for password
+        hashing. See
+        <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for possible values and the default value of this
+        option.</p></dd><dt id="header="><span class="term"><code class="option">header=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#header=">¶</a></dt><dd><p>Use a detached (separated) metadata device or
+        file where the LUKS header is stored. This option is only
+        relevant for LUKS devices. See
+        <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for possible values and the default value of this
+        option.</p><p>Optionally, the path may be followed by "<code class="literal">:</code>" and an
+        <code class="filename">/etc/fstab</code> device specification (e.g. starting with "<code class="literal">UUID=</code>" or
+        similar); in which case, the path is relative to the device file system root. The device gets mounted
+        automatically for LUKS device activation duration only.</p></dd><dt id="keyfile-offset="><span class="term"><code class="option">keyfile-offset=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#keyfile-offset=">¶</a></dt><dd><p>Specifies the number of bytes to skip at the
+        start of the key file. See
+        <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for possible values and the default value of this
+        option.</p></dd><dt id="keyfile-size="><span class="term"><code class="option">keyfile-size=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#keyfile-size=">¶</a></dt><dd><p>Specifies the maximum number of bytes to read
+        from the key file. See
+        <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for possible values and the default value of this option. This
+        option is ignored in plain encryption mode, as the key file
+        size is then given by the key size.</p></dd><dt id="keyfile-erase"><span class="term"><code class="option">keyfile-erase</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#keyfile-erase">¶</a></dt><dd><p>If enabled, the specified key file is erased after the volume is activated or when
+        activation fails. This is in particular useful when the key file is only acquired transiently before
+        activation (e.g. via a file in <code class="filename">/run/</code>, generated by a service running before
+        activation), and shall be removed after use. Defaults to off.</p></dd><dt id="key-slot="><span class="term"><code class="option">key-slot=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#key-slot=">¶</a></dt><dd><p>Specifies the key slot to compare the
+        passphrase or key against. If the key slot does not match the
+        given passphrase or key, but another would, the setup of the
+        device will fail regardless. This option implies
+        <code class="option">luks</code>. See
+        <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for possible values. The default is to try all key slots in
+        sequential order.</p></dd><dt id="keyfile-timeout="><span class="term"><code class="option">keyfile-timeout=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#keyfile-timeout=">¶</a></dt><dd><p> Specifies the timeout for the device on
+        which the key file resides and falls back to a password if
+        it could not be mounted. See
+        <a href="systemd-cryptsetup-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptsetup-generator</span>(8)</span></a>
+        for key files on external devices.
+        </p></dd><dt id="luks"><span class="term"><code class="option">luks</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#luks">¶</a></dt><dd><p>Force LUKS mode. When this mode is used, the
+        following options are ignored since they are provided by the
+        LUKS header on the device: <code class="option">cipher=</code>,
+        <code class="option">hash=</code>,
+        <code class="option">size=</code>.</p></dd><dt id="bitlk"><span class="term"><code class="option">bitlk</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#bitlk">¶</a></dt><dd><p>Decrypt BitLocker drive. Encryption parameters
+        are deduced by cryptsetup from BitLocker header.</p></dd><dt id="_netdev"><span class="term"><code class="option">_netdev</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#_netdev">¶</a></dt><dd><p>Marks this cryptsetup device as requiring network. It will be
+        started after the network is available, similarly to
+        <a href="systemd.mount.html#"><span class="citerefentry"><span class="refentrytitle">systemd.mount</span>(5)</span></a>
+        units marked with <code class="option">_netdev</code>. The service unit to set up this device
+        will be ordered between <code class="filename">remote-fs-pre.target</code> and
+        <code class="filename">remote-cryptsetup.target</code>, instead of
+        <code class="filename">cryptsetup-pre.target</code> and
+        <code class="filename">cryptsetup.target</code>.</p><p>Hint: if this device is used for a mount point that is specified in
+        <a href="http://man7.org/linux/man-pages/man5/fstab.5.html"><span class="citerefentry"><span class="refentrytitle">fstab</span>(5)</span></a>,
+        the <code class="option">_netdev</code> option should also be used for the mount
+        point. Otherwise, a dependency loop might be created where the mount point
+        will be pulled in by <code class="filename">local-fs.target</code>, while the
+        service to configure the network is usually only started <span class="emphasis"><em>after</em></span>
+        the local file system has been mounted.</p></dd><dt id="noauto"><span class="term"><code class="option">noauto</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#noauto">¶</a></dt><dd><p>This device will not be added to <code class="filename">cryptsetup.target</code>.
+        This means that it will not be automatically unlocked on boot, unless something else pulls
+        it in. In particular, if the device is used for a mount point, it'll be unlocked
+        automatically during boot, unless the mount point itself is also disabled with
+        <code class="option">noauto</code>.</p></dd><dt id="nofail"><span class="term"><code class="option">nofail</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#nofail">¶</a></dt><dd><p>This device will not be a hard dependency of
+        <code class="filename">cryptsetup.target</code>. It'll still be pulled in and started, but the system
+        will not wait for the device to show up and be unlocked, and boot will not fail if this is
+        unsuccessful. Note that other units that depend on the unlocked device may still fail. In
+        particular, if the device is used for a mount point, the mount point itself also needs to
+        have the <code class="option">nofail</code> option, or the boot will fail if the device is not unlocked
+        successfully.</p></dd><dt id="offset="><span class="term"><code class="option">offset=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#offset=">¶</a></dt><dd><p>Start offset in the backend device, in 512-byte sectors. This
+        option is only relevant for plain devices.</p></dd><dt id="plain"><span class="term"><code class="option">plain</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#plain">¶</a></dt><dd><p>Force plain encryption mode.</p></dd><dt id="read-only"><span class="term"><code class="option">read-only</code>, </span><span class="term"><code class="option">readonly</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#read-only">¶</a></dt><dd><p>Set up the encrypted block device in read-only
+        mode.</p></dd><dt id="same-cpu-crypt"><span class="term"><code class="option">same-cpu-crypt</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#same-cpu-crypt">¶</a></dt><dd><p>Perform encryption using the same CPU that IO was submitted on. The default is to use
+        an unbound workqueue so that encryption work is automatically balanced between available CPUs.</p><p>This requires kernel 4.0 or newer.</p></dd><dt id="submit-from-crypt-cpus"><span class="term"><code class="option">submit-from-crypt-cpus</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#submit-from-crypt-cpus">¶</a></dt><dd><p>Disable offloading writes to a separate thread after encryption. There are some
+        situations where offloading write requests from the encryption threads to a dedicated thread degrades
+        performance significantly. The default is to offload write requests to a dedicated thread because it
+        benefits the CFQ scheduler to have writes submitted using the same context.</p><p>This requires kernel 4.0 or newer.</p></dd><dt id="no-read-workqueue"><span class="term"><code class="option">no-read-workqueue</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#no-read-workqueue">¶</a></dt><dd><p>Bypass dm-crypt internal workqueue and process read requests synchronously. The
+        default is to queue these requests and process them asynchronously.</p><p>This requires kernel 5.9 or newer.</p></dd><dt id="no-write-workqueue"><span class="term"><code class="option">no-write-workqueue</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#no-write-workqueue">¶</a></dt><dd><p>Bypass dm-crypt internal workqueue and process write requests synchronously. The
+        default is to queue these requests and process them asynchronously.</p><p>This requires kernel 5.9 or newer.</p></dd><dt id="skip="><span class="term"><code class="option">skip=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#skip=">¶</a></dt><dd><p>How many 512-byte sectors of the encrypted data to skip at the
+        beginning. This is different from the <code class="option">offset=</code> option with respect
+        to the sector numbers used in initialization vector (IV) calculation. Using
+        <code class="option">offset=</code> will shift the IV calculation by the same negative
+        amount. Hence, if <code class="option">offset=<em class="replaceable"><code>n</code></em></code> is given,
+        sector <em class="replaceable"><code>n</code></em> will get a sector number of 0 for the IV
+        calculation. Using <code class="option">skip=</code> causes sector
+        <em class="replaceable"><code>n</code></em> to also be the first sector of the mapped device, but
+        with its number for IV generation being <em class="replaceable"><code>n</code></em>.</p><p>This option is only relevant for plain devices.</p></dd><dt id="size="><span class="term"><code class="option">size=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#size=">¶</a></dt><dd><p>Specifies the key size in bits. See
+        <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for possible values and the default value of this
+        option.</p></dd><dt id="sector-size="><span class="term"><code class="option">sector-size=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#sector-size=">¶</a></dt><dd><p>Specifies the sector size in bytes. See
+        <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for possible values and the default value of this
+        option.</p></dd><dt id="swap"><span class="term"><code class="option">swap</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#swap">¶</a></dt><dd><p>The encrypted block device will be used as a
+        swap device, and will be formatted accordingly after setting
+        up the encrypted block device, with
+        <a href="http://man7.org/linux/man-pages/man8/mkswap.8.html"><span class="citerefentry"><span class="refentrytitle">mkswap</span>(8)</span></a>.
+        This option implies <code class="option">plain</code>.</p><p>WARNING: Using the <code class="option">swap</code> option will
+        destroy the contents of the named partition during every boot,
+        so make sure the underlying block device is specified
+        correctly.</p></dd><dt id="tcrypt"><span class="term"><code class="option">tcrypt</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tcrypt">¶</a></dt><dd><p>Use TrueCrypt encryption mode. When this mode
+        is used, the following options are ignored since they are
+        provided by the TrueCrypt header on the device or do not
+        apply:
+        <code class="option">cipher=</code>,
+        <code class="option">hash=</code>,
+        <code class="option">keyfile-offset=</code>,
+        <code class="option">keyfile-size=</code>,
+        <code class="option">size=</code>.</p><p>When this mode is used, the passphrase is read from the
+        key file given in the third field. Only the first line of this
+        file is read, excluding the new line character.</p><p>Note that the TrueCrypt format uses both passphrase and
+        key files to derive a password for the volume. Therefore, the
+        passphrase and all key files need to be provided. Use
+        <code class="option">tcrypt-keyfile=</code> to provide the absolute path
+        to all key files. When using an empty passphrase in
+        combination with one or more key files, use
+        "<code class="literal">/dev/null</code>" as the password file in the third
+        field.</p></dd><dt id="tcrypt-hidden"><span class="term"><code class="option">tcrypt-hidden</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tcrypt-hidden">¶</a></dt><dd><p>Use the hidden TrueCrypt volume. This option
+        implies <code class="option">tcrypt</code>.</p><p>This will map the hidden volume that is inside of the
+        volume provided in the second field. Please note that there is
+        no protection for the hidden volume if the outer volume is
+        mounted instead. See
+        <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>
+        for more information on this limitation.</p></dd><dt id="tcrypt-keyfile="><span class="term"><code class="option">tcrypt-keyfile=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tcrypt-keyfile=">¶</a></dt><dd><p>Specifies the absolute path to a key file to
+        use for a TrueCrypt volume. This implies
+        <code class="option">tcrypt</code> and can be used more than once to
+        provide several key files.</p><p>See the entry for <code class="option">tcrypt</code> on the
+        behavior of the passphrase and key files when using TrueCrypt
+        encryption mode.</p></dd><dt id="tcrypt-system"><span class="term"><code class="option">tcrypt-system</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tcrypt-system">¶</a></dt><dd><p>Use TrueCrypt in system encryption mode. This
+        option implies <code class="option">tcrypt</code>.</p></dd><dt id="tcrypt-veracrypt"><span class="term"><code class="option">tcrypt-veracrypt</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tcrypt-veracrypt">¶</a></dt><dd><p>Check for a VeraCrypt volume.  VeraCrypt is a fork of
+        TrueCrypt that is mostly compatible, but uses different, stronger key
+        derivation algorithms that cannot be detected without this flag.
+        Enabling this option could substantially slow down unlocking, because
+        VeraCrypt's key derivation takes much longer than TrueCrypt's.  This
+        option implies <code class="option">tcrypt</code>.</p></dd><dt id="timeout="><span class="term"><code class="option">timeout=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#timeout=">¶</a></dt><dd><p>Specifies the timeout for querying for a
+        password. If no unit is specified, seconds is used. Supported
+        units are s, ms, us, min, h, d. A timeout of 0 waits
+        indefinitely (which is the default).</p></dd><dt id="tmp="><span class="term"><code class="option">tmp=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tmp=">¶</a></dt><dd><p>The encrypted block device will be prepared for using it as
+        <code class="filename">/tmp/</code>; it will be formatted using <a href="http://man7.org/linux/man-pages/man8/mkfs.8.html"><span class="citerefentry"><span class="refentrytitle">mkfs</span>(8)</span></a>. Takes
+        a file system type as argument, such as "<code class="literal">ext4</code>", "<code class="literal">xfs</code>" or
+        "<code class="literal">btrfs</code>". If no argument is specified defaults to "<code class="literal">ext4</code>". This
+        option implies <code class="option">plain</code>.</p><p>WARNING: Using the <code class="option">tmp</code> option will destroy the contents of the named partition
+        during every boot, so make sure the underlying block device is specified correctly.</p></dd><dt id="tries="><span class="term"><code class="option">tries=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tries=">¶</a></dt><dd><p>Specifies the maximum number of times the user
+        is queried for a password. The default is 3. If set to 0, the
+        user is queried for a password indefinitely.</p></dd><dt id="headless="><span class="term"><code class="option">headless=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#headless=">¶</a></dt><dd><p>Takes a boolean argument, defaults to false. If true, never query interactively
+        for the password/PIN. Useful for headless systems.</p></dd><dt id="verify"><span class="term"><code class="option">verify</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#verify">¶</a></dt><dd><p>If the encryption password is read from console, it has to be entered twice to
+        prevent typos.</p></dd><dt id="password-echo=yes|no|masked"><span class="term"><code class="option">password-echo=yes|no|masked</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#password-echo=yes%7Cno%7Cmasked">¶</a></dt><dd><p>Controls whether to echo passwords or security token PINs
+        that are read from console. Takes a boolean or the special string "<code class="literal">masked</code>".
+        The default is <code class="option">password-echo=masked</code>.</p><p>If enabled, the typed characters are echoed literally. If disabled,
+        the typed characters are not echoed in any form, the user will not get
+        feedback on their input. If set to "<code class="literal">masked</code>", an asterisk
+        ("<code class="literal">*</code>") is echoed for each character typed. Regardless of
+        which mode is chosen, if the user hits the tabulator key ("<code class="literal">↹</code>")
+        at any time, or the backspace key ("<code class="literal">⌫</code>") before any other
+        data has been entered, then echo is turned off.</p></dd><dt id="pkcs11-uri="><span class="term"><code class="option">pkcs11-uri=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#pkcs11-uri=">¶</a></dt><dd><p>Takes either the special value "<code class="literal">auto</code>" or an <a class="ulink" href="https://tools.ietf.org/html/rfc7512" target="_top">RFC7512 PKCS#11 URI</a> pointing to a private RSA key
+        which is used to decrypt the encrypted key specified in the third column of the line. This is useful
+        for unlocking encrypted volumes through PKCS#11 compatible security tokens or smartcards. See below
+        for an example how to set up this mechanism for unlocking a LUKS2 volume with a YubiKey security
+        token.</p><p>If specified as "<code class="literal">auto</code>" the volume must be of type LUKS2 and must carry PKCS#11
+        security token metadata in its LUKS2 JSON token section. In this mode the URI and the encrypted key
+        are automatically read from the LUKS2 JSON token header. Use
+        <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+        as simple tool for enrolling PKCS#11 security tokens or smartcards in a way compatible with
+        "<code class="literal">auto</code>". In this mode the third column of the line should remain empty (that is,
+        specified as "<code class="literal">-</code>").</p><p>The specified URI can refer directly to a private RSA key stored on a token or alternatively
+        just to a slot or token, in which case a search for a suitable private RSA key will be performed.  In
+        this case if multiple suitable objects are found the token is refused. The encrypted key configured
+        in the third column of the line is passed as is (i.e. in binary form, unprocessed) to RSA
+        decryption. The resulting decrypted key is then Base64 encoded before it is used to unlock the LUKS
+        volume.</p><p>Use <span class="command"><strong>systemd-cryptenroll --pkcs11-token-uri=list</strong></span> to list all suitable PKCS#11
+        security tokens currently plugged in, along with their URIs.</p><p>Note that many newer security tokens that may be used as PKCS#11 security token typically also
+        implement the newer and simpler FIDO2 standard. Consider using <code class="option">fido2-device=</code>
+        (described below) to enroll it via FIDO2 instead. Note that a security token enrolled via PKCS#11
+        cannot be used to unlock the volume via FIDO2, unless also enrolled via FIDO2, and vice
+        versa.</p></dd><dt id="fido2-device="><span class="term"><code class="option">fido2-device=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#fido2-device=">¶</a></dt><dd><p>Takes either the special value "<code class="literal">auto</code>" or the path to a
+        "<code class="literal">hidraw</code>" device node (e.g. <code class="filename">/dev/hidraw1</code>) referring to a FIDO2
+        security token that implements the "<code class="literal">hmac-secret</code>" extension (most current hardware
+        security tokens do). See below for an example how to set up this mechanism for unlocking an encrypted
+        volume with a FIDO2 security token.</p><p>If specified as "<code class="literal">auto</code>" the FIDO2 token device is automatically discovered, as
+        it is plugged in.</p><p>FIDO2 volume unlocking requires a client ID hash (CID) to be configured via
+        <code class="option">fido2-cid=</code> (see below) and a key to pass to the security token's HMAC functionality
+        (configured in the line's third column) to operate. If not configured and the volume is of type
+        LUKS2, the CID and the key are read from LUKS2 JSON token metadata instead. Use
+        <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+        as simple tool for enrolling FIDO2 security tokens, compatible with this automatic mode, which is
+        only available for LUKS2 volumes.</p><p>Use <span class="command"><strong>systemd-cryptenroll --fido2-device=list</strong></span> to list all suitable FIDO2
+        security tokens currently plugged in, along with their device nodes.</p><p>This option implements the following mechanism: the configured key is hashed via they HMAC
+        keyed hash function the FIDO2 device implements, keyed by a secret key embedded on the device. The
+        resulting hash value is Base64 encoded and used to unlock the LUKS2 volume. As it should not be
+        possible to extract the secret from the hardware token, it should not be possible to retrieve the
+        hashed key given the configured key — without possessing the hardware token.</p><p>Note that many security tokens that implement FIDO2 also implement PKCS#11, suitable for
+        unlocking volumes via the <code class="option">pkcs11-uri=</code> option described above. Typically the newer,
+        simpler FIDO2 standard is preferable.</p></dd><dt id="fido2-cid="><span class="term"><code class="option">fido2-cid=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#fido2-cid=">¶</a></dt><dd><p>Takes a Base64 encoded FIDO2 client ID to use for the FIDO2 unlock operation. If
+        specified, but <code class="option">fido2-device=</code> is not, <code class="option">fido2-device=auto</code> is
+        implied. If <code class="option">fido2-device=</code> is used but <code class="option">fido2-cid=</code> is not, the volume
+        must be of LUKS2 type, and the CID is read from the LUKS2 JSON token header. Use
+        <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+        for enrolling a FIDO2 token in the LUKS2 header compatible with this automatic
+        mode.</p></dd><dt id="fido2-rp="><span class="term"><code class="option">fido2-rp=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#fido2-rp=">¶</a></dt><dd><p>Takes a string, configuring the FIDO2 Relying Party (rp) for the FIDO2 unlock
+        operation. If not specified "<code class="literal">io.systemd.cryptsetup</code>" is used, except if the LUKS2
+        JSON token header contains a different value. It should normally not be necessary to override
+        this.</p></dd><dt id="tpm2-device="><span class="term"><code class="option">tpm2-device=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tpm2-device=">¶</a></dt><dd><p>Takes either the special value "<code class="literal">auto</code>" or the path to a device node
+        (e.g. <code class="filename">/dev/tpmrm0</code>) referring to a TPM2 security chip. See below for an example
+        how to set up this mechanism for unlocking an encrypted volume with a TPM2 chip.</p><p>Use <code class="option">tpm2-pcrs=</code> (see below) to configure the set of TPM2 PCRs to bind the
+        volume unlocking to. Use
+        <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+        as simple tool for enrolling TPM2 security chips in LUKS2 volumes.</p><p>If specified as "<code class="literal">auto</code>" the TPM2 device is automatically discovered. Use
+        <span class="command"><strong>systemd-cryptenroll --tpm2-device=list</strong></span> to list all suitable TPM2 devices currently
+        available, along with their device nodes.</p><p>This option implements the following mechanism: when enrolling a TPM2 device via
+        <span class="command"><strong>systemd-cryptenroll</strong></span> on a LUKS2 volume, a randomized key unlocking the volume is
+        generated on the host and loaded into the TPM2 chip where it is encrypted with an asymmetric
+        "primary" key pair derived from the TPM2's internal "seed" key. Neither the seed key nor the primary
+        key are permitted to ever leave the TPM2 chip — however, the now encrypted randomized key may. It is
+        saved in the LUKS2 volume JSON token header. When unlocking the encrypted volume, the primary key
+        pair is generated on the TPM2 chip again (which works as long as the chip's seed key is correctly
+        maintained by the TPM2 chip), which is then used to decrypt (on the TPM2 chip) the encrypted key from
+        the LUKS2 volume JSON token header saved there during enrollment. The resulting decrypted key is then
+        used to unlock the volume. When the randomized key is encrypted the current values of the selected
+        PCRs (see below) are included in the operation, so that different PCR state results in different
+        encrypted keys and the decrypted key can only be recovered if the same PCR state is
+        reproduced.</p></dd><dt id="tpm2-pcrs="><span class="term"><code class="option">tpm2-pcrs=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#tpm2-pcrs=">¶</a></dt><dd><p>Takes a "<code class="literal">+</code>" separated list of numeric TPM2 PCR (i.e. "Platform
+        Configuration Register") indexes to bind the TPM2 volume unlocking to. This option is only useful
+        when TPM2 enrollment metadata is not available in the LUKS2 JSON token header already, the way
+        <span class="command"><strong>systemd-cryptenroll</strong></span> writes it there. If not used (and no metadata in the LUKS2
+        JSON token header defines it), defaults to a list of a single entry: PCR 7. Assign an empty string to
+        encode a policy that binds the key to no PCRs, making the key accessible to local programs regardless
+        of the current PCR state.</p></dd><dt id="try-empty-password="><span class="term"><code class="option">try-empty-password=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#try-empty-password=">¶</a></dt><dd><p>Takes a boolean argument. If enabled, right before asking the user for a password it
+        is first attempted to unlock the volume with an empty password. This is useful for systems that are
+        initialized with an encrypted volume with only an empty password set, which shall be replaced with a
+        suitable password during first boot, but after activation.</p></dd><dt id="x-systemd.device-timeout="><span class="term"><code class="option">x-systemd.device-timeout=</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#x-systemd.device-timeout=">¶</a></dt><dd><p>Specifies how long systemd should wait for a device to show up
+        before giving up on the entry. The argument is a time in seconds or explicitly
+        specified units of
+        "<code class="literal">s</code>",
+        "<code class="literal">min</code>",
+        "<code class="literal">h</code>",
+        "<code class="literal">ms</code>".
+        </p></dd><dt id="x-initrd.attach"><span class="term"><code class="option">x-initrd.attach</code></span><a class="headerlink" title="Permalink to this term" href="crypttab.html#x-initrd.attach">¶</a></dt><dd><p>Setup this encrypted block device in the initramfs, similarly to
+        <a href="systemd.mount.html#"><span class="citerefentry"><span class="refentrytitle">systemd.mount</span>(5)</span></a>
+        units marked with <code class="option">x-initrd.mount</code>.</p><p>Although it's not necessary to mark the mount entry for the root file system with
+        <code class="option">x-initrd.mount</code>, <code class="option">x-initrd.attach</code> is still recommended with
+        the encrypted block device containing the root file system as otherwise systemd will
+        attempt to detach the device during the regular system shutdown while it's still in
+        use. With this option the device will still be detached but later after the root file
+        system is unmounted.</p><p>All other encrypted block devices that contain file systems mounted in the initramfs
+        should use this option.</p></dd></dl></div><p>At early boot and when the system manager configuration is
+    reloaded, this file is translated into native systemd units by
+    <a href="systemd-cryptsetup-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptsetup-generator</span>(8)</span></a>.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="AF_UNIX Key Files"><code class="constant">AF_UNIX</code> Key Files<a class="headerlink" title="Permalink to this headline" href="crypttab.html#AF_UNIX%20Key%20Files">¶</a></h2><p>If the key file path (as specified in the third column of <code class="filename">/etc/crypttab</code>
+    entries, see above) refers to an <code class="constant">AF_UNIX</code> stream socket in the file system, the key
+    is acquired by connecting to the socket and reading the key from the connection. The connection is made
+    from an <code class="constant">AF_UNIX</code> socket name in the abstract namespace, see <a href="http://man7.org/linux/man-pages/man7/unix.7.html"><span class="citerefentry"><span class="refentrytitle">unix</span>(7)</span></a> for
+    details. The source socket name is chosen according the following format:</p><pre class="programlisting"><code class="constant">NUL</code> <em class="replaceable"><code>RANDOM</code></em> "<code class="literal">/cryptsetup/</code>" <em class="replaceable"><code>VOLUME</code></em></pre><p>In other words: a <code class="constant">NUL</code> byte (as required for abstract namespace sockets),
+    followed by a random string (consisting of alphanumeric characters only), followed by the literal
+    string "<code class="literal">/cryptsetup/</code>", followed by the name of the volume to acquire they key
+    for. Example (for a volume "<code class="literal">myvol</code>"):</p><div class="example"><a name="id-1.8.5"></a><p class="title"><b>Example 1. </b></p><div class="example-contents"><pre class="programlisting">\0d7067f78d9827418/cryptsetup/myvol</pre></div></div><br class="example-break"><p>Services listening on the <code class="constant">AF_UNIX</code> stream socket may query the source socket
+    name with <a href="http://man7.org/linux/man-pages/man2/getpeername.2.html"><span class="citerefentry"><span class="refentrytitle">getpeername</span>(2)</span></a>,
+    and use it to determine which key to send, allowing a single listening socket to serve keys for a
+    multitude of volumes. If the PKCS#11 logic is used (see above) the socket source name is picked in
+    identical fashion, except that the literal string "<code class="literal">/cryptsetup-pkcs11/</code>" is used (similar
+    for FIDO2: "<code class="literal">/cryptsetup-fido2/</code>" and TPM2: "<code class="literal">/cryptsetup-tpm2/</code>"). This is
+    done so that services providing key material know that not a secret key is requested but an encrypted key
+    that will be decrypted via the PKCS#11/FIDO2/TPM2 logic to acquire the final secret key.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="crypttab.html#Examples">¶</a></h2><div class="example"><a name="id-1.9.2"></a><p class="title"><b>Example 2. /etc/crypttab example</b></p><div class="example-contents"><p>Set up four encrypted block devices. One using LUKS for normal storage, another one for usage as
+      a swap device and two TrueCrypt volumes. For the fourth device, the option string is interpreted as two
+      options "<code class="literal">cipher=xchacha12,aes-adiantum-plain64</code>",
+      "<code class="literal">keyfile-timeout=10s</code>".</p><pre class="programlisting">luks       UUID=2505567a-9e27-4efe-a4d5-15ad146c258b
+swap       /dev/sda7       /dev/urandom       swap
+truecrypt  /dev/sda2       /etc/container_password  tcrypt
+hidden     /mnt/tc_hidden  /dev/null    tcrypt-hidden,tcrypt-keyfile=/etc/keyfile
+external   /dev/sda3       keyfile:LABEL=keydev keyfile-timeout=10s,cipher=xchacha12\,aes-adiantum-plain64
+</pre></div></div><br class="example-break"><div class="example"><a name="id-1.9.3"></a><p class="title"><b>Example 3. Yubikey-based PKCS#11 Volume Unlocking Example</b></p><div class="example-contents"><p>The PKCS#11 logic allows hooking up any compatible security token that is capable of storing RSA
+      decryption keys for unlocking an encrypted volume. Here's an example how to set up a Yubikey security
+      token for this purpose on a LUKS2 volume, using <a href="https://manpages.debian.org/unstable/ykmap/ykmap.1.en.html"><span class="citerefentry"><span class="refentrytitle">ykmap</span>(1)</span></a> from the
+      yubikey-manager project to initialize the token and
+      <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+      to add it in the LUKS2 volume:</p><pre class="programlisting"># Destroy any old key on the Yubikey (careful!)
+ykman piv reset
+
+# Generate a new private/public key pair on the device, store the public key in
+# 'pubkey.pem'.
+ykman piv generate-key -a RSA2048 9d pubkey.pem
+
+# Create a self-signed certificate from this public key, and store it on the
+# device. The "subject" should be an arbitrary user-chosen string to identify
+# the token with.
+ykman piv generate-certificate --subject "Knobelei" 9d pubkey.pem
+
+# We don't need the public key anymore, let's remove it. Since it is not
+# security sensitive we just do a regular "rm" here.
+rm pubkey.pem
+
+# Enroll the freshly initialized security token in the LUKS2 volume. Replace
+# /dev/sdXn by the partition to use (e.g. /dev/sda1).
+sudo systemd-cryptenroll --pkcs11-token-uri=auto /dev/sdXn
+
+# Test: Let's run systemd-cryptsetup to test if this all worked.
+sudo /usr/lib/systemd/systemd-cryptsetup attach mytest /dev/sdXn - pkcs11-uri=auto
+
+# If that worked, let's now add the same line persistently to /etc/crypttab,
+# for the future.
+sudo bash -c 'echo "mytest /dev/sdXn - pkcs11-uri=auto" &gt;&gt; /etc/crypttab'
+</pre><p>A few notes on the above:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>We use RSA2048, which is the longest key size current Yubikeys support</p></li><li class="listitem"><p>We use Yubikey key slot 9d, since that's apparently the keyslot to use for decryption purposes,
+        <a class="ulink" href="https://developers.yubico.com/PIV/Introduction/Certificate_slots.html" target="_top">see
+        documentation</a>.</p></li></ul></div></div></div><br class="example-break"><div class="example"><a name="id-1.9.4"></a><p class="title"><b>Example 4. FIDO2 Volume Unlocking Example</b></p><div class="example-contents"><p>The FIDO2 logic allows using any compatible FIDO2 security token that implements the
+      "<code class="literal">hmac-secret</code>" extension for unlocking an encrypted volume. Here's an example how to
+      set up a FIDO2 security token for this purpose for a LUKS2 volume, using
+      <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>:</p><pre class="programlisting"># Enroll the security token in the LUKS2 volume. Replace /dev/sdXn by the
+# partition to use (e.g. /dev/sda1).
+sudo systemd-cryptenroll --fido2-device=auto /dev/sdXn
+
+# Test: Let's run systemd-cryptsetup to test if this worked.
+sudo /usr/lib/systemd/systemd-cryptsetup attach mytest /dev/sdXn - fido2-device=auto
+
+# If that worked, let's now add the same line persistently to /etc/crypttab,
+# for the future.
+sudo bash -c 'echo "mytest /dev/sdXn - fido2-device=auto" &gt;&gt; /etc/crypttab'
+</pre></div></div><br class="example-break"><div class="example"><a name="id-1.9.5"></a><p class="title"><b>Example 5. TPM2 Volume Unlocking Example</b></p><div class="example-contents"><p>The TPM2 logic allows using any TPM2 chip supported by the Linux kernel for unlocking an
+      encrypted volume. Here's an example how to set up a TPM2 chip for this purpose for a LUKS2 volume,
+      using
+      <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>:</p><pre class="programlisting"># Enroll the TPM2 security chip in the LUKS2 volume, and bind it to PCR 7
+# only. Replace /dev/sdXn by the partition to use (e.g. /dev/sda1).
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/sdXn
+
+# Test: Let's run systemd-cryptsetup to test if this worked.
+sudo /usr/lib/systemd/systemd-cryptsetup attach mytest /dev/sdXn - tpm2-device=auto
+
+# If that worked, let's now add the same line persistently to /etc/crypttab,
+# for the future.
+sudo bash -c 'echo "mytest /dev/sdXn - tpm2-device=auto" &gt;&gt; /etc/crypttab'
+</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.10"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="crypttab.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-cryptsetup@.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptsetup@.service</span>(8)</span></a>,
+      <a href="systemd-cryptsetup-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptsetup-generator</span>(8)</span></a>,
+      <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/fstab.5.html"><span class="citerefentry"><span class="refentrytitle">fstab</span>(5)</span></a>,
+      <a href="http://linux.die.net/man/8/cryptsetup"><span class="citerefentry"><span class="refentrytitle">cryptsetup</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man8/mkswap.8.html"><span class="citerefentry"><span class="refentrytitle">mkswap</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man8/mke2fs.8.html"><span class="citerefentry"><span class="refentrytitle">mke2fs</span>(8)</span></a>
+    </p></div></div></body></html>

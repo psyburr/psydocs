@@ -1,0 +1,31 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-volatile-root.service</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-volatile-root.service"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-volatile-root.service, systemd-volatile-root — Make the root file system volatile</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">systemd-volatile-root.service</code></p><p><code class="filename">/usr/lib/systemd/systemd-volatile-root</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-volatile-root.html#Description">¶</a></h2><p><code class="filename">systemd-volatile-root.service</code> is a service that replaces the root directory with a
+    volatile memory file system ("<code class="literal">tmpfs</code>"), mounting the original (non-volatile)
+    <code class="filename">/usr/</code> inside it read-only. This way, vendor data from <code class="filename">/usr/</code> is available as
+    usual, but all configuration data in <code class="filename">/etc/</code>, all state data in <code class="filename">/var/</code> and all
+    other resources stored directly under the root directory are reset on boot and lost at shutdown, enabling fully
+    stateless systems.</p><p>This service is only enabled if full volatile mode is selected, for example by specifying
+    "<code class="literal">systemd.volatile=yes</code>" on the kernel command line. This service runs only in the initial RAM disk
+    ("initrd"), before the system transitions to the host's root directory. Note that this service is not used if
+    "<code class="literal">systemd.volatile=state</code>" is used, as in that mode the root directory is non-volatile.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-volatile-root.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-fstab-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-fstab-generator</span>(8)</span></a>,
+      <a href="kernel-command-line.html#"><span class="citerefentry"><span class="refentrytitle">kernel-command-line</span>(7)</span></a>
+    </p></div></div></body></html>

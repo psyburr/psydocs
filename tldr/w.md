@@ -1,20 +1,13 @@
 # w
 
-> Display who is logged in and their processes.
-> More information: <https://www.geeksforgeeks.org/w-command-in-linux-with-examples/>.
+> Show who is logged on and what they are doing.
+> Print user login, TTY, remote host, login time, idle time, current process.
+> More information: <https://manned.org/w>.
 
-- Display information about all users who are currently logged in:
+- Show logged-in users info:
 
 `w`
 
-- Display information about a specific user:
+- Show logged-in users info without a header:
 
-`w {{user}}`
-
-- Display information without including the header:
-
-`w --no-header`
-
-- Display information without including the login, JCPU and PCPU columns:
-
-`w --short`
+`w -h`

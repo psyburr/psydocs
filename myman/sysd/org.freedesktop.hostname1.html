@@ -1,0 +1,192 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>org.freedesktop.hostname1</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="org.freedesktop.hostname1"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>org.freedesktop.hostname1 — The D-Bus interface of systemd-hostnamed</p></div><div class="refsect1"><a name="id-1.4"></a><h2 id="Introduction">Introduction<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#Introduction">¶</a></h2><p>
+    <a href="systemd-hostnamed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-hostnamed.service</span>(8)</span></a>
+    is a system service that can be used to control the hostname and related machine metadata from user
+    programs. This page describes the hostname semantics and the D-Bus interface.</p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="The D-Bus API">The D-Bus API<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#The%20D-Bus%20API">¶</a></h2><p>The service exposes the following interfaces on the bus:</p><pre class="programlisting">
+node /org/freedesktop/hostname1 {
+  interface org.freedesktop.hostname1 {
+    methods:
+      SetHostname(in  s hostname,
+                  in  b interactive);
+      SetStaticHostname(in  s hostname,
+                        in  b interactive);
+      SetPrettyHostname(in  s hostname,
+                        in  b interactive);
+      SetIconName(in  s icon,
+                  in  b interactive);
+      SetChassis(in  s chassis,
+                 in  b interactive);
+      SetDeployment(in  s deployment,
+                    in  b interactive);
+      SetLocation(in  s location,
+                  in  b interactive);
+      GetProductUUID(in  b interactive,
+                     out ay uuid);
+      Describe(out s json);
+    properties:
+      readonly s Hostname = '...';
+      readonly s StaticHostname = '...';
+      readonly s PrettyHostname = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s DefaultHostname = '...';
+      readonly s HostnameSource = '...';
+      readonly s IconName = '...';
+      readonly s Chassis = '...';
+      readonly s Deployment = '...';
+      readonly s Location = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s KernelName = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s KernelRelease = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s KernelVersion = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s OperatingSystemPrettyName = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s OperatingSystemCPEName = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s HomeURL = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s HardwareVendor = '...';
+      @org.freedesktop.DBus.Property.EmitsChangedSignal("const")
+      readonly s HardwareModel = '...';
+  };
+  interface org.freedesktop.DBus.Peer { ... };
+  interface org.freedesktop.DBus.Introspectable { ... };
+  interface org.freedesktop.DBus.Properties { ... };
+};
+    </pre><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><div class="variablelist"><dl class="variablelist"></dl></div><p>Whenever the hostname or other metadata is changed via the daemon,
+    <code class="function">PropertyChanged</code> signals are sent out to subscribed clients. Changing a hostname
+    using this interface is authenticated via
+    <a class="ulink" href="https://www.freedesktop.org/software/polkit/docs/latest/" target="_top">polkit</a>.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Semantics">Semantics<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#Semantics">¶</a></h2><p>The <code class="varname">StaticHostname</code> property exposes the "static" hostname configured in
+    <code class="filename">/etc/hostname</code>. It is not always in sync with the current hostname as returned by the
+    <a href="http://man7.org/linux/man-pages/man3/gethostname.3.html"><span class="citerefentry"><span class="refentrytitle">gethostname</span>(3)</span></a>
+    system call. If no static hostname is configured this property will be the empty string.</p><p>When <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a> or
+    <a href="systemd-hostnamed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-hostnamed.service</span>(8)</span></a>
+    set the hostname, this static hostname <span class="emphasis"><em>has the highest priority</em></span>.</p><p>The <code class="varname">Hostname</code> property exposes the actual hostname configured in the kernel via
+    <a href="http://man7.org/linux/man-pages/man3/sethostname.3.html"><span class="citerefentry"><span class="refentrytitle">sethostname</span>(3)</span></a>.
+    It can be different from the static hostname. This property is never empty.</p><p>The <code class="varname">PrettyHostname</code> property exposes the <span class="emphasis"><em>pretty hostname</em></span>
+    which is a free-form UTF-8 hostname for presentation to the user. User interfaces should ensure that the
+    pretty hostname and the static hostname stay in sync. E.g. when the former is "<code class="literal">Lennart’s
+    Computer</code>" the latter should be "<code class="literal">lennarts-computer</code>". If no pretty hostname is
+    set this setting will be the empty string. Applications should then find a suitable fallback, such as the
+    dynamic hostname.</p><p>The <code class="varname">DefaultHostname</code> property exposes the default hostname (configured through
+    <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a>, or a
+    fallback set at compilation time).</p><p>The <code class="varname">HostnameSource</code> property exposes the origin of the currently configured
+    hostname. One of "<code class="literal">static</code>" (set from <code class="filename">/etc/hostname</code>),
+    "<code class="literal">transient</code>" (a non-permanent hostname from an external source),
+    "<code class="literal">default</code>" (the value from <code class="filename">os-release</code> or the compiled-in
+    fallback).</p><p>The <code class="varname">IconName</code> property exposes the <span class="emphasis"><em>icon name</em></span> following the
+    XDG icon naming spec. If not set, information such as the chassis type (see below) is used to find a
+    suitable fallback icon name (i.e. "<code class="literal">computer-laptop</code>"
+    vs. "<code class="literal">computer-desktop</code>" is picked based on the chassis information). If no such data is
+    available, the empty string is returned. In that case an application should fall back to a replacement
+    icon, for example "<code class="literal">computer</code>". If this property is set to the empty string, the automatic
+    fallback name selection is enabled again.</p><p>The <code class="varname">Chassis</code> property exposes a <span class="emphasis"><em>chassis type</em></span>, one of the
+    currently defined chassis types: "<code class="literal">desktop</code>", "<code class="literal">laptop</code>",
+    "<code class="literal">server</code>", "<code class="literal">tablet</code>", "<code class="literal">handset</code>", as well as the special
+    chassis types "<code class="literal">vm</code>" and "<code class="literal">container</code>" for virtualized systems. Note that
+    in most cases the chassis type will be determined automatically from DMI/SMBIOS/ACPI firmware
+    information. Writing to this setting is hence useful only to override misdetected chassis types, or to
+    configure the chassis type if it could not be auto-detected. Set this property to the empty string to
+    reenable the automatic detection of the chassis type from firmware information.</p><p>Note that <code class="filename">systemd-hostnamed</code> starts only on request and terminates after a
+    short idle period. This effectively means that <code class="function">PropertyChanged</code> messages are not sent
+    out for changes made directly on the files (as in: administrator edits the files with vi). This is
+    the intended behavior: manual configuration changes should require manual reloading.</p><p>The transient (dynamic) hostname exposed by the <code class="varname">Hostname</code> property maps directly
+    to the kernel hostname. This hostname should be assumed to be highly dynamic, and hence should be watched
+    directly, without depending on <code class="function">PropertyChanged</code> messages from
+    <code class="filename">systemd-hostnamed</code>. To accomplish this, open
+    <code class="filename">/proc/sys/kernel/hostname</code> and
+    <a href="http://man7.org/linux/man-pages/man3/poll.3.html"><span class="citerefentry"><span class="refentrytitle">poll</span>(3)</span></a>
+    for <code class="constant">SIGHUP</code> which is triggered by the kernel every time the hostname changes. Again:
+    this is special for the transient (dynamic) hostname, and does not apply to the configured (fixed)
+    hostname.</p><p>Applications may read the hostname data directly if hostname change notifications
+    are not necessary. Use
+    <a href="http://man7.org/linux/man-pages/man3/gethostname.3.html"><span class="citerefentry"><span class="refentrytitle">gethostname</span>(3)</span></a>,
+    <code class="filename">/etc/hostname</code> (possibly with per-distribution fallbacks), and
+    <a href="machine-info.html#"><span class="citerefentry"><span class="refentrytitle">machine-info</span>(3)</span></a>
+    for that. For more information on these files and syscalls see the respective man pages.</p><p><code class="varname">KernelName</code>, <code class="varname">KernelRelease</code>, and
+    <code class="varname">KernelVersion</code> expose the kernel name (e.g. "<code class="literal">Linux</code>"), release
+    (e.g. "<code class="literal">5.0.0-11</code>"), and version (i.e. the build number, e.g. "<code class="literal">#11</code>") as
+    reported by <a href="http://man7.org/linux/man-pages/man2/uname.2.html"><span class="citerefentry"><span class="refentrytitle">uname</span>(2)</span></a>.
+    <code class="varname">OperatingSystemPrettyName</code>, <code class="varname">OperatingSystemCPEName</code>, and
+    <code class="varname">HomeURL</code> expose the <code class="varname">PRETTY_NAME=</code>, <code class="varname">CPE_NAME=</code> and
+    <code class="varname">HOME_URL=</code> fields from
+    <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a>. The
+    purpose of those properties is to allow remote clients to access this information over D-Bus. Local
+    clients can access the information directly.</p><div class="refsect2"><a name="id-1.6.14"></a><h3 id="Methods">Methods<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#Methods">¶</a></h3><p><code class="function">SetHostname()</code> sets the transient (dynamic) hostname, which is used if no
+      static hostname is set. This value must be an internet-style hostname, 7-bit lowercase ASCII, no
+      special chars/spaces. An empty string will unset the transient hostname.</p><p><code class="function">SetStaticHostname()</code> sets the static hostname which is exposed by the
+      <code class="varname">StaticHostname</code> property. When called with an empty argument, the static
+      configuration in <code class="filename">/etc/hostname</code> is removed. Since the static hostname has the
+      highest priority, calling this function usually affects also the <code class="varname">Hostname</code> property
+      and the effective hostname configured in the kernel.</p><p><code class="function">SetPrettyHostname()</code> sets the pretty hostname which is exposed by the
+      <code class="varname">PrettyHostname</code> property.</p><p><code class="function">SetIconName()</code>, <code class="function">SetChassis()</code>,
+      <code class="function">SetDeployment()</code>, and <code class="function">SetLocation()</code> set the properties
+      <code class="varname">IconName</code> (the name of the icon representing for the machine),
+      <code class="varname">Chassis</code> (the machine form factor), <code class="varname">Deployment</code> (the system
+      deployment environment), and <code class="varname">Location</code> (physical system location), respectively.
+      </p><p><code class="varname">PrettyHostname</code>, <code class="varname">IconName</code>, <code class="varname">Chassis</code>,
+      <code class="varname">Deployment</code>, and <code class="varname">Location</code> are stored in
+      <code class="filename">/etc/machine-info</code>. See
+      <a href="machine-info.html#"><span class="citerefentry"><span class="refentrytitle">machine-info</span>(5)</span></a> for
+      the semantics of those settings.</p><p><code class="function">GetProductUUID()</code> returns the "product UUID" as exposed by the kernel based
+      on DMI information in <code class="filename">/sys/class/dmi/id/product_uuid</code>. Reading the file directly
+      requires root privileges, and this method allows access to unprivileged clients through the polkit
+      framework.</p><p><code class="function">Describe()</code> returns a JSON representation of all properties in one.</p></div><div class="refsect2"><a name="id-1.6.15"></a><h3 id="Security">Security<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#Security">¶</a></h3><p>The <code class="varname">interactive</code> boolean parameters can be used to control whether polkit
+      should interactively ask the user for authentication credentials if required.</p><p>The polkit action for <code class="function">SetHostname()</code> is
+      <code class="interfacename">org.freedesktop.hostname1.set-hostname</code>. For
+      <code class="function">SetStaticHostname()</code> and <code class="function">SetPrettyHostname()</code> it is
+      <code class="interfacename">org.freedesktop.hostname1.set-static-hostname</code>. For
+      <code class="function">SetIconName()</code>, <code class="function">SetChassis()</code>, <code class="function">SetDeployment()</code>
+      and <code class="function">SetLocation()</code> it is
+      <code class="interfacename">org.freedesktop.hostname1.set-machine-info</code>.</p></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Recommendations">Recommendations<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#Recommendations">¶</a></h2><p>Here are three examples that show how the pretty hostname and the icon name should be used:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>When registering DNS-SD services: use the pretty hostname in the service name, and pass
+      the icon name in the TXT data, if there is an icon name. Browsing clients can then show the server icon
+      on each service. This is especially useful for WebDAV applications or UPnP media sharing.
+      </p></li><li class="listitem"><p>Set the bluetooth name to the pretty hostname.</p></li><li class="listitem"><p>When your file browser has a "Computer" icon, replace the name with the pretty hostname
+      if set, and the icon with the icon name, if it is set.</p></li></ul></div><p>To properly handle name lookups with changing local hostnames without having to edit
+    <code class="filename">/etc/hosts</code>, we recommend using <code class="filename">systemd-hostnamed</code> in combination
+    with <a href="nss-myhostname.html#"><span class="citerefentry"><span class="refentrytitle">nss-myhostname</span>(3)</span></a>.
+    </p><p>Here are some recommendations to follow when generating a static (internet) hostname from a pretty
+    name:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Generate a single DNS label only, not an FQDN. That means no dots allowed. Strip them,
+      or replace them with "<code class="literal">-</code>".</p></li><li class="listitem"><p>It's probably safer to not use any non-ASCII chars, even if DNS allows this in some way
+      these days. In fact, restrict your charset to "<code class="literal">a-zA-Z0-9</code>" and "<code class="literal">-</code>".
+      Strip other chars, or try to replace them in some smart way with chars from this set, for example
+      "<code class="literal">ä</code>" → "<code class="literal">ae</code>", and use "<code class="literal">-</code>" as the replacement for all
+      punctuation characters and whitespace.</p></li><li class="listitem"><p>Try to avoid creating repeated "<code class="literal">-</code>", as well as "<code class="literal">-</code>" as
+      the first or last char.</p></li><li class="listitem"><p>Limit the hostname to 63 chars, which is the length of a DNS label.</p></li><li class="listitem"><p>If after stripping special chars the empty string is the result, you can pass this
+      as-is to <code class="filename">systemd-hostnamed</code> in which case it will automatically use a suitable
+      fallback.</p></li><li class="listitem"><p>Uppercase charaacters should be replaced with their lowercase equivalents.
+      </p></li></ul></div><p>Note that while <code class="filename">systemd-hostnamed</code> applies some checks to the hostname you pass
+    they are much looser than the recommendations above. For example, <code class="filename">systemd-hostnamed</code>
+    will also accept "<code class="literal">_</code>" in the hostname, but we recommend not using this to avoid clashes
+    with DNS-SD service types. Also <code class="filename">systemd-hostnamed</code> allows longer hostnames, but
+    because of the DNS label limitations, we recommend not making use of this.</p><p>Here are a couple of example conversions:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>"<code class="literal">Lennart's PC</code>" → "<code class="literal">lennarts-pc</code>"</p></li><li class="listitem"><p>"<code class="literal">Müllers Computer</code>" → "<code class="literal">muellers-computer</code>"</p></li><li class="listitem"><p>"<code class="literal">Voran!</code>" → "<code class="literal">voran</code>"</p></li><li class="listitem"><p>"<code class="literal">Es war einmal ein Männlein</code>" → "<code class="literal">es-war-einmal-ein-maennlein</code>"</p></li><li class="listitem"><p>"<code class="literal">Jawoll. Ist doch wahr!</code>" → "<code class="literal">jawoll-ist-doch-wahr</code>"</p></li><li class="listitem"><p>"<code class="literal">レナート</code>" → "<code class="literal">localhost</code>"</p></li><li class="listitem"><p>"<code class="literal">...zack!!! zack!...</code>" → "<code class="literal">zack-zack</code>"</p></li></ul></div><p>Of course, an already valid internet hostname label you enter and pass through this
+    conversion should stay unmodified, so that users have direct control of it, if they want — by simply
+    ignoring the fact that the pretty hostname is pretty and just edit it as if it was the normal internet
+    name.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Versioning">Versioning<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#Versioning">¶</a></h2><p>These D-Bus interfaces follow <a class="ulink" href="http://0pointer.de/blog/projects/versioning-dbus.html" target="_top">
+    the usual interface versioning guidelines</a>.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#Examples">¶</a></h2><div class="example"><a name="id-1.9.2"></a><p class="title"><b>Example 1. Introspect <code class="interfacename">org.freedesktop.hostname1</code> on the bus</b></p><div class="example-contents"><pre class="programlisting">$ gdbus introspect --system \
+  --dest org.freedesktop.hostname1 \
+  --object-path /org/freedesktop/hostname1
+      </pre></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.10"></a><h2 id="See also">See also<a class="headerlink" title="Permalink to this headline" href="org.freedesktop.hostname1.html#See%20also">¶</a></h2><p>David Zeuthen's original Fedora
+    <a class="ulink" href="https://fedoraproject.org/wiki/Features/BetterHostname" target="_top">Feature page about xdg-hostname</a></p></div></div></body></html>

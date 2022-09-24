@@ -1,16 +1,20 @@
 # watch
 
-> Execute a command repeatedly, and monitor the output in full-screen mode.
+> Execute a program periodically, showing output fullscreen.
 > More information: <https://manned.org/watch>.
 
-- Monitor files in the current directory:
+- Repeatedly run a command and show the result:
 
-`watch {{ls}}`
+`watch {{command}}`
 
-- Monitor disk space and highlight the changes:
+- Re-run a command every 60 seconds:
 
-`watch -d {{df}}`
+`watch -n {{60}} {{command}}`
 
-- Monitor "node" processes, refreshing every 3 seconds:
+- Monitor the contents of a directory, highlighting differences as they appear:
 
-`watch -n {{3}} "{{ps aux | grep node}}"`
+`watch -d {{ls -l}}`
+
+- Repeatedly run a pipeline and show the result:
+
+`watch '{{command_1}} | {{command_2}} | {{command_3}}'`

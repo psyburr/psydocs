@@ -1,0 +1,182 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>networkctl</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="networkctl"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>networkctl — Query the status of network links</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">networkctl</code>  [OPTIONS...]  COMMAND  [LINK...]</p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="networkctl.html#Description">¶</a></h2><p><span class="command"><strong>networkctl</strong></span> may be used to introspect the
+    state of the network links as seen by
+    <span class="command"><strong>systemd-networkd</strong></span>.  Please refer to
+    <a href="systemd-networkd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-networkd.service</span>(8)</span></a>
+    for an introduction to the basic concepts, functionality, and
+    configuration syntax.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Commands">Commands<a class="headerlink" title="Permalink to this headline" href="networkctl.html#Commands">¶</a></h2><p>The following commands are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="
+          list
+          PATTERN…
+        "><span class="term">
+          <span class="command"><strong>list</strong></span>
+          [<span class="optional"><em class="replaceable"><code>PATTERN…</code></em></span>]
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20list%0A%20%20%20%20%20%20%20%20%20%20PATTERN%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Show a list of existing links and their status. If one ore more
+          <em class="replaceable"><code>PATTERN</code></em>s are specified, only links matching one of them are shown.
+          If no further arguments are specified shows all links,
+          otherwise just the specified links. Produces output similar to:
+
+          </p><pre class="programlisting">IDX LINK         TYPE     OPERATIONAL SETUP
+  1 lo           loopback carrier     unmanaged
+  2 eth0         ether    routable    configured
+  3 virbr0       ether    no-carrier  unmanaged
+  4 virbr0-nic   ether    off         unmanaged
+
+4 links listed.</pre><p>The operational status is one of the following:
+            </p><div class="variablelist"><dl class="variablelist"><dt id="missing"><span class="term">missing</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#missing">¶</a></dt><dd><p>the device is missing</p></dd><dt id="off"><span class="term">off</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#off">¶</a></dt><dd><p>the device is powered down</p></dd><dt id="no-carrier"><span class="term">no-carrier</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#no-carrier">¶</a></dt><dd><p>the device is powered up, but it does not yet have a carrier</p></dd><dt id="dormant"><span class="term">dormant</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#dormant">¶</a></dt><dd><p>the device has a carrier, but is not yet ready for normal traffic</p></dd><dt id="degraded-carrier"><span class="term">degraded-carrier</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#degraded-carrier">¶</a></dt><dd><p>for bond or bridge master, one of the bonding or bridge slave network interfaces is
+                  in off, no-carrier, or dormant state</p></dd><dt id="carrier"><span class="term">carrier</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#carrier">¶</a></dt><dd><p>the link has a carrier, or for bond or bridge master, all bonding or bridge slave
+                  network interfaces are enslaved to the master</p></dd><dt id="degraded"><span class="term">degraded</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#degraded">¶</a></dt><dd><p>the link has carrier and addresses valid on the local link configured</p></dd><dt id="enslaved"><span class="term">enslaved</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#enslaved">¶</a></dt><dd><p>the link has carrier and is enslaved to bond or bridge master network interface</p></dd><dt id="routable"><span class="term">routable</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#routable">¶</a></dt><dd><p>the link has carrier and routable address configured</p></dd></dl></div><p>
+        </p><p>The setup status is one of the following:
+            </p><div class="variablelist"><dl class="variablelist"><dt id="pending"><span class="term">pending</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#pending">¶</a></dt><dd><p>udev is still processing the link, we don't yet know if we will manage it</p></dd><dt id="failed"><span class="term">failed</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#failed">¶</a></dt><dd><p>networkd failed to manage the link</p></dd><dt id="configuring"><span class="term">configuring</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#configuring">¶</a></dt><dd><p>in the process of retrieving configuration or configuring the link</p></dd><dt id="configured"><span class="term">configured</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#configured">¶</a></dt><dd><p>link configured successfully</p></dd><dt id="unmanaged"><span class="term">unmanaged</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#unmanaged">¶</a></dt><dd><p>networkd is not handling the link</p></dd><dt id="linger"><span class="term">linger</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#linger">¶</a></dt><dd><p>the link is gone, but has not yet been dropped by networkd</p></dd></dl></div><p>
+        </p></dd><dt id="
+          status
+          PATTERN…
+        "><span class="term">
+          <span class="command"><strong>status</strong></span>
+          [<span class="optional"><em class="replaceable"><code>PATTERN…</code></em></span>]
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20status%0A%20%20%20%20%20%20%20%20%20%20PATTERN%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Show information about the specified links: type, state, kernel module driver, hardware and
+          IP address, configured DNS servers, etc. If one ore more <em class="replaceable"><code>PATTERN</code></em>s are
+          specified, only links matching one of them are shown.</p><p>When no links are specified, an overall network status is shown. Also see the option
+          <code class="option">--all</code>.</p><p>Produces output similar to:
+          </p><pre class="programlisting">
+●        State: routable
+  Online state: online
+       Address: 10.193.76.5 on eth0
+                192.168.122.1 on virbr0
+                169.254.190.105 on eth0
+                fe80::5054:aa:bbbb:cccc on eth0
+       Gateway: 10.193.11.1 (CISCO SYSTEMS, INC.) on eth0
+           DNS: 8.8.8.8
+                8.8.4.4</pre><p>In the overall network status, the online state depends on the individual online state of all
+          required links. Managed links are required for online by default. In this case, the online state is
+          one of the following:
+          </p><div class="variablelist"><dl class="variablelist"><dt id="unknown"><span class="term">unknown</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#unknown">¶</a></dt><dd><p>all links have unknown online status (i.e. there are no required links)</p></dd><dt id="offline"><span class="term">offline</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#offline">¶</a></dt><dd><p>all required links are offline</p></dd><dt id="partial"><span class="term">partial</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#partial">¶</a></dt><dd><p>some, but not all, required links are online</p></dd><dt id="online"><span class="term">online</span><a class="headerlink" title="Permalink to this term" href="networkctl.html#online">¶</a></dt><dd><p>all required links are online</p></dd></dl></div><p>
+          </p></dd><dt id="
+          lldp
+          PATTERN…
+        "><span class="term">
+          <span class="command"><strong>lldp</strong></span>
+          [<span class="optional"><em class="replaceable"><code>PATTERN…</code></em></span>]
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20lldp%0A%20%20%20%20%20%20%20%20%20%20PATTERN%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Show discovered LLDP (Link Layer Discovery Protocol) neighbors. If one or more
+          <em class="replaceable"><code>PATTERN</code></em>s are specified only neighbors on those interfaces are shown.
+          Otherwise shows discovered neighbors on all interfaces. Note that for this feature to work,
+          <code class="varname">LLDP=</code> must be turned on for the specific interface, see
+          <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a> for
+          details.</p><p>Produces output similar to:
+          </p><pre class="programlisting">LINK             CHASSIS ID        SYSTEM NAME      CAPS        PORT ID           PORT DESCRIPTION
+enp0s25          00:e0:4c:00:00:00 GS1900           ..b........ 2                 Port #2
+
+Capability Flags:
+o - Other; p - Repeater;  b - Bridge; w - WLAN Access Point; r - Router;
+t - Telephone; d - DOCSIS cable device; a - Station; c - Customer VLAN;
+s - Service VLAN, m - Two-port MAC Relay (TPMR)
+
+1 neighbors listed.</pre></dd><dt id="
+          label
+        "><span class="term">
+          <span class="command"><strong>label</strong></span>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20label%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Show numerical address labels that can be used for address selection.
+        This is the same information that
+        <a href="http://linux.die.net/man/8/ip-addrlabel"><span class="citerefentry"><span class="refentrytitle">ip-addrlabel</span>(8)</span></a>
+        shows. See <a class="ulink" href="https://tools.ietf.org/html/rfc3484" target="_top">RFC 3484</a>
+        for a discussion of address labels.</p><p>Produces output similar to:
+        </p><pre class="programlisting">Prefix/Prefixlen                          Label
+        ::/0                                  1
+    fc00::/7                                  5
+    fec0::/10                                11
+    2002::/16                                 2
+    3ffe::/16                                12
+ 2001:10::/28                                 7
+    2001::/32                                 6
+::ffff:0.0.0.0/96                             4
+        ::/96                                 3
+       ::1/128                                0</pre></dd><dt id="
+          delete
+          DEVICE…
+        "><span class="term">
+          <span class="command"><strong>delete</strong></span>
+          <em class="replaceable"><code>DEVICE…</code></em>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20delete%0A%20%20%20%20%20%20%20%20%20%20DEVICE%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Deletes virtual netdevs. Takes interface name or index number.</p></dd><dt id="
+          up
+          DEVICE…
+        "><span class="term">
+          <span class="command"><strong>up</strong></span>
+          <em class="replaceable"><code>DEVICE…</code></em>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20up%0A%20%20%20%20%20%20%20%20%20%20DEVICE%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Bring devices up. Takes interface name or index number.</p></dd><dt id="
+          down
+          DEVICE…
+        "><span class="term">
+          <span class="command"><strong>down</strong></span>
+          <em class="replaceable"><code>DEVICE…</code></em>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20down%0A%20%20%20%20%20%20%20%20%20%20DEVICE%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Bring devices down. Takes interface name or index number.</p></dd><dt id="
+          renew
+          DEVICE…
+        "><span class="term">
+          <span class="command"><strong>renew</strong></span>
+          <em class="replaceable"><code>DEVICE…</code></em>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20renew%0A%20%20%20%20%20%20%20%20%20%20DEVICE%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Renew dynamic configurations e.g. addresses received from DHCP server.
+        Takes interface name or index number.</p></dd><dt id="
+          forcerenew
+          DEVICE…
+        "><span class="term">
+          <span class="command"><strong>forcerenew</strong></span>
+          <em class="replaceable"><code>DEVICE…</code></em>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20forcerenew%0A%20%20%20%20%20%20%20%20%20%20DEVICE%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Send a FORCERENEW message to all connected clients, triggering DHCP reconfiguration.
+        Takes interface name or index number.</p></dd><dt id="
+          reconfigure
+          DEVICE…
+        "><span class="term">
+          <span class="command"><strong>reconfigure</strong></span>
+          <em class="replaceable"><code>DEVICE…</code></em>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20reconfigure%0A%20%20%20%20%20%20%20%20%20%20DEVICE%E2%80%A6%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Reconfigure network interfaces. Takes interface name or index number. Note that
+        this does not reload <code class="filename">.netdev</code> or <code class="filename">.network</code>
+        corresponding to the specified interface. So, if you edit config files, it is necessary to call
+        <span class="command"><strong>networkctl reload</strong></span> first to apply new settings.</p></dd><dt id="
+          reload
+        "><span class="term">
+          <span class="command"><strong>reload</strong></span>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20reload%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Reload <code class="filename">.netdev</code> and <code class="filename">.network</code> files.
+        If a new <code class="filename">.netdev</code> file is found, then the corresponding netdev is created.
+        Note that even if an existing <code class="filename">.netdev</code> is modified or removed,
+        <span class="command"><strong>systemd-networkd</strong></span> does not update or remove the netdev.
+        If a new, modified or removed <code class="filename">.network</code> file is found, then all interfaces
+        which match the file are reconfigured.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="networkctl.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="
+          -a
+          --all
+        "><span class="term">
+          <code class="option">-a</code>
+          <code class="option">--all</code>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20-a%0A%20%20%20%20%20%20%20%20%20%20--all%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Show all links with <span class="command"><strong>status</strong></span>.</p></dd><dt id="
+          -s
+          --stats
+        "><span class="term">
+          <code class="option">-s</code>
+          <code class="option">--stats</code>
+        </span><a class="headerlink" title="Permalink to this term" href="networkctl.html#%0A%20%20%20%20%20%20%20%20%20%20-s%0A%20%20%20%20%20%20%20%20%20%20--stats%0A%20%20%20%20%20%20%20%20">¶</a></dt><dd><p>Show link statistics with <span class="command"><strong>status</strong></span>.</p></dd><dt id="-l"><span class="term"><code class="option">-l</code>, </span><span class="term"><code class="option">--full</code></span><a class="headerlink" title="Permalink to this term" href="networkctl.html#-l">¶</a></dt><dd><p>Do not ellipsize the output.</p></dd><dt id="-n"><span class="term"><code class="option">-n</code>, </span><span class="term"><code class="option">--lines=</code></span><a class="headerlink" title="Permalink to this term" href="networkctl.html#-n">¶</a></dt><dd><p>When used with <span class="command"><strong>status</strong></span>, controls the number of journal lines to show,
+          counting from the most recent ones. Takes a positive integer argument. Defaults to 10.</p></dd><dt id="--json=MODE"><span class="term"><code class="option">--json=</code><em class="replaceable"><code>MODE</code></em></span><a class="headerlink" title="Permalink to this term" href="networkctl.html#--json=MODE">¶</a></dt><dd><p>Shows output formatted as JSON. Expects one of "<code class="literal">short</code>" (for the
+    shortest possible output without any redundant whitespace or line breaks), "<code class="literal">pretty</code>"
+    (for a pretty version of the same, with indentation and line breaks) or "<code class="literal">off</code>" (to turn
+    off JSON output, the default).</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="networkctl.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="networkctl.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd><dt id="--no-legend"><span class="term"><code class="option">--no-legend</code></span><a class="headerlink" title="Permalink to this term" href="networkctl.html#--no-legend">¶</a></dt><dd><p>Do not print the legend, i.e. column headers and the
+      footer with hints.</p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="networkctl.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="networkctl.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code otherwise.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="networkctl.html#See%20Also">¶</a></h2><p>
+      <a href="systemd-networkd.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-networkd.service</span>(8)</span></a>,
+      <a href="systemd.network.html#"><span class="citerefentry"><span class="refentrytitle">systemd.network</span>(5)</span></a>,
+      <a href="systemd.netdev.html#"><span class="citerefentry"><span class="refentrytitle">systemd.netdev</span>(5)</span></a>,
+      <a href="http://linux.die.net/man/8/ip"><span class="citerefentry"><span class="refentrytitle">ip</span>(8)</span></a>
+    </p></div></div></body></html>

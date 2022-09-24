@@ -1,0 +1,111 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>hostnamectl</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="hostnamectl"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>hostnamectl — Control the system hostname</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">hostnamectl</code>  [OPTIONS...] {COMMAND}</p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="hostnamectl.html#Description">¶</a></h2><p><span class="command"><strong>hostnamectl</strong></span> may be used to query and change the system hostname and related
+    settings.</p><p><a href="systemd-hostnamed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-hostnamed.service</span>(8)</span></a>
+    and this tool distinguish three different hostnames: the high-level "pretty" hostname which might include
+    all kinds of special characters (e.g. "Lennart's Laptop"), the "static" hostname which is the
+    user-configured hostname (e.g. "lennarts-laptop"), and the transient hostname which is a fallback value
+    received from network configuration (e.g. "node12345678"). If a static hostname is set to a valid value,
+    then the transient hostname is not used.</p><p>Note that the pretty hostname has little restrictions on the characters and length used, while the static and
+    transient hostnames are limited to the usually accepted characters of Internet domain names, and 64 characters at
+    maximum (the latter being a Linux limitation).</p><p>Use
+    <a href="systemd-firstboot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-firstboot</span>(1)</span></a> to
+    initialize the system hostname for mounted (but not booted) system images.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Commands">Commands<a class="headerlink" title="Permalink to this headline" href="hostnamectl.html#Commands">¶</a></h2><p>The following commands are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="status"><span class="term"><span class="command"><strong>status</strong></span></span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#status">¶</a></dt><dd><p>Show system hostname and related information. If no command is specified,
+        this is the implied default.</p></dd><dt id="hostname [NAME]"><span class="term"><span class="command"><strong>hostname</strong></span> [<em class="replaceable"><code>NAME</code></em>]</span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#hostname%20%5BNAME%5D">¶</a></dt><dd><p>If no argument is given, print the system hostname. If an
+        optional argument <em class="replaceable"><code>NAME</code></em> is provided then the command changes the
+        system hostname to <em class="replaceable"><code>NAME</code></em>. By default, this will alter the
+        pretty, the static, and the transient hostname alike; however, if one or more of <code class="option">--static</code>,
+        <code class="option">--transient</code>, <code class="option">--pretty</code> are used, only the selected hostnames are changed. If
+        the pretty hostname is being set, and static or transient are being set as well, the specified hostname will be
+        simplified in regards to the character set used before the latter are updated. This is done by removing special
+        characters and spaces. This ensures that the pretty and the static hostname are always closely related while
+        still following the validity rules of the specific name. This simplification of the hostname string is not done
+        if only the transient and/or static hostnames are set, and the pretty hostname is left untouched.</p><p>The static and transient hostnames must each be either a single DNS label (a string composed of
+        7-bit ASCII lower-case characters and no spaces or dots, limited to the format allowed for DNS domain
+        name labels), or a sequence of such labels separated by single dots that forms a valid DNS FQDN. The
+        hostname must be at most 64 characters, which is a Linux limitation (DNS allows longer names).</p></dd><dt id="icon-name [NAME]"><span class="term"><span class="command"><strong>icon-name</strong></span> [<em class="replaceable"><code>NAME</code></em>]</span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#icon-name%20%5BNAME%5D">¶</a></dt><dd><p>If no argument is given, print the icon name of the system. If an
+        optional argument <em class="replaceable"><code>NAME</code></em> is provided then the command changes the
+        icon name to <em class="replaceable"><code>NAME</code></em>. The icon name is used by some
+        graphical applications to visualize this host. The icon name
+        should follow the <a class="ulink" href="http://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html" target="_top">Icon
+        Naming Specification</a>.</p></dd><dt id="chassis [TYPE]"><span class="term"><span class="command"><strong>chassis</strong></span> [<em class="replaceable"><code>TYPE</code></em>]</span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#chassis%20%5BTYPE%5D">¶</a></dt><dd><p>If no argument is given, print the chassis type. If an
+        optional argument <em class="replaceable"><code>TYPE</code></em> is provided then the command changes the
+        chassis type to <em class="replaceable"><code>TYPE</code></em>. The chassis type is used by
+        some graphical applications to visualize the host or alter user interaction.
+        Currently, the following chassis types are defined:
+        "<code class="literal">desktop</code>",
+        "<code class="literal">laptop</code>",
+        "<code class="literal">convertible</code>",
+        "<code class="literal">server</code>",
+        "<code class="literal">tablet</code>",
+        "<code class="literal">handset</code>",
+        "<code class="literal">watch</code>",
+        "<code class="literal">embedded</code>",
+        as well as the special chassis types
+        "<code class="literal">vm</code>" and
+        "<code class="literal">container</code>" for virtualized systems that lack
+        an immediate physical chassis.</p></dd><dt id="deployment [ENVIRONMENT]"><span class="term"><span class="command"><strong>deployment</strong></span> [<em class="replaceable"><code>ENVIRONMENT</code></em>]</span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#deployment%20%5BENVIRONMENT%5D">¶</a></dt><dd><p>If no argument is given, print the deployment environment. If an
+        optional argument <em class="replaceable"><code>ENVIRONMENT</code></em> is provided then the command changes the
+        deployment environment to <em class="replaceable"><code>ENVIRONMENT</code></em>.
+        Argument <em class="replaceable"><code>ENVIRONMENT</code></em>
+        must be a single word without any control characters. One of the following is suggested:
+        "<code class="literal">development</code>",
+        "<code class="literal">integration</code>",
+        "<code class="literal">staging</code>",
+        "<code class="literal">production</code>".
+        </p></dd><dt id="location [LOCATION]"><span class="term"><span class="command"><strong>location</strong></span> [<em class="replaceable"><code>LOCATION</code></em>]</span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#location%20%5BLOCATION%5D">¶</a></dt><dd><p>If no argument is given, print the location string for the system. If an
+        optional argument <em class="replaceable"><code>LOCATION</code></em> is provided then the command changes the
+        location string for the system to <em class="replaceable"><code>LOCATION</code></em>.
+        Argument <em class="replaceable"><code>LOCATION</code></em> should be a
+        human-friendly, free-form string describing the physical
+        location of the system, if it is known and applicable. This
+        may be as generic as "<code class="literal">Berlin, Germany</code>" or as
+        specific as "<code class="literal">Left Rack, 2nd Shelf</code>".</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="hostnamectl.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--no-ask-password"><span class="term"><code class="option">--no-ask-password</code></span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#--no-ask-password">¶</a></dt><dd><p>Do not query the user for authentication for
+        privileged operations.</p></dd><dt id="--static"><span class="term"><code class="option">--static</code>, </span><span class="term"><code class="option">--transient</code>, </span><span class="term"><code class="option">--pretty</code></span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#--static">¶</a></dt><dd><p>If <span class="command"><strong>status</strong></span> is invoked (or no explicit command is given) and one of these
+        switches is specified, <span class="command"><strong>hostnamectl</strong></span> will print out just this selected hostname.</p><p>If used with <span class="command"><strong>set-hostname</strong></span>, only the selected hostname(s) will be updated. When more
+        than one of these switches are specified, all the specified hostnames will be updated. </p></dd><dt id="-H"><span class="term"><code class="option">-H</code>, </span><span class="term"><code class="option">--host=</code></span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#-H">¶</a></dt><dd><p><a name="host-text"></a>Execute the operation remotely. Specify a hostname, or a
+      username and hostname separated by "<code class="literal">@</code>", to
+      connect to. The hostname may optionally be suffixed by a
+      port ssh is listening on, separated by "<code class="literal">:</code>", and then a
+      container name, separated by "<code class="literal">/</code>", which
+      connects directly to a specific container on the specified
+      host. This will use SSH to talk to the remote machine manager
+      instance. Container names may be enumerated with
+      <span class="command"><strong>machinectl -H
+      <em class="replaceable"><code>HOST</code></em></strong></span>. Put IPv6 addresses in brackets.</p></dd><dt id="-M"><span class="term"><code class="option">-M</code>, </span><span class="term"><code class="option">--machine=</code></span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#-M">¶</a></dt><dd><p><a name="machine-text"></a>Execute operation on a local container. Specify a container name to connect to, optionally
+      prefixed by a user name to connect as and a separating "<code class="literal">@</code>" character. If the special
+      string "<code class="literal">.host</code>" is used in place of the container name, a connection to the local
+      system is made (which is useful to connect to a specific user's user bus: "<code class="literal">--user
+      --machine=lennart@.host</code>"). If the "<code class="literal">@</code>" syntax is not used, the connection is
+      made as root user. If the "<code class="literal">@</code>" syntax is used either the left hand side or the right hand
+      side may be omitted (but not both) in which case the local user name and "<code class="literal">.host</code>" are
+      implied.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd><dt id="--json=MODE"><span class="term"><code class="option">--json=</code><em class="replaceable"><code>MODE</code></em></span><a class="headerlink" title="Permalink to this term" href="hostnamectl.html#--json=MODE">¶</a></dt><dd><p>Shows output formatted as JSON. Expects one of "<code class="literal">short</code>" (for the
+    shortest possible output without any redundant whitespace or line breaks), "<code class="literal">pretty</code>"
+    (for a pretty version of the same, with indentation and line breaks) or "<code class="literal">off</code>" (to turn
+    off JSON output, the default).</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="hostnamectl.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code
+    otherwise.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="hostnamectl.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="hostname.html#"><span class="citerefentry"><span class="refentrytitle">hostname</span>(1)</span></a>,
+      <a href="hostname.html#"><span class="citerefentry"><span class="refentrytitle">hostname</span>(5)</span></a>,
+      <a href="machine-info.html#"><span class="citerefentry"><span class="refentrytitle">machine-info</span>(5)</span></a>,
+      <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>,
+      <a href="systemd-hostnamed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-hostnamed.service</span>(8)</span></a>,
+      <a href="systemd-firstboot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-firstboot</span>(1)</span></a>
+    </p></div></div></body></html>

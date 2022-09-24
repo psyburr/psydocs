@@ -1,0 +1,147 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-firstboot</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-firstboot"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-firstboot, systemd-firstboot.service — Initialize basic system settings on or before the first boot-up of a system</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">systemd-firstboot</code>  [OPTIONS...]</p></div><p><code class="filename">systemd-firstboot.service</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-firstboot.html#Description">¶</a></h2><p><span class="command"><strong>systemd-firstboot</strong></span> initializes the most
+    basic system settings interactively on the first boot, or
+    optionally non-interactively when a system image is created.
+    The service is started if <code class="varname">ConditionFirstBoot=yes</code>
+    is satisfied. This essentially means that <code class="filename">/etc/</code>
+    is empty, see
+    <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>
+    for details.</p><p>The following settings may be set up:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>The system locale, more specifically the two
+      locale variables <code class="varname">LANG=</code> and
+      <code class="varname">LC_MESSAGES</code></p></li><li class="listitem"><p>The system keyboard map</p></li><li class="listitem"><p>The system time zone</p></li><li class="listitem"><p>The system hostname</p></li><li class="listitem"><p>The machine ID of the system</p></li><li class="listitem"><p>The root user's password</p></li></ul></div><p>Each of the fields may either be queried interactively by
+    users, set non-interactively on the tool's command line, or be
+    copied from a host system that is used to set up the system
+    image.</p><p>If a setting is already initialized, it will not be
+    overwritten and the user will not be prompted for the
+    setting.</p><p>Note that this tool operates directly on the file system and
+    does not involve any running system services, unlike
+    <a href="http://man7.org/linux/man-pages/man1/localectl.1.html"><span class="citerefentry"><span class="refentrytitle">localectl</span>(1)</span></a>,
+    <a href="timedatectl.html#"><span class="citerefentry"><span class="refentrytitle">timedatectl</span>(1)</span></a>
+    or
+    <a href="hostnamectl.html#"><span class="citerefentry"><span class="refentrytitle">hostnamectl</span>(1)</span></a>.
+    This allows <span class="command"><strong>systemd-firstboot</strong></span> to operate on
+    mounted but not booted disk images and in early boot. It is not
+    recommended to use <span class="command"><strong>systemd-firstboot</strong></span> on the
+    running system while it is up.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="systemd-firstboot.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--root=root"><span class="term"><code class="option">--root=<em class="replaceable"><code>root</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--root=root">¶</a></dt><dd><p>Takes a directory path as an argument. All
+        paths will be prefixed with the given alternate
+        <em class="replaceable"><code>root</code></em> path, including config search
+        paths. This is useful to operate on a system image mounted to
+        the specified directory instead of the host system itself.
+        </p></dd><dt id="--image=path"><span class="term"><code class="option">--image=<em class="replaceable"><code>path</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--image=path">¶</a></dt><dd><p>Takes a path to a disk image file or block device node. If specified all operations
+        are applied to file system in the indicated disk image. This is similar to <code class="option">--root=</code>
+        but operates on file systems stored in disk images or block devices. The disk image should either
+        contain just a file system or a set of file systems within a GPT partition table, following the
+        <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions
+        Specification</a>. For further information on supported disk images, see
+        <a href="systemd-nspawn.html#"><span class="citerefentry"><span class="refentrytitle">systemd-nspawn</span>(1)</span></a>'s
+        switch of the same name.</p></dd><dt id="--locale=LOCALE"><span class="term"><code class="option">--locale=<em class="replaceable"><code>LOCALE</code></em></code>, </span><span class="term"><code class="option">--locale-messages=<em class="replaceable"><code>LOCALE</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--locale=LOCALE">¶</a></dt><dd><p>Sets the system locale, more specifically the
+        <code class="varname">LANG=</code> and <code class="varname">LC_MESSAGES</code>
+        settings. The argument should be a valid locale identifier,
+        such as "<code class="literal">de_DE.UTF-8</code>". This controls the
+        <a href="http://man7.org/linux/man-pages/man5/locale.conf.5.html"><span class="citerefentry"><span class="refentrytitle">locale.conf</span>(5)</span></a>
+        configuration file.</p></dd><dt id="--keymap=KEYMAP"><span class="term"><code class="option">--keymap=<em class="replaceable"><code>KEYMAP</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--keymap=KEYMAP">¶</a></dt><dd><p>Sets the system keyboard layout. The argument should be a valid keyboard map,
+        such as "<code class="literal">de-latin1</code>". This controls the "<code class="literal">KEYMAP</code>" entry in the
+        <a href="http://man7.org/linux/man-pages/man5/vconsole.conf.5.html"><span class="citerefentry"><span class="refentrytitle">vconsole.conf</span>(5)</span></a>
+        configuration file.</p></dd><dt id="--timezone=TIMEZONE"><span class="term"><code class="option">--timezone=<em class="replaceable"><code>TIMEZONE</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--timezone=TIMEZONE">¶</a></dt><dd><p>Sets the system time zone. The argument should
+        be a valid time zone identifier, such as
+        "<code class="literal">Europe/Berlin</code>". This controls the
+        <a href="localtime.html#"><span class="citerefentry"><span class="refentrytitle">localtime</span>(5)</span></a>
+        symlink.</p></dd><dt id="--hostname=HOSTNAME"><span class="term"><code class="option">--hostname=<em class="replaceable"><code>HOSTNAME</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--hostname=HOSTNAME">¶</a></dt><dd><p>Sets the system hostname. The argument should
+        be a hostname, compatible with DNS. This controls the
+        <a href="hostname.html#"><span class="citerefentry"><span class="refentrytitle">hostname</span>(5)</span></a>
+        configuration file.</p></dd><dt id="--machine-id=ID"><span class="term"><code class="option">--machine-id=<em class="replaceable"><code>ID</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--machine-id=ID">¶</a></dt><dd><p>Sets the system's machine ID. This controls
+        the
+        <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a>
+        file.</p></dd><dt id="--root-password=PASSWORD"><span class="term"><code class="option">--root-password=<em class="replaceable"><code>PASSWORD</code></em></code>, </span><span class="term"><code class="option">--root-password-file=<em class="replaceable"><code>PATH</code></em></code>, </span><span class="term"><code class="option">--root-password-hashed=<em class="replaceable"><code>HASHED_PASSWORD</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--root-password=PASSWORD">¶</a></dt><dd><p>Sets the password of the system's root user. This creates/modifies the
+        <a href="http://linux.die.net/man/5/passwd"><span class="citerefentry"><span class="refentrytitle">passwd</span>(5)</span></a> and
+        <a href="http://linux.die.net/man/5/shadow"><span class="citerefentry"><span class="refentrytitle">shadow</span>(5)</span></a>
+        files. This setting exists in three forms: <code class="option">--root-password=</code> accepts the password to
+        set directly on the command line, <code class="option">--root-password-file=</code> reads it from a file and
+        <code class="option">--root-password-hashed=</code> accepts an already hashed password on the command line. See
+        <a href="http://linux.die.net/man/5/shadow"><span class="citerefentry"><span class="refentrytitle">shadow</span>(5)</span></a>
+        for more information on the format of the hashed password. Note that it is not recommended to specify
+        plaintext passwords on the command line, as other users might be able to see them simply by invoking
+        <a href="http://linux.die.net/man/1/ps"><span class="citerefentry"><span class="refentrytitle">ps</span>(1)</span></a>.
+        </p></dd><dt id="--root-shell=SHELL"><span class="term"><code class="option">--root-shell=<em class="replaceable"><code>SHELL</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--root-shell=SHELL">¶</a></dt><dd><p>Sets the shell of the system's root user. This creates/modifies the
+        <a href="http://linux.die.net/man/5/passwd"><span class="citerefentry"><span class="refentrytitle">passwd</span>(5)</span></a>
+        file.</p></dd><dt id="--kernel-command-line=CMDLINE"><span class="term"><code class="option">--kernel-command-line=<em class="replaceable"><code>CMDLINE</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--kernel-command-line=CMDLINE">¶</a></dt><dd><p>Sets the system's kernel command line. This controls the
+        <code class="filename">/etc/kernel/cmdline</code> file which is used by
+        <a href="kernel-install.html#"><span class="citerefentry"><span class="refentrytitle">kernel-install</span>(8)</span></a>.
+        </p></dd><dt id="--prompt-locale"><span class="term"><code class="option">--prompt-locale</code>, </span><span class="term"><code class="option">--prompt-keymap</code>, </span><span class="term"><code class="option">--prompt-timezone</code>, </span><span class="term"><code class="option">--prompt-hostname</code>, </span><span class="term"><code class="option">--prompt-root-password</code>, </span><span class="term"><code class="option">--prompt-root-shell</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--prompt-locale">¶</a></dt><dd><p>Prompt the user interactively for a specific
+        basic setting. Note that any explicit configuration settings
+        specified on the command line take precedence, and the user is
+        not prompted for it.</p></dd><dt id="--prompt"><span class="term"><code class="option">--prompt</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--prompt">¶</a></dt><dd><p>Query the user for locale, keymap, timezone, hostname,
+        root's password, and root's shell. This is equivalent to specifying
+        <code class="option">--prompt-locale</code>,
+        <code class="option">--prompt-keymap</code>,
+        <code class="option">--prompt-timezone</code>,
+        <code class="option">--prompt-hostname</code>,
+        <code class="option">--prompt-root-password</code>,
+        <code class="option">--prompt-root-shell</code> in combination.</p></dd><dt id="--copy-locale"><span class="term"><code class="option">--copy-locale</code>, </span><span class="term"><code class="option">--copy-keymap</code>, </span><span class="term"><code class="option">--copy-timezone</code>, </span><span class="term"><code class="option">--copy-root-password</code>, </span><span class="term"><code class="option">--copy-root-shell</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--copy-locale">¶</a></dt><dd><p>Copy a specific basic setting from the host.
+        This only works in combination with <code class="option">--root=</code>
+        (see above).</p></dd><dt id="--copy"><span class="term"><code class="option">--copy</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--copy">¶</a></dt><dd><p>Copy locale, keymap, time zone, root password and shell from the host. This is
+        equivalent to specifying
+        <code class="option">--copy-locale</code>,
+        <code class="option">--copy-keymap</code>,
+        <code class="option">--copy-timezone</code>,
+        <code class="option">--copy-root-password</code>,
+        <code class="option">--copy-root-shell</code> in combination.</p></dd><dt id="--setup-machine-id"><span class="term"><code class="option">--setup-machine-id</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--setup-machine-id">¶</a></dt><dd><p>Initialize the system's machine ID to a random
+        ID. This only works in combination with
+        <code class="option">--root=</code>.</p></dd><dt id="--force"><span class="term"><code class="option">--force</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--force">¶</a></dt><dd><p>systemd-firstboot doesn't modify existing files unless <code class="option">--force</code>
+        is specified. For modifications to <code class="filename">/etc/passwd</code> and
+        <code class="filename">/etc/shadow</code>, systemd-firstboot only modifies the entry of the
+        "<code class="literal">root</code>" user instead of overwriting the entire file.</p></dd><dt id="--delete-root-password"><span class="term"><code class="option">--delete-root-password</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--delete-root-password">¶</a></dt><dd><p>Removes the password of the system's root user, enabling login as root without a
+        password unless the root account is locked. Note that this is extremely insecure and hence this
+        option should not be used lightly.</p></dd><dt id="--welcome="><span class="term"><code class="option">--welcome=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--welcome=">¶</a></dt><dd><p>Takes a boolean argument. By default when prompting the user for configuration
+        options a brief welcome text is shown before the first question is asked. Pass false to this option
+        to turn off the welcome text.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Credentials">Credentials<a class="headerlink" title="Permalink to this headline" href="systemd-firstboot.html#Credentials">¶</a></h2><p><span class="command"><strong>systemd-firstboot</strong></span> supports the service credentials logic as implemented by
+    <code class="varname">LoadCredential=</code>/<code class="varname">SetCredential=</code> (see
+    <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(1)</span></a> for
+    details). The following credentials are used when passed in:</p><div class="variablelist"><dl class="variablelist"><dt id="passwd.hashed-password.root"><span class="term">"<code class="literal">passwd.hashed-password.root</code>", </span><span class="term">"<code class="literal">passwd.plaintext-password.root</code>"</span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#passwd.hashed-password.root">¶</a></dt><dd><p>A hashed or plaintext version of the root password to use, in place of prompting the
+        user. These credentials are equivalent to the same ones defined for the
+        <a href="systemd-sysusers.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-sysusers.service</span>(8)</span></a>
+        service.</p></dd><dt id="passwd.shell.root"><span class="term">"<code class="literal">passwd.shell.root</code>"</span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#passwd.shell.root">¶</a></dt><dd><p>Specifies the shell binary to use for the specified account.
+        Equivalent to the credential of the same name defined for the
+        <a href="systemd-sysusers.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-sysusers.service</span>(8)</span></a>
+        service.</p></dd><dt id="firstboot.locale"><span class="term">"<code class="literal">firstboot.locale</code>", </span><span class="term">"<code class="literal">firstboot.locale-messages</code>"</span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#firstboot.locale">¶</a></dt><dd><p>These credentials specify the locale settings to set during first boot, in place of
+        prompting the user.</p></dd><dt id="firstboot.keymap"><span class="term">"<code class="literal">firstboot.keymap</code>"</span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#firstboot.keymap">¶</a></dt><dd><p>This credential specifies the keyboard setting to set during first boot, in place of
+        prompting the user.</p></dd><dt id="firstboot.timezone"><span class="term">"<code class="literal">firstboot.timezone</code>"</span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#firstboot.timezone">¶</a></dt><dd><p>This credential specifies the system timezone setting to set during first boot, in
+        place of prompting the user.</p></dd></dl></div><p>Note that by default the <code class="filename">systemd-firstboot.service</code> unit file is set up to
+    inherit the listed credentials
+    from the service manager. Thus, when invoking a container with an unpopulated <code class="filename">/etc/</code>
+    for the first time it is possible to configure the root user's password to be "<code class="literal">systemd</code>"
+    like this:</p><pre class="programlisting"># systemd-nspawn --image=… --set-credential=firstboot.locale:de_DE.UTF-8 …</pre><p>Note that these credentials are only read and applied during the first boot process. Once they are
+    applied they remain applied for subsequent boots, and the credentials are not considered anymore.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="systemd-firstboot.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code
+    otherwise.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Kernel Command Line">Kernel Command Line<a class="headerlink" title="Permalink to this headline" href="systemd-firstboot.html#Kernel%20Command%20Line">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="systemd.firstboot="><span class="term"><code class="varname">systemd.firstboot=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-firstboot.html#systemd.firstboot=">¶</a></dt><dd><p>Takes a boolean argument, defaults to on. If off, <code class="filename">systemd-firstboot.service</code>
+        won't interactively query the user for basic settings at first boot, even if those settings are not
+        initialized yet.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.10"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-firstboot.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/locale.conf.5.html"><span class="citerefentry"><span class="refentrytitle">locale.conf</span>(5)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/vconsole.conf.5.html"><span class="citerefentry"><span class="refentrytitle">vconsole.conf</span>(5)</span></a>,
+      <a href="localtime.html#"><span class="citerefentry"><span class="refentrytitle">localtime</span>(5)</span></a>,
+      <a href="hostname.html#"><span class="citerefentry"><span class="refentrytitle">hostname</span>(5)</span></a>,
+      <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a>,
+      <a href="http://linux.die.net/man/5/shadow"><span class="citerefentry"><span class="refentrytitle">shadow</span>(5)</span></a>,
+      <a href="systemd-machine-id-setup.html#"><span class="citerefentry"><span class="refentrytitle">systemd-machine-id-setup</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man1/localectl.1.html"><span class="citerefentry"><span class="refentrytitle">localectl</span>(1)</span></a>,
+      <a href="timedatectl.html#"><span class="citerefentry"><span class="refentrytitle">timedatectl</span>(1)</span></a>,
+      <a href="hostnamectl.html#"><span class="citerefentry"><span class="refentrytitle">hostnamectl</span>(1)</span></a>
+    </p></div></div></body></html>

@@ -1,16 +1,16 @@
 # mycli
 
-> A CLI for MySQL, MariaDB, and Percona with auto-completion and syntax highlighting.
-> More information: <https://manned.org/mycli>.
+> A command-line client for MySQL that can do auto-completion and syntax highlighting.
+> More information: <https://mycli.net>.
 
-- Connect to a database with the currently logged in user:
+- Connect to a local database on port 3306, using the current user's username:
 
 `mycli {{database_name}}`
 
-- Connect to a database with the specified user:
+- Connect to a database (user will be prompted for a password):
 
-`mycli -u {{user}} {{database_name}}`
+`mycli -u {{username}} {{database_name}}`
 
-- Connect to a database on the specified host with the specified user:
+- Connect to a database on another host:
 
-`mycli -u {{user}} -h {{host}} {{database_name}}`
+`mycli -h {{database_host}} -P {{port}} -u {{username}} {{database_name}}`

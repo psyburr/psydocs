@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_start</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_start"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_start — Initiate a bus connection to the D-bus broker daemon
+    </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_start</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_start.html#Description">¶</a></h2><p><code class="function">sd_bus_start()</code> connects an existing bus connection object to the D-Bus
+    broker daemon, usually
+    <a href="http://linux.die.net/man/1/dbus-daemon"><span class="citerefentry"><span class="refentrytitle">dbus-daemon</span>(1)</span></a>
+    or
+    <a href="https://www.mankier.com/1/dbus-broker"><span class="citerefentry"><span class="refentrytitle">dbus-broker</span>(1)</span></a>.
+    The mechanism to use for the connection must be configured before the call to
+    <code class="function">sd_bus_start()</code>, using one of
+    <a href="sd_bus_set_address.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_set_address</span>(3)</span></a>,
+    <a href="sd_bus_set_fd.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_set_fd</span>(3)</span></a>, or
+    <a href="sd_bus_set_exec.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_set_exec</span>(3)</span></a>.
+    <code class="function">sd_bus_start()</code> will open the connection socket or spawn the executable as
+    needed, and asynchronously start a <code class="function">org.freedesktop.DBus.Hello()</code> call. The
+    answer to the Hello call will be processed later from
+    <a href="sd_bus_process.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_process</span>(3)</span></a>. If
+    opening of the connection or queuing of the asynchronous call fail, the connection will be closed with
+    <a href="sd_bus_close.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_close</span>(3)</span></a>.</p><p>In most cases, it is better to use
+    <a href="sd_bus_default_user.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_default_user</span>(3)</span></a>,
+    <a href="sd_bus_default_system.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_default_system</span>(3)</span></a>
+    or related calls instead of the more low-level <code class="function">sd_bus_new()</code> and
+    <code class="function">sd_bus_start()</code>. The higher-level functions not only allocate a bus object but also
+    start the connection to a well-known bus in a single function call.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_start.html#Return%20Value">¶</a></h2><p>On success, this function returns a non-negative integer. On failure, it returns a negative
+    errno-style error code.</p><div class="refsect2"><a name="errors"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_start.html#Errors">¶</a></h3><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_start.html#-EINVAL">¶</a></dt><dd><p>The input parameter <em class="parameter"><code>bus</code></em> is <code class="constant">NULL</code>.
+          </p></dd><dt id="-ENOPKG"><span class="term"><code class="constant">-ENOPKG</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_start.html#-ENOPKG">¶</a></dt><dd><p>Bus object <em class="parameter"><code>bus</code></em> could not be resolved.</p></dd><dt id="-EPERM"><span class="term"><code class="constant">-EPERM</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_start.html#-EPERM">¶</a></dt><dd><p>The input parameter <em class="parameter"><code>bus</code></em> is in a wrong state
+          (<code class="function">sd_bus_start()</code> may only be called once on a newly-created bus object).</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_start.html#-ECHILD">¶</a></dt><dd><p>The bus object <em class="parameter"><code>bus</code></em> was created in a different
+          process.</p></dd></dl></div><p>In addition, other connection-related errors may be returned. See
+      <a href="sd_bus_send.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_send</span>(3)</span></a>.</p></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_start.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_start.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+      <a href="sd_bus_default.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_default</span>(3)</span></a>,
+      <a href="sd_bus_call_async.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_call_async</span>(3)</span></a>
+    </p></div></div></body></html>

@@ -12,14 +12,14 @@
 
 `{{cat path/to/file}} | tac`
 
-- Use a specific separator:
+- Use a specific [s]eparator:
 
-`tac --separator {{,}} {{path/to/file1 path/to/file2 ...}}`
+`tac -s {{separator}} {{path/to/file1 path/to/file2 ...}}`
 
-- Use a specific regex as a separator:
+- Use a specific [r]egex as a [s]eparator:
 
-`tac --regex --separator {{[,;]}} {{path/to/file1 path/to/file2 ...}}`
+`tac -r -s {{separator}} {{path/to/file1 path/to/file2 ...}}`
 
-- Use a separator before each file:
+- Use a separator [b]efore each file:
 
-`tac --before {{path/to/file1 path/to/file2 ...}}`
+`tac -b {{path/to/file1 path/to/file2 ...}}`

@@ -1,0 +1,51 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_event_now</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_event_now"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_event_now — Retrieve current event loop iteration timestamp</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-event.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_event_now</b>(</code></td><td>sd_event *<var class="pdparam">event</var>, </td></tr><tr><td> </td><td>clockid_t <var class="pdparam">clock</var>, </td></tr><tr><td> </td><td>uint64_t *<var class="pdparam">usec</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_event_now.html#Description">¶</a></h2><p><code class="function">sd_event_now()</code> returns the time when
+    the most recent event loop iteration began. A timestamp
+    is taken right after returning from the event sleep, and before
+    dispatching any event sources. The <em class="parameter"><code>event</code></em>
+    parameter specifies the event loop object to retrieve the timestamp
+    from. The <em class="parameter"><code>clock</code></em> parameter specifies the clock to
+    retrieve the timestamp for, and is one of
+    <code class="constant">CLOCK_REALTIME</code> (or equivalently
+    <code class="constant">CLOCK_REALTIME_ALARM</code>),
+    <code class="constant">CLOCK_MONOTONIC</code>, or
+    <code class="constant">CLOCK_BOOTTIME</code> (or equivalently
+    <code class="constant">CLOCK_BOOTTIME_ALARM</code>), see
+    <a href="http://man7.org/linux/man-pages/man2/clock_gettime.2.html"><span class="citerefentry"><span class="refentrytitle">clock_gettime</span>(2)</span></a>
+    for more information on the various clocks. The retrieved
+    timestamp is stored in the <em class="parameter"><code>usec</code></em> parameter,
+    in µs since the clock's epoch. If this function is invoked before
+    the first event loop iteration, the current time is returned, as
+    reported by <code class="function">clock_gettime()</code>. To distinguish
+    this case from a regular invocation the return value will be
+    positive, and zero when the returned timestamp refers to an actual
+    event loop iteration.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_event_now.html#Return%20Value">¶</a></h2><p>If the first event loop iteration has not run yet <code class="function">sd_event_now()</code> writes
+    current time to <em class="parameter"><code>usec</code></em> and returns a positive return value.  Otherwise, it will
+    write the requested timestamp to <em class="parameter"><code>usec</code></em> and return 0. On failure, the call returns a
+    negative errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_event_now.html#Errors">¶</a></h3><p>Returned values may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_now.html#-EINVAL">¶</a></dt><dd><p>An invalid parameter was passed.</p></dd><dt id="-EOPNOTSUPP"><span class="term"><code class="constant">-EOPNOTSUPP</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_now.html#-EOPNOTSUPP">¶</a></dt><dd><p>Unsupported clock type.</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_event_now.html#-ECHILD">¶</a></dt><dd><p>The event loop object was created in a different process.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_event_now.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_event_now.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-event.html#"><span class="citerefentry"><span class="refentrytitle">sd-event</span>(3)</span></a>,
+      <a href="sd_event_new.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_new</span>(3)</span></a>,
+      <a href="sd_event_add_time.html#"><span class="citerefentry"><span class="refentrytitle">sd_event_add_time</span>(3)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man2/clock_gettime.2.html"><span class="citerefentry"><span class="refentrytitle">clock_gettime</span>(2)</span></a>
+    </p></div></div></body></html>

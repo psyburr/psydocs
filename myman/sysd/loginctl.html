@@ -1,0 +1,239 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>loginctl</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="loginctl"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>loginctl — Control the systemd login manager</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">loginctl</code>  [OPTIONS...] {COMMAND} [NAME...]</p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="loginctl.html#Description">¶</a></h2><p><span class="command"><strong>loginctl</strong></span> may be used to introspect and
+    control the state of the
+    <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>
+    login manager
+    <a href="systemd-logind.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-logind.service</span>(8)</span></a>.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Commands">Commands<a class="headerlink" title="Permalink to this headline" href="loginctl.html#Commands">¶</a></h2><p>The following commands are understood:</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Session Commands">Session Commands<a class="headerlink" title="Permalink to this headline" href="loginctl.html#Session%20Commands">¶</a></h3><div class="variablelist"><dl class="variablelist"><dt id="list-sessions"><span class="term"><span class="command"><strong>list-sessions</strong></span></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#list-sessions">¶</a></dt><dd><p>List current sessions.</p></dd><dt id="session-status ID…"><span class="term"><span class="command"><strong>session-status</strong></span> [<span class="optional"><em class="replaceable"><code>ID</code></em>…</span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#session-status%20ID%E2%80%A6">¶</a></dt><dd><p>Show terse runtime status information about
+        one or more sessions, followed by the most recent log data
+        from the journal. Takes one or more session identifiers as
+        parameters. If no session identifiers are passed, the status of
+        the caller's session is shown. This function is intended to
+        generate human-readable output. If you are looking for
+        computer-parsable output, use <span class="command"><strong>show-session</strong></span>
+        instead.</p></dd><dt id="show-session ID…"><span class="term"><span class="command"><strong>show-session</strong></span> [<span class="optional"><em class="replaceable"><code>ID</code></em>…</span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#show-session%20ID%E2%80%A6">¶</a></dt><dd><p>Show properties of one or more sessions or the
+        manager itself. If no argument is specified, properties of the
+        manager will be shown. If a session ID is specified,
+        properties of the session are shown. By default, empty
+        properties are suppressed. Use <code class="option">--all</code> to show
+        those too. To select specific properties to show, use
+        <code class="option">--property=</code>. This command is intended to be
+        used whenever computer-parsable output is required. Use
+        <span class="command"><strong>session-status</strong></span> if you are looking for
+        formatted human-readable output.</p></dd><dt id="activate ID"><span class="term"><span class="command"><strong>activate</strong></span> [<span class="optional"><em class="replaceable"><code>ID</code></em></span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#activate%20ID">¶</a></dt><dd><p>Activate a session. This brings a session into
+        the foreground if another session is currently in the
+        foreground on the respective seat. Takes a session identifier
+        as argument. If no argument is specified, the session of the
+        caller is put into foreground.</p></dd><dt id="lock-session ID…"><span class="term"><span class="command"><strong>lock-session</strong></span> [<span class="optional"><em class="replaceable"><code>ID</code></em>…</span>], </span><span class="term"><span class="command"><strong>unlock-session</strong></span> [<span class="optional"><em class="replaceable"><code>ID</code></em>…</span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#lock-session%20ID%E2%80%A6">¶</a></dt><dd><p>Activates/deactivates the screen lock on one
+        or more sessions, if the session supports it. Takes one or
+        more session identifiers as arguments. If no argument is
+        specified, the session of the caller is locked/unlocked.
+        </p></dd><dt id="lock-sessions"><span class="term"><span class="command"><strong>lock-sessions</strong></span>, </span><span class="term"><span class="command"><strong>unlock-sessions</strong></span></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#lock-sessions">¶</a></dt><dd><p>Activates/deactivates the screen lock on all
+        current sessions supporting it. </p></dd><dt id="terminate-session ID…"><span class="term"><span class="command"><strong>terminate-session</strong></span> <em class="replaceable"><code>ID</code></em>…</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#terminate-session%20ID%E2%80%A6">¶</a></dt><dd><p>Terminates a session. This kills all processes of the session and deallocates all
+        resources attached to the session. If the argument is specified as empty string the session invoking
+        the command is terminated.</p></dd><dt id="kill-session ID…"><span class="term"><span class="command"><strong>kill-session</strong></span> <em class="replaceable"><code>ID</code></em>…</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#kill-session%20ID%E2%80%A6">¶</a></dt><dd><p>Send a signal to one or more processes of the session. Use
+        <code class="option">--kill-who=</code> to select which process to kill. Use <code class="option">--signal=</code> to
+        select the signal to send. If the argument is specified as empty string the signal is sent to the
+        session invoking the command.</p></dd></dl></div></div><div class="refsect2"><a name="id-1.6.4"></a><h3 id="User Commands">User Commands<a class="headerlink" title="Permalink to this headline" href="loginctl.html#User%20Commands">¶</a></h3><div class="variablelist"><dl class="variablelist"><dt id="list-users"><span class="term"><span class="command"><strong>list-users</strong></span></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#list-users">¶</a></dt><dd><p>List currently logged in users.
+        </p></dd><dt id="user-status USER…"><span class="term"><span class="command"><strong>user-status</strong></span> [<span class="optional"><em class="replaceable"><code>USER</code></em>…</span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#user-status%20USER%E2%80%A6">¶</a></dt><dd><p>Show terse runtime status information about
+        one or more logged in users, followed by the most recent log
+        data from the journal. Takes one or more user names or numeric
+        user IDs as parameters. If no parameters are passed, the status
+        is shown for the user of the session of the caller. This
+        function is intended to generate human-readable output. If you
+        are looking for computer-parsable output, use
+        <span class="command"><strong>show-user</strong></span> instead.</p></dd><dt id="show-user USER…"><span class="term"><span class="command"><strong>show-user</strong></span> [<span class="optional"><em class="replaceable"><code>USER</code></em>…</span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#show-user%20USER%E2%80%A6">¶</a></dt><dd><p>Show properties of one or more users or the
+        manager itself. If no argument is specified, properties of the
+        manager will be shown. If a user is specified, properties of
+        the user are shown. By default, empty properties are
+        suppressed. Use <code class="option">--all</code> to show those too. To
+        select specific properties to show, use
+        <code class="option">--property=</code>. This command is intended to be
+        used whenever computer-parsable output is required. Use
+        <span class="command"><strong>user-status</strong></span> if you are looking for
+        formatted human-readable output.</p></dd><dt id="enable-linger USER…"><span class="term"><span class="command"><strong>enable-linger</strong></span> [<span class="optional"><em class="replaceable"><code>USER</code></em>…</span>], </span><span class="term"><span class="command"><strong>disable-linger</strong></span> [<span class="optional"><em class="replaceable"><code>USER</code></em>…</span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#enable-linger%20USER%E2%80%A6">¶</a></dt><dd><p>Enable/disable user lingering for one or more
+        users. If enabled for a specific user, a user manager is
+        spawned for the user at boot and kept around after logouts.
+        This allows users who are not logged in to run long-running
+        services. Takes one or more user names or numeric UIDs as
+        argument. If no argument is specified, enables/disables
+        lingering for the user of the session of the caller.</p><p>See also <code class="varname">KillUserProcesses=</code> setting in
+        <a href="logind.conf.html#"><span class="citerefentry"><span class="refentrytitle">logind.conf</span>(5)</span></a>.
+        </p></dd><dt id="terminate-user USER…"><span class="term"><span class="command"><strong>terminate-user</strong></span> <em class="replaceable"><code>USER</code></em>…</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#terminate-user%20USER%E2%80%A6">¶</a></dt><dd><p>Terminates all sessions of a user. This kills all processes of all sessions of the
+        user and deallocates all runtime resources attached to the user. If the argument is specified as
+        empty string the sessions of the user invoking the command are terminated.</p></dd><dt id="kill-user USER…"><span class="term"><span class="command"><strong>kill-user</strong></span> <em class="replaceable"><code>USER</code></em>…</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#kill-user%20USER%E2%80%A6">¶</a></dt><dd><p>Send a signal to all processes of a user. Use <code class="option">--signal=</code> to select
+        the signal to send. If the argument is specified as empty string the signal is sent to the sessions
+        of the user invoking the command.</p></dd></dl></div></div><div class="refsect2"><a name="id-1.6.5"></a><h3 id="Seat Commands">Seat Commands<a class="headerlink" title="Permalink to this headline" href="loginctl.html#Seat%20Commands">¶</a></h3><div class="variablelist"><dl class="variablelist"><dt id="list-seats"><span class="term"><span class="command"><strong>list-seats</strong></span></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#list-seats">¶</a></dt><dd><p>List currently available seats on the local
+        system.</p></dd><dt id="seat-status NAME…"><span class="term"><span class="command"><strong>seat-status</strong></span> [<span class="optional"><em class="replaceable"><code>NAME</code></em>…</span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#seat-status%20NAME%E2%80%A6">¶</a></dt><dd><p>Show terse runtime status information about
+        one or more seats. Takes one or more seat names as parameters.
+        If no seat names are passed the status of the caller's
+        session's seat is shown. This function is intended to generate
+        human-readable output. If you are looking for
+        computer-parsable output, use <span class="command"><strong>show-seat</strong></span>
+        instead.</p></dd><dt id="show-seat NAME…"><span class="term"><span class="command"><strong>show-seat</strong></span> [<span class="optional"><em class="replaceable"><code>NAME</code></em>…</span>]</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#show-seat%20NAME%E2%80%A6">¶</a></dt><dd><p>Show properties of one or more seats or the
+        manager itself. If no argument is specified, properties of the
+        manager will be shown. If a seat is specified, properties of
+        the seat are shown. By default, empty properties are
+        suppressed. Use <code class="option">--all</code> to show those too. To
+        select specific properties to show, use
+        <code class="option">--property=</code>. This command is intended to be
+        used whenever computer-parsable output is required. Use
+        <span class="command"><strong>seat-status</strong></span> if you are looking for
+        formatted human-readable output.</p></dd><dt id="attach NAME DEVICE…"><span class="term"><span class="command"><strong>attach</strong></span> <em class="replaceable"><code>NAME</code></em> <em class="replaceable"><code>DEVICE</code></em>…</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#attach%20NAME%20DEVICE%E2%80%A6">¶</a></dt><dd><p>Persistently attach one or more devices to a
+        seat. The devices should be specified via device paths in the
+        <code class="filename">/sys/</code> file system. To create a new seat,
+        attach at least one graphics card to a previously unused seat
+        name. Seat names may consist only of a–z, A–Z, 0–9,
+        "<code class="literal">-</code>" and "<code class="literal">_</code>" and must be
+        prefixed with "<code class="literal">seat</code>". To drop assignment of a
+        device to a specific seat, just reassign it to a different
+        seat, or use <span class="command"><strong>flush-devices</strong></span>.
+        </p></dd><dt id="flush-devices"><span class="term"><span class="command"><strong>flush-devices</strong></span></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#flush-devices">¶</a></dt><dd><p>Removes all device assignments previously
+        created with <span class="command"><strong>attach</strong></span>. After this call, only
+        automatically generated seats will remain, and all seat
+        hardware is assigned to them.</p></dd><dt id="terminate-seat NAME…"><span class="term"><span class="command"><strong>terminate-seat</strong></span> <em class="replaceable"><code>NAME</code></em>…</span><a class="headerlink" title="Permalink to this term" href="loginctl.html#terminate-seat%20NAME%E2%80%A6">¶</a></dt><dd><p>Terminates all sessions on a seat. This kills
+        all processes of all sessions on the seat and deallocates all
+        runtime resources attached to them.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="loginctl.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--no-ask-password"><span class="term"><code class="option">--no-ask-password</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#--no-ask-password">¶</a></dt><dd><p>Do not query the user for authentication for
+        privileged operations.</p></dd><dt id="-p"><span class="term"><code class="option">-p</code>, </span><span class="term"><code class="option">--property=</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-p">¶</a></dt><dd><p>When showing session/user/seat properties,
+        limit display to certain properties as specified as argument.
+        If not specified, all set properties are shown. The argument
+        should be a property name, such as
+        "<code class="literal">Sessions</code>". If specified more than once, all
+        properties with the specified names are
+        shown.</p></dd><dt id="--value"><span class="term"><code class="option">--value</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#--value">¶</a></dt><dd><p>When showing session/user/seat properties,
+        only print the value, and skip the property name and
+        "<code class="literal">=</code>".</p></dd><dt id="-a"><span class="term"><code class="option">-a</code>, </span><span class="term"><code class="option">--all</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-a">¶</a></dt><dd><p>When showing session/user/seat properties,
+        show all properties regardless of whether they are set or
+        not.</p></dd><dt id="-l"><span class="term"><code class="option">-l</code>, </span><span class="term"><code class="option">--full</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-l">¶</a></dt><dd><p>Do not ellipsize process tree entries.</p></dd><dt id="--kill-who="><span class="term"><code class="option">--kill-who=</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#--kill-who=">¶</a></dt><dd><p>When used with
+        <span class="command"><strong>kill-session</strong></span>, choose which processes to
+        kill. Must be one of <code class="option">leader</code>, or
+        <code class="option">all</code> to select whether to kill only the leader
+        process of the session or all processes of the session. If
+        omitted, defaults to <code class="option">all</code>.</p></dd><dt id="-s"><span class="term"><code class="option">-s</code>, </span><span class="term"><code class="option">--signal=</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-s">¶</a></dt><dd><p>When used with <span class="command"><strong>kill-session</strong></span> or <span class="command"><strong>kill-user</strong></span>,
+        choose which signal to send to selected processes. Must be one of the well known signal specifiers,
+        such as <code class="constant">SIGTERM</code>, <code class="constant">SIGINT</code> or <code class="constant">SIGSTOP</code>.
+        If omitted, defaults to <code class="constant">SIGTERM</code>.</p><p>The special value "<code class="literal">help</code>" will list the known values and the program will exit
+        immediately, and the special value "<code class="literal">list</code>" will list known values along with the
+        numerical signal numbers and the program will exit immediately.</p></dd><dt id="-n"><span class="term"><code class="option">-n</code>, </span><span class="term"><code class="option">--lines=</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-n">¶</a></dt><dd><p>When used with <span class="command"><strong>user-status</strong></span>
+        and <span class="command"><strong>session-status</strong></span>, controls the number of
+        journal lines to show, counting from the most recent ones.
+        Takes a positive integer argument. Defaults to 10.</p></dd><dt id="-o"><span class="term"><code class="option">-o</code>, </span><span class="term"><code class="option">--output=</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-o">¶</a></dt><dd><p>When used with <span class="command"><strong>user-status</strong></span>
+        and <span class="command"><strong>session-status</strong></span>, controls the formatting
+        of the journal entries that are shown. For the available
+        choices, see
+        <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a>.
+        Defaults to "<code class="literal">short</code>".</p></dd><dt id="-H"><span class="term"><code class="option">-H</code>, </span><span class="term"><code class="option">--host=</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-H">¶</a></dt><dd><p><a name="host-text"></a>Execute the operation remotely. Specify a hostname, or a
+      username and hostname separated by "<code class="literal">@</code>", to
+      connect to. The hostname may optionally be suffixed by a
+      port ssh is listening on, separated by "<code class="literal">:</code>", and then a
+      container name, separated by "<code class="literal">/</code>", which
+      connects directly to a specific container on the specified
+      host. This will use SSH to talk to the remote machine manager
+      instance. Container names may be enumerated with
+      <span class="command"><strong>machinectl -H
+      <em class="replaceable"><code>HOST</code></em></strong></span>. Put IPv6 addresses in brackets.</p></dd><dt id="-M"><span class="term"><code class="option">-M</code>, </span><span class="term"><code class="option">--machine=</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-M">¶</a></dt><dd><p><a name="machine-text"></a>Execute operation on a local container. Specify a container name to connect to, optionally
+      prefixed by a user name to connect as and a separating "<code class="literal">@</code>" character. If the special
+      string "<code class="literal">.host</code>" is used in place of the container name, a connection to the local
+      system is made (which is useful to connect to a specific user's user bus: "<code class="literal">--user
+      --machine=lennart@.host</code>"). If the "<code class="literal">@</code>" syntax is not used, the connection is
+      made as root user. If the "<code class="literal">@</code>" syntax is used either the left hand side or the right hand
+      side may be omitted (but not both) in which case the local user name and "<code class="literal">.host</code>" are
+      implied.</p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd><dt id="--no-legend"><span class="term"><code class="option">--no-legend</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#--no-legend">¶</a></dt><dd><p>Do not print the legend, i.e. column headers and the
+      footer with hints.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="loginctl.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code
+    otherwise.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="loginctl.html#Examples">¶</a></h2><div class="example"><a name="id-1.9.2"></a><p class="title"><b>Example 1. Querying user status</b></p><div class="example-contents"><pre class="programlisting">$ loginctl user-status
+fatima (1005)
+           Since: Sat 2016-04-09 14:23:31 EDT; 54min ago
+           State: active
+        Sessions: 5 *3
+            Unit: user-1005.slice
+                  ├─user@1005.service
+                    …
+                  ├─session-3.scope
+                    …
+                  └─session-5.scope
+                    ├─3473 login -- fatima
+                    └─3515 -zsh
+
+Apr 09 14:40:30 laptop login[2325]: pam_unix(login:session):
+                       session opened for user fatima by LOGIN(uid=0)
+Apr 09 14:40:30 laptop login[2325]: LOGIN ON tty3 BY fatima
+</pre><p>There are two sessions, 3 and 5. Session 3 is a graphical session,
+      marked with a star. The tree of processing including the two corresponding
+      scope units and the user manager unit are shown.</p></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.10"></a><h2 id="Environment">Environment<a class="headerlink" title="Permalink to this headline" href="loginctl.html#Environment">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="$SYSTEMD_LOG_LEVEL"><span class="term"><code class="varname">$SYSTEMD_LOG_LEVEL</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_LOG_LEVEL">¶</a></dt><dd><p><a name="log-level-body"></a>The maximum log level of emitted messages (messages with a higher
+      log level, i.e. less important ones, will be suppressed). Either one of (in order of decreasing
+      importance) <code class="constant">emerg</code>, <code class="constant">alert</code>, <code class="constant">crit</code>,
+      <code class="constant">err</code>, <code class="constant">warning</code>, <code class="constant">notice</code>,
+      <code class="constant">info</code>, <code class="constant">debug</code>, or an integer in the range 0…7. See
+      <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>
+      for more information.</p></dd><dt id="$SYSTEMD_LOG_COLOR"><span class="term"><code class="varname">$SYSTEMD_LOG_COLOR</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_LOG_COLOR">¶</a></dt><dd><p><a name="log-color-body"></a>A boolean. If true, messages written to the tty will be colored
+      according to priority.</p><p>This setting is only useful when messages are written directly to the terminal, because
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a> and
+      other tools that display logs will color messages based on the log level on their own.</p></dd><dt id="$SYSTEMD_LOG_TIME"><span class="term"><code class="varname">$SYSTEMD_LOG_TIME</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_LOG_TIME">¶</a></dt><dd><p><a name="log-time-body"></a>A boolean. If true, console log messages will be prefixed with a
+      timestamp.</p><p>This setting is only useful when messages are written directly to the terminal or a file, because
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a> and
+      other tools that display logs will attach timestamps based on the entry metadata on their own.</p></dd><dt id="$SYSTEMD_LOG_LOCATION"><span class="term"><code class="varname">$SYSTEMD_LOG_LOCATION</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_LOG_LOCATION">¶</a></dt><dd><p><a name="log-location-body"></a>A boolean. If true, messages will be prefixed with a filename
+      and line number in the source code where the message originates.</p><p>Note that the log location is often attached as metadata to journal entries anyway. Including it
+      directly in the message text can nevertheless be convenient when debugging programs.</p></dd><dt id="$SYSTEMD_LOG_TID"><span class="term"><code class="varname">$SYSTEMD_LOG_TID</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_LOG_TID">¶</a></dt><dd><p><a name="log-tid-body"></a>A boolean. If true, messages will be prefixed with the current
+      numerical thread ID (TID).</p><p>Note that the this information is attached as metadata to journal entries anyway. Including it
+      directly in the message text can nevertheless be convenient when debugging programs.</p></dd><dt id="$SYSTEMD_LOG_TARGET"><span class="term"><code class="varname">$SYSTEMD_LOG_TARGET</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_LOG_TARGET">¶</a></dt><dd><p><a name="log-target-body"></a>The destination for log messages. One of
+      <code class="constant">console</code> (log to the attached tty), <code class="constant">console-prefixed</code> (log to
+      the attached tty but with prefixes encoding the log level and "facility", see <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>,
+      <code class="constant">kmsg</code> (log to the kernel circular log buffer), <code class="constant">journal</code> (log to
+      the journal), <code class="constant">journal-or-kmsg</code> (log to the journal if available, and to kmsg
+      otherwise), <code class="constant">auto</code> (determine the appropriate log target automatically, the default),
+      <code class="constant">null</code> (disable log output).</p></dd><dt id="$SYSTEMD_PAGER"><span class="term"><code class="varname">$SYSTEMD_PAGER</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_PAGER">¶</a></dt><dd><p>Pager to use when <code class="option">--no-pager</code> is not given; overrides
+      <code class="varname">$PAGER</code>. If neither <code class="varname">$SYSTEMD_PAGER</code> nor <code class="varname">$PAGER</code> are set, a
+      set of well-known pager implementations are tried in turn, including
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a> and
+      <a href="http://man7.org/linux/man-pages/man1/more.1.html"><span class="citerefentry"><span class="refentrytitle">more</span>(1)</span></a>, until one is found. If
+      no pager implementation is discovered no pager is invoked. Setting this environment variable to an empty string
+      or the value "<code class="literal">cat</code>" is equivalent to passing <code class="option">--no-pager</code>.</p></dd><dt id="$SYSTEMD_LESS"><span class="term"><code class="varname">$SYSTEMD_LESS</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_LESS">¶</a></dt><dd><p>Override the options passed to <span class="command"><strong>less</strong></span> (by default
+      "<code class="literal">FRSXMK</code>").</p><p>Users might want to change two options in particular:</p><div class="variablelist"><dl class="variablelist"><dt id="K"><span class="term"><code class="option">K</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#K">¶</a></dt><dd></dd><dt id="X"><span class="term"><code class="option">X</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#X">¶</a></dt><dd></dd></dl></div><p>See
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a>
+      for more discussion.</p></dd><dt id="$SYSTEMD_LESSCHARSET"><span class="term"><code class="varname">$SYSTEMD_LESSCHARSET</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_LESSCHARSET">¶</a></dt><dd><p>Override the charset passed to <span class="command"><strong>less</strong></span> (by default "<code class="literal">utf-8</code>", if
+      the invoking terminal is determined to be UTF-8 compatible).</p></dd><dt id="$SYSTEMD_PAGERSECURE"><span class="term"><code class="varname">$SYSTEMD_PAGERSECURE</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_PAGERSECURE">¶</a></dt><dd><p>Takes a boolean argument. When true, the "secure" mode of the pager is enabled; if
+      false, disabled. If <code class="varname">$SYSTEMD_PAGERSECURE</code> is not set at all, secure mode is enabled
+      if the effective UID is not the same as the owner of the login session, see
+      <a href="http://man7.org/linux/man-pages/man2/geteuid.2.html"><span class="citerefentry"><span class="refentrytitle">geteuid</span>(2)</span></a>
+      and <a href="sd_pid_get_owner_uid.html#"><span class="citerefentry"><span class="refentrytitle">sd_pid_get_owner_uid</span>(3)</span></a>.
+      In secure mode, <code class="option">LESSSECURE=1</code> will be set when invoking the pager, and the pager shall
+      disable commands that open or create new files or start new subprocesses. When
+      <code class="varname">$SYSTEMD_PAGERSECURE</code> is not set at all, pagers which are not known to implement
+      secure mode will not be used. (Currently only
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a>
+      implements secure mode.)</p><p>Note: when commands are invoked with elevated privileges, for example under <a href="http://man7.org/linux/man-pages/man8/sudo.8.html"><span class="citerefentry"><span class="refentrytitle">sudo</span>(8)</span></a> or
+      <a href="http://linux.die.net/man/1/pkexec"><span class="citerefentry"><span class="refentrytitle">pkexec</span>(1)</span></a>, care
+      must be taken to ensure that unintended interactive features are not enabled. "Secure" mode for the
+      pager may be enabled automatically as describe above. Setting <code class="varname">SYSTEMD_PAGERSECURE=0</code>
+      or not removing it from the inherited environment allows the user to invoke arbitrary commands. Note
+      that if the <code class="varname">$SYSTEMD_PAGER</code> or <code class="varname">$PAGER</code> variables are to be
+      honoured, <code class="varname">$SYSTEMD_PAGERSECURE</code> must be set too. It might be reasonable to completely
+      disable the pager using <code class="option">--no-pager</code> instead.</p></dd><dt id="$SYSTEMD_COLORS"><span class="term"><code class="varname">$SYSTEMD_COLORS</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_COLORS">¶</a></dt><dd><p>Takes a boolean argument. When true, <span class="command"><strong>systemd</strong></span> and related utilities
+      will use colors in their output, otherwise the output will be monochrome. Additionally, the variable can
+      take one of the following special values: "<code class="literal">16</code>", "<code class="literal">256</code>" to restrict the use
+      of colors to the base 16 or 256 ANSI colors, respectively. This can be specified to override the automatic
+      decision based on <code class="varname">$TERM</code> and what the console is connected to.</p></dd><dt id="$SYSTEMD_URLIFY"><span class="term"><code class="varname">$SYSTEMD_URLIFY</code></span><a class="headerlink" title="Permalink to this term" href="loginctl.html#%24SYSTEMD_URLIFY">¶</a></dt><dd><p>The value must be a boolean. Controls whether clickable links should be generated in
+      the output for terminal emulators supporting this. This can be specified to override the decision that
+      <span class="command"><strong>systemd</strong></span> makes based on <code class="varname">$TERM</code> and other conditions.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.11"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="loginctl.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>,
+      <a href="systemd-logind.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-logind.service</span>(8)</span></a>,
+      <a href="logind.conf.html#"><span class="citerefentry"><span class="refentrytitle">logind.conf</span>(5)</span></a>
+    </p></div></div></body></html>

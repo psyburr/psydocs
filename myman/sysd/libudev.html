@@ -1,0 +1,56 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>libudev</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="libudev"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>libudev — API for enumerating and introspecting local devices</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;libudev.h&gt;</pre></div><div class="cmdsynopsis"><p><code class="command">pkg-config --cflags --libs libudev</code> </p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="libudev.html#Description">¶</a></h2><p><code class="filename">libudev.h</code> provides APIs to introspect
+    and enumerate devices on the local system.</p><p>All functions require a libudev context to operate. This
+    context can be create via
+    <a href="udev_new.html#"><span class="citerefentry"><span class="refentrytitle">udev_new</span>(3)</span></a>.
+    It is used to track library state and link objects together. No
+    global state is used by libudev, everything is always linked to
+    a udev context.</p><p><a name="strict"></a>All functions listed here are thread-agnostic and only a single specific thread may operate on a
+given object during its entire lifetime. It's safe to allocate multiple independent objects and use each from a
+specific thread in parallel. However, it's not safe to allocate such an object in one thread, and operate or free it
+from any other, even if locking is used to ensure these threads don't operate on it at the very same time.</p><p>To introspect a local device on a system, a udev device
+    object can be created via
+    <a href="udev_device_new_from_syspath.html#"><span class="citerefentry"><span class="refentrytitle">udev_device_new_from_syspath</span>(3)</span></a>
+    and friends. The device object allows one to query current state,
+    read and write attributes and lookup properties of the device in
+    question.</p><p>To enumerate local devices on the system, an enumeration
+    object can be created via
+    <a href="udev_enumerate_new.html#"><span class="citerefentry"><span class="refentrytitle">udev_enumerate_new</span>(3)</span></a>.</p><p>To monitor the local system for hotplugged or unplugged
+    devices, a monitor can be created via
+    <a href="udev_monitor_new_from_netlink.html#"><span class="citerefentry"><span class="refentrytitle">udev_monitor_new_from_netlink</span>(3)</span></a>.</p><p>Whenever libudev returns a list of objects, the
+    <a href="udev_list_entry.html#"><span class="citerefentry"><span class="refentrytitle">udev_list_entry</span>(3)</span></a>
+    API should be used to iterate, access and modify those lists.</p><p>Furthermore, libudev also exports legacy APIs that should
+    not be used by new software (and as such are not documented as
+    part of this manual). This includes the hardware database known
+    as <code class="constant">udev_hwdb</code> (please use the new
+    <a href="sd-hwdb.html#"><span class="citerefentry"><span class="refentrytitle">sd-hwdb</span>(3)</span></a>
+    API instead) and the <code class="constant">udev_queue</code> object to
+    query the udev daemon (which should not be used by new software
+    at all).</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="libudev.html#See%20Also">¶</a></h2><p>
+      <a href="udev_new.html#"><span class="citerefentry"><span class="refentrytitle">udev_new</span>(3)</span></a>,
+      <a href="udev_device_new_from_syspath.html#"><span class="citerefentry"><span class="refentrytitle">udev_device_new_from_syspath</span>(3)</span></a>,
+      <a href="udev_enumerate_new.html#"><span class="citerefentry"><span class="refentrytitle">udev_enumerate_new</span>(3)</span></a>,
+      <a href="udev_monitor_new_from_netlink.html#"><span class="citerefentry"><span class="refentrytitle">udev_monitor_new_from_netlink</span>(3)</span></a>,
+      <a href="udev_list_entry.html#"><span class="citerefentry"><span class="refentrytitle">udev_list_entry</span>(3)</span></a>,
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="https://www.freedesktop.org/software/systemd/man/sd-device.html#"><span class="citerefentry"><span class="refentrytitle">sd-device</span>(3)</span></a>,
+      <a href="sd-hwdb.html#"><span class="citerefentry"><span class="refentrytitle">sd-hwdb</span>(3)</span></a>,
+      <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+    </p></div></div></body></html>

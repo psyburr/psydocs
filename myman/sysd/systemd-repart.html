@@ -1,0 +1,181 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-repart</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-repart"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-repart, systemd-repart.service — Automatically grow and add partitions</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">systemd-repart</code>  [OPTIONS...] [<em class="replaceable"><code>[<span class="optional">BLOCKDEVICE</span>]</code></em>...]</p></div><p><code class="filename">systemd-repart.service</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-repart.html#Description">¶</a></h2><p><span class="command"><strong>systemd-repart</strong></span> grows and adds partitions to a partition table, based on the
+    configuration files described in
+    <a href="repart.d.html#"><span class="citerefentry"><span class="refentrytitle">repart.d</span>(5)</span></a>.
+    </p><p>If invoked with no arguments, it operates on the block device backing the root file system
+    partition of the running OS, thus growing and adding partitions of the booted OS image itself. If
+    <code class="varname">--image=</code> is used it will operate on the specified image file. When called in the
+    "<code class="literal">initrd</code>" it operates on the block device backing <code class="filename">/sysroot/</code> instead,
+    i.e. on the block device the system will soon transition into. The
+    <code class="filename">systemd-repart.service</code> service is generally run at boot in the initial RAM disk, in
+    order to augment the partition table of the OS before its partitions are
+    mounted. <span class="command"><strong>systemd-repart</strong></span> (mostly) operates in a purely incremental mode: it only grows
+    existing and adds new partitions; it does not shrink, delete or move existing partitions. The service is
+    intended to be run on every boot, but when it detects that the partition table already matches the
+    installed <code class="filename">repart.d/*.conf</code> configuration files, it executes no operation.</p><p><span class="command"><strong>systemd-repart</strong></span> is intended to be used when deploying OS images, to automatically
+    adjust them to the system they are running on, during first boot. This way the deployed image can be
+    minimal in size and may be augmented automatically at boot when needed, taking possession of disk space
+    available but not yet used. Specifically the following use cases are among those covered:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>The root partition may be grown to cover the whole available disk space.</p></li><li class="listitem"><p>A <code class="filename">/home/</code>, swap or <code class="filename">/srv/</code> partition can be
+      added.</p></li><li class="listitem"><p>A second (or third, …) root partition may be added, to cover A/B style setups
+      where a second version of the root file system is alternatingly used for implementing update
+      schemes. The deployed image would carry only a single partition ("A") but on first boot a second
+      partition ("B") for this purpose is automatically created.</p></li></ul></div><p>The algorithm executed by <span class="command"><strong>systemd-repart</strong></span> is roughly as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>The <code class="filename">repart.d/*.conf</code> configuration files are loaded and parsed,
+      and ordered by filename (without the directory prefix).</p></li><li class="listitem"><p>The partition table already existing on the block device is loaded and
+      parsed.</p></li><li class="listitem"><p>The existing partitions in the partition table are matched up with the
+      <code class="filename">repart.d/*.conf</code> files by GPT partition type UUID. The first existing partition
+      of a specific type is assigned the first configuration file declaring the same type. The second
+      existing partition of a specific type is then assigned the second configuration file declaring the same
+      type, and so on. After this iterative assigning is complete any left-over existing partitions that have
+      no matching configuration file are considered "foreign" and left as they are. And any configuration
+      files for which no partition currently exists are understood as a request to create such a
+      partition.</p></li><li class="listitem"><p>Taking the size constraints and weights declared in the configuration files into
+      account, all partitions that shall be created are now allocated to the disk, taking up all free space,
+      always respecting the size and padding requests. Similar, existing partitions that are determined to
+      grow are grown. New partitions are always appended to the end of the existing partition table, taking
+      the first partition table slot whose index is greater than the indexes of all existing
+      partitions. Partition table slots are never reordered and thus partition numbers are ensured to remain
+      stable. Note that this allocation happens in RAM only, the partition table on disk is not updated
+      yet.</p></li><li class="listitem"><p>All existing partitions for which configuration files exist and which currently have no
+      GPT partition label set will be assigned a label, either explicitly configured in the configuration or
+      (if that's missing) derived automatically from the partition type. The same is done for all partitions
+      that are newly created. These assignments are done in RAM only, too, the disk is not updated
+      yet.</p></li><li class="listitem"><p>Similarly, all existing partitions for which configuration files exist and which
+      currently have an all-zero identifying UUID will be assigned a new UUID. This UUID is cryptographically
+      hashed from a common seed value together with the partition type UUID (and a counter in case multiple
+      partitions of the same type are defined), see below. The same is done for all partitions that are
+      created anew. These assignments are done in RAM only, too, the disk is not updated
+      yet.</p></li><li class="listitem"><p>Similarly, if the disk's volume UUID is all zeroes it is also initialized, also
+      cryptographically hashed from the same common seed value. Also, in RAM only, too.</p></li><li class="listitem"><p>The disk space assigned to new partitions (i.e. what was previously considered free
+      space but is no longer) is now erased. Specifically, all file system signatures are removed, and if the
+      device supports it the <code class="constant">BLKDISCARD</code> I/O control command is issued to inform the
+      hardware that the space is empty now. In addition any "padding" between partitions and at the end of
+      the device is similarly erased.</p></li><li class="listitem"><p>The new partition table is finally written to disk. The kernel is asked to reread the
+      partition table.</p></li></ol></div><p>As exception to the normally strictly incremental operation, when called in a special "factory
+    reset" mode, <span class="command"><strong>systemd-repart</strong></span> may also be used to erase existing partitions to
+    reset an installation back to vendor defaults. This mode of operation is used when either the
+    <code class="option">--factory-reset=yes</code> switch is passed on the tool's command line, or the
+    <code class="option">systemd.factory_reset=yes</code> option specified on the kernel command line, or the
+    <code class="varname">FactoryReset</code> EFI variable (vendor UUID
+    <code class="constant">8cf2644b-4b0b-428f-9387-6d876050dc67</code>) is set to "yes". It alters the algorithm above
+    slightly: between the 3rd and the 4th step above any partition marked explicitly via the
+    <code class="varname">FactoryReset=</code> boolean is deleted, and the algorithm restarted, thus immediately
+    re-creating these partitions anew empty.</p><p>Note that <span class="command"><strong>systemd-repart</strong></span> only changes partition tables, it does not create or
+    resize any file systems within these partitions. A separate mechanism should be used for that, for
+    example
+    <a href="systemd-growfs.html#"><span class="citerefentry"><span class="refentrytitle">systemd-growfs</span>(8)</span></a> and
+    <span class="command"><strong>systemd-makefs</strong></span>.</p><p>The UUIDs identifying the new partitions created (or assigned to existing partitions that have no
+    UUID yet), as well as the disk as a whole are hashed cryptographically from a common seed value. This
+    seed value is usually the
+    <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a> of the
+    system, so that the machine ID reproducibly determines the UUIDs assigned to all partitions. If the
+    machine ID cannot be read (or the user passes <code class="option">--seed=random</code>, see below) the seed is
+    generated randomly instead, so that the partition UUIDs are also effectively random. The seed value may
+    also be set explicitly, formatted as UUID via the <code class="option">--seed=</code> option. By hashing these UUIDs
+    from a common seed images prepared with this tool become reproducible and the result of the algorithm
+    above deterministic.</p><p>The positional argument should specify the block device to operate on. Instead of a block device
+    node path a regular file may be specified too, in which case the command operates on it like it would if
+    a loopback block device node was specified with the file attached. If <code class="option">--empty=create</code> is
+    specified the specified path is created as regular file, which is useful for generating disk images from
+    scratch.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="systemd-repart.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--dry-run="><span class="term"><code class="option">--dry-run=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--dry-run=">¶</a></dt><dd><p>Takes a boolean. If this switch is not specified <code class="option">--dry-run=yes</code> is
+        the implied default. Controls whether <code class="filename">systemd-repart</code> executes the requested
+        re-partition operations or whether it should only show what it would do. Unless
+        <code class="option">--dry-run=no</code> is specified <code class="filename">systemd-repart</code> will not actually
+        touch the device's partition table.</p></dd><dt id="--empty="><span class="term"><code class="option">--empty=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--empty=">¶</a></dt><dd><p>Takes one of "<code class="literal">refuse</code>", "<code class="literal">allow</code>",
+        "<code class="literal">require</code>", "<code class="literal">force</code>" or "<code class="literal">create</code>". Controls how to
+        operate on block devices that are entirely empty, i.e. carry no partition table/disk label yet. If
+        this switch is not specified the implied default is "<code class="literal">refuse</code>".</p><p>If "<code class="literal">refuse</code>" <span class="command"><strong>systemd-repart</strong></span> requires that the block device
+        it shall operate on already carries a partition table and refuses operation if none is found. If
+        "<code class="literal">allow</code>" the command will extend an existing partition table or create a new one if
+        none exists. If "<code class="literal">require</code>" the command will create a new partition table if none
+        exists so far, and refuse operation if one already exists. If "<code class="literal">force</code>" it will create
+        a fresh partition table unconditionally, erasing the disk fully in effect. If
+        "<code class="literal">force</code>" no existing partitions will be taken into account or survive the
+        operation. Hence: use with care, this is a great way to lose all your data. If
+        "<code class="literal">create</code>" a new loopback file is create under the path passed via the device node
+        parameter, of the size indicated with <code class="option">--size=</code>, see below.</p></dd><dt id="--discard="><span class="term"><code class="option">--discard=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--discard=">¶</a></dt><dd><p>Takes a boolean. If this switch is not specified <code class="option">--discard=yes</code> is
+        the implied default. Controls whether to issue the <code class="constant">BLKDISCARD</code> I/O control
+        command on the space taken up by any added partitions or on the space in between them. Usually, it's
+        a good idea to issue this request since it tells the underlying hardware that the covered blocks
+        shall be considered empty, improving performance. If operating on a regular file instead of a block
+        device node, a sparse file is generated.</p></dd><dt id="--size="><span class="term"><code class="option">--size=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--size=">¶</a></dt><dd><p>Takes a size in bytes, using the usual K, M, G, T suffixes, or the special value
+        "<code class="literal">auto</code>". If used the specified device node path must refer to a regular file, which
+        is then grown to the specified size if smaller, before any change is made to the partition table. If
+        specified as "<code class="literal">auto</code>" the minimal size for the disk image is automatically determined
+        (i.e. the minimal sizes of all partitions are summed up, taking space for additional metadata into
+        account). This switch is not supported if the specified node is a block device. This switch has no
+        effect if the file is already as large as the specified size or larger. The specified size is
+        implicitly rounded up to multiples of 4096. When used with <code class="option">--empty=create</code> this
+        specifies the initial size of the loopback file to create.</p><p>The <code class="option">--size=auto</code> option takes the sizes of pre-existing partitions into
+        account. However, it does not accommodate for partition tables that are not tightly packed: the
+        configured partitions might still not fit into the backing device if empty space exists between
+        pre-existing partitions (or before the first partition) that cannot be fully filled by partitions to
+        grow or create.</p><p>Also note that the automatic size determination does not take files or directories specified
+        with <code class="option">CopyFiles=</code> into account: operation might fail if the specified files or
+        directories require more disk space then the configured per-partition minimal size
+        limit.</p></dd><dt id="--factory-reset="><span class="term"><code class="option">--factory-reset=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--factory-reset=">¶</a></dt><dd><p>Takes boolean. If this switch is not specified <code class="option">--factory=reset=no</code> is
+        the implied default. Controls whether to operate in "factory reset" mode, see above. If set to true
+        this will remove all existing partitions marked with <code class="varname">FactoryReset=</code> set to yes
+        early while executing the re-partitioning algorithm. Use with care, this is a great way to lose all
+        your data. Note that partition files need to explicitly turn <code class="varname">FactoryReset=</code> on, as
+        the option defaults to off. If no partitions are marked for factory reset this switch has no
+        effect. Note that there are two other methods to request factory reset operation: via the kernel
+        command line and via an EFI variable, see above.</p></dd><dt id="--can-factory-reset"><span class="term"><code class="option">--can-factory-reset</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--can-factory-reset">¶</a></dt><dd><p>If this switch is specified the disk is not re-partitioned. Instead it is determined
+        if any existing partitions are marked with <code class="varname">FactoryReset=</code>. If there are the tool
+        will exit with exit status zero, otherwise non-zero. This switch may be used to quickly determine
+        whether the running system supports a factory reset mechanism built on
+        <span class="command"><strong>systemd-repart</strong></span>.</p></dd><dt id="--root="><span class="term"><code class="option">--root=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--root=">¶</a></dt><dd><p>Takes a path to a directory to use as root file system when searching for
+        <code class="filename">repart.d/*.conf</code> files, for the machine ID file to use as seed and for the
+        <code class="varname">CopyFiles=</code> and <code class="varname">CopyBlocks=</code> source files and directories. By
+        default when invoked on the regular system this defaults to the host's root file system
+        <code class="filename">/</code>. If invoked from the initial RAM disk this defaults to
+        <code class="filename">/sysroot/</code>, so that the tool operates on the configuration and machine ID stored
+        in the root file system later transitioned into itself.</p></dd><dt id="--image="><span class="term"><code class="option">--image=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--image=">¶</a></dt><dd><p>Takes a path to a disk image file or device to mount and use in a similar fashion to
+        <code class="option">--root=</code>, see above.</p></dd><dt id="--seed="><span class="term"><code class="option">--seed=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--seed=">¶</a></dt><dd><p>Takes a UUID as argument or the special value <code class="constant">random</code>. If a UUID
+        is specified the UUIDs to assign to partitions and the partition table itself are derived via
+        cryptographic hashing from it. If not specified it is attempted to read the machine ID from the host
+        (or more precisely, the root directory configured via <code class="option">--root=</code>) and use it as seed
+        instead, falling back to a randomized seed otherwise. Use <code class="option">--seed=random</code> to force a
+        randomized seed. Explicitly specifying the seed may be used to generated strictly reproducible
+        partition tables.</p></dd><dt id="--pretty="><span class="term"><code class="option">--pretty=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--pretty=">¶</a></dt><dd><p>Takes a boolean argument. If this switch is not specified, it defaults to on when
+        called from an interactive terminal and off otherwise. Controls whether to show a user friendly table
+        and graphic illustrating the changes applied.</p></dd><dt id="--definitions="><span class="term"><code class="option">--definitions=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--definitions=">¶</a></dt><dd><p>Takes a file system path. If specified the <code class="filename">*.conf</code> files are read
+        from the specified directory instead of searching in <code class="filename">/usr/lib/repart.d/*.conf</code>,
+        <code class="filename">/etc/repart.d/*.conf</code>,
+        <code class="filename">/run/repart.d/*.conf</code>.</p></dd><dt id="--key-file="><span class="term"><code class="option">--key-file=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--key-file=">¶</a></dt><dd><p>Takes a file system path. Configures the encryption key to use when setting up LUKS2
+        volumes configured with the <code class="varname">Encrypt=key-file</code> setting in partition files. Should
+        refer to a regular file containing the key, or an <code class="constant">AF_UNIX</code> stream socket in the
+        file system. In the latter case a connection is made to it and the key read from it. If this switch
+        is not specified the empty key (i.e. zero length key) is used. This behaviour is useful for setting
+        up encrypted partitions during early first boot that receive their user-supplied password only in a
+        later setup step.</p></dd><dt id="--tpm2-device="><span class="term"><code class="option">--tpm2-device=</code>, </span><span class="term"><code class="option">--tpm2-pcrs=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--tpm2-device=">¶</a></dt><dd><p>Configures the TPM2 device and list of PCRs to use for LUKS2 volumes configured with
+        the <code class="varname">Encrypt=tpm2</code> option. These options take the same parameters as the identically
+        named options to
+        <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+        and have the same effect on partitions where TPM2 enrollment is requested.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd><dt id="--no-legend"><span class="term"><code class="option">--no-legend</code></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--no-legend">¶</a></dt><dd><p>Do not print the legend, i.e. column headers and the
+      footer with hints.</p></dd><dt id="--json=MODE"><span class="term"><code class="option">--json=</code><em class="replaceable"><code>MODE</code></em></span><a class="headerlink" title="Permalink to this term" href="systemd-repart.html#--json=MODE">¶</a></dt><dd><p>Shows output formatted as JSON. Expects one of "<code class="literal">short</code>" (for the
+    shortest possible output without any redundant whitespace or line breaks), "<code class="literal">pretty</code>"
+    (for a pretty version of the same, with indentation and line breaks) or "<code class="literal">off</code>" (to turn
+    off JSON output, the default).</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="systemd-repart.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code otherwise.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-repart.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="repart.d.html#"><span class="citerefentry"><span class="refentrytitle">repart.d</span>(5)</span></a>,
+      <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a>,
+      <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+    </p></div></div></body></html>

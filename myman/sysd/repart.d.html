@@ -1,0 +1,245 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>repart.d</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="repart.d"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>repart.d — Partition Definition Files for Automatic Boot-Time Repartitioning</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="literallayout"><p><code class="filename">/etc/repart.d/*.conf</code><br>
+<code class="filename">/run/repart.d/*.conf</code><br>
+<code class="filename">/usr/lib/repart.d/*.conf</code><br>
+    </p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="repart.d.html#Description">¶</a></h2><p><code class="filename">repart.d/*.conf</code> files describe basic properties of partitions of block
+    devices of the local system. They may be used to declare types, names and sizes of partitions that shall
+    exist. The
+    <a href="systemd-repart.html#"><span class="citerefentry"><span class="refentrytitle">systemd-repart</span>(8)</span></a>
+    service reads these files and attempts to add new partitions currently missing and enlarge existing
+    partitions according to these definitions. Operation is generally incremental, i.e. when applied, what
+    exists already is left intact, and partitions are never shrunk, moved or deleted.</p><p>These definition files are useful for implementing operating system images that are prepared and
+    delivered with minimally sized images (for example lacking any state or swap partitions), and which on
+    first boot automatically take possession of any remaining disk space following a few basic rules.</p><p>Currently, support for partition definition files is only implemented for GPT partitition
+    tables.</p><p>Partition files are generally matched against any partitions already existing on disk in a simple
+    algorithm: the partition files are sorted by their filename (ignoring the directory prefix), and then
+    compared in order against existing partitions matching the same partition type UUID. Specifically, the
+    first existing partition with a specific partition type UUID is assigned the first definition file with
+    the same partition type UUID, and the second existing partition with a specific type UUID the second
+    partition file with the same type UUID, and so on. Any left-over partition files that have no matching
+    existing partition are assumed to define new partition that shall be created. Such partitions are
+    appended to the end of the partition table, in the order defined by their names utilizing the first
+    partition slot greater than the highest slot number currently in use. Any existing partitions that have
+    no matching partition file are left as they are.</p><p>Note that these definitions may only be used to create and initialize new partitions or to grow
+    existing ones. In the latter case it will not grow the contained files systems however; separate
+    mechanisms, such as
+    <a href="systemd-growfs.html#"><span class="citerefentry"><span class="refentrytitle">systemd-growfs</span>(8)</span></a> may be
+    used to grow the file systems inside of these partitions. Partitions may also be marked for automatic
+    growing via the <code class="varname">GrowFileSystem=</code> setting, in which case the file system is grown on
+    first mount by tools that respect this flag. See below for details.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="[Partition] Section Options">[Partition] Section Options<a class="headerlink" title="Permalink to this headline" href="repart.d.html#%5BPartition%5D%20Section%20Options">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="Type="><span class="term"><code class="varname">Type=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#Type=">¶</a></dt><dd><p>The GPT partition type UUID to match. This may be a GPT partition type UUID such as
+        <code class="constant">4f68bce3-e8cd-4db1-96e7-fbcaf984b709</code>, or one of the following special
+        identifiers:</p><div class="table"><a name="id-1.6.2.1.2.2"></a><p class="title"><b>Table 1. GPT partition type identifiers</b></p><div class="table-contents"><table class="table" summary="GPT partition type identifiers" border="1"><colgroup><col align="left" class="name"><col align="left" class="explanation"></colgroup><thead><tr><th align="left">Identifier</th><th align="left">Explanation</th></tr></thead><tbody><tr><td align="left"><code class="constant">esp</code></td><td align="left">EFI System Partition</td></tr><tr><td align="left"><code class="constant">xbootldr</code></td><td align="left">Extended Boot Loader Partition</td></tr><tr><td align="left"><code class="constant">swap</code></td><td align="left">Swap partition</td></tr><tr><td align="left"><code class="constant">home</code></td><td align="left">Home (<code class="filename">/home/</code>) partition</td></tr><tr><td align="left"><code class="constant">srv</code></td><td align="left">Server data (<code class="filename">/srv/</code>) partition</td></tr><tr><td align="left"><code class="constant">var</code></td><td align="left">Variable data (<code class="filename">/var/</code>) partition</td></tr><tr><td align="left"><code class="constant">tmp</code></td><td align="left">Temporary data (<code class="filename">/var/tmp/</code>) partition</td></tr><tr><td align="left"><code class="constant">linux-generic</code></td><td align="left">Generic Linux file system partition</td></tr><tr><td align="left"><code class="constant">root</code></td><td align="left">Root file system partition type appropriate for the local architecture (an alias for an architecture root file system partition type listed below, e.g. <code class="constant">root-x86-64</code>)</td></tr><tr><td align="left"><code class="constant">root-verity</code></td><td align="left">Verity data for the root file system partition for the local architecture</td></tr><tr><td align="left"><code class="constant">root-secondary</code></td><td align="left">Root file system partition of the secondary architecture of the local architecture (usually the matching 32bit architecture for the local 64bit architecture)</td></tr><tr><td align="left"><code class="constant">root-secondary-verity</code></td><td align="left">Verity data for the root file system partition of the secondary architecture</td></tr><tr><td align="left"><code class="constant">root-x86</code></td><td align="left">Root file system partition for the x86 (32bit, aka i386) architecture</td></tr><tr><td align="left"><code class="constant">root-x86-verity</code></td><td align="left">Verity data for the x86 (32bit) root file system partition</td></tr><tr><td align="left"><code class="constant">root-x86-64</code></td><td align="left">Root file system partition for the x86_64 (64bit, aka amd64) architecture</td></tr><tr><td align="left"><code class="constant">root-x86-64-verity</code></td><td align="left">Verity data for the x86_64 (64bit) root file system partition</td></tr><tr><td align="left"><code class="constant">root-arm</code></td><td align="left">Root file system partition for the ARM (32bit) architecture</td></tr><tr><td align="left"><code class="constant">root-arm-verity</code></td><td align="left">Verity data for the ARM (32bit) root file system partition</td></tr><tr><td align="left"><code class="constant">root-arm64</code></td><td align="left">Root file system partition for the ARM (64bit, aka aarch64) architecture</td></tr><tr><td align="left"><code class="constant">root-arm64-verity</code></td><td align="left">Verity data for the ARM (64bit, aka aarch64) root file system partition</td></tr><tr><td align="left"><code class="constant">root-ia64</code></td><td align="left">Root file system partition for the ia64 architecture</td></tr><tr><td align="left"><code class="constant">root-ia64-verity</code></td><td align="left">Verity data for the ia64 root file system partition</td></tr><tr><td align="left"><code class="constant">root-loongarch64</code></td><td align="left">Root file system partition for the LoongArch 64-bit architecture</td></tr><tr><td align="left"><code class="constant">root-loongarch64-verity</code></td><td align="left">Verity data for the LoongArch 64-bit root file system partition</td></tr><tr><td align="left"><code class="constant">root-riscv32</code></td><td align="left">Root file system partition for the RISC-V 32-bit architecture</td></tr><tr><td align="left"><code class="constant">root-riscv32-verity</code></td><td align="left">Verity data for the RISC-V 32-bit root file system partition</td></tr><tr><td align="left"><code class="constant">root-riscv64</code></td><td align="left">Root file system partition for the RISC-V 64-bit architecture</td></tr><tr><td align="left"><code class="constant">root-riscv64-verity</code></td><td align="left">Verity data for the RISC-V 64-bit root file system partition</td></tr><tr><td align="left"><code class="constant">usr</code></td><td align="left"><code class="filename">/usr/</code> file system partition type appropriate for the local architecture (an alias for an architecture <code class="filename">/usr/</code> file system partition type listed below, e.g. <code class="constant">usr-x86-64</code>)</td></tr><tr><td align="left"><code class="constant">usr-verity</code></td><td align="left">Verity data for the <code class="filename">/usr/</code> file system partition for the local architecture</td></tr><tr><td align="left"><code class="constant">usr-secondary</code></td><td align="left"><code class="filename">/usr/</code> file system partition of the secondary architecture of the local architecture (usually the matching 32bit architecture for the local 64bit architecture)</td></tr><tr><td align="left"><code class="constant">usr-secondary-verity</code></td><td align="left">Verity data for the <code class="filename">/usr/</code> file system partition of the secondary architecture</td></tr><tr><td align="left"><code class="constant">usr-x86</code></td><td align="left"><code class="filename">/usr/</code> file system partition for the x86 (32bit, aka i386) architecture</td></tr><tr><td align="left"><code class="constant">usr-x86-verity</code></td><td align="left">Verity data for the x86 (32bit) <code class="filename">/usr/</code> file system partition</td></tr><tr><td align="left"><code class="constant">usr-x86-64</code></td><td align="left"><code class="filename">/usr/</code> file system partition for the x86_64 (64bit, aka amd64) architecture</td></tr><tr><td align="left"><code class="constant">usr-x86-64-verity</code></td><td align="left">Verity data for the x86_64 (64bit) <code class="filename">/usr/</code> file system partition</td></tr><tr><td align="left"><code class="constant">usr-arm</code></td><td align="left"><code class="filename">/usr/</code> file system partition for the ARM (32bit) architecture</td></tr><tr><td align="left"><code class="constant">usr-arm-verity</code></td><td align="left">Verity data for the ARM (32bit) <code class="filename">/usr/</code> file system partition</td></tr><tr><td align="left"><code class="constant">usr-arm64</code></td><td align="left"><code class="filename">/usr/</code> file system partition for the ARM (64bit, aka aarch64) architecture</td></tr><tr><td align="left"><code class="constant">usr-arm64-verity</code></td><td align="left">Verity data for the ARM (64bit, aka aarch64) <code class="filename">/usr/</code> file system partition</td></tr><tr><td align="left"><code class="constant">usr-ia64</code></td><td align="left"><code class="filename">/usr/</code> file system partition for the ia64 architecture</td></tr><tr><td align="left"><code class="constant">usr-ia64-verity</code></td><td align="left">Verity data for the ia64 <code class="filename">/usr/</code> file system partition</td></tr><tr><td align="left"><code class="constant">usr-loongarch64</code></td><td align="left"><code class="filename">/usr/</code> file system partition for the LoongArch 64-bit architecture</td></tr><tr><td align="left"><code class="constant">usr-loongarch64-verity</code></td><td align="left">Verity data for the LoongArch 64-bit <code class="filename">/usr/</code> file system partition</td></tr><tr><td align="left"><code class="constant">usr-riscv32</code></td><td align="left"><code class="filename">/usr/</code> file system partition for the RISC-V 32-bit architecture</td></tr><tr><td align="left"><code class="constant">usr-riscv32-verity</code></td><td align="left">Verity data for the RISC-V 32-bit <code class="filename">/usr/</code> file system partition</td></tr><tr><td align="left"><code class="constant">usr-riscv64</code></td><td align="left"><code class="filename">/usr/</code> file system partition for the RISC-V 64-bit architecture</td></tr><tr><td align="left"><code class="constant">usr-riscv64-verity</code></td><td align="left">Verity data for the RISC-V 64-bit <code class="filename">/usr/</code> file system partition</td></tr></tbody></table></div></div><br class="table-break"><p>This setting defaults to <code class="constant">linux-generic</code>.</p><p>Most of the partition type UUIDs listed above are defined in the <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions
+        Specification</a>.</p></dd><dt id="Label="><span class="term"><code class="varname">Label=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#Label=">¶</a></dt><dd><p>The textual label to assign to the partition if none is assigned yet. Note that this
+        setting is not used for matching. It is also not used when a label is already set for an existing
+        partition. It is thus only used when a partition is newly created or when an existing one had a no
+        label set (that is: an empty label). If not specified a label derived from the partition type is
+        automatically used. Simple specifier expansion is supported, see below.</p></dd><dt id="UUID="><span class="term"><code class="varname">UUID=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#UUID=">¶</a></dt><dd><p>The UUID to assign to the partition if none is assigned yet. Note that this
+        setting is not used for matching. It is also not used when a UUID is already set for an existing
+        partition. It is thus only used when a partition is newly created or when an existing one had a
+        all-zero UUID set. If not specified a UUID derived from the partition type is automatically
+        used.</p></dd><dt id="Priority="><span class="term"><code class="varname">Priority=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#Priority=">¶</a></dt><dd><p>A numeric priority to assign to this partition, in the range -2147483648…2147483647,
+        with smaller values indicating higher priority, and higher values indicating smaller priority. This
+        priority is used in case the configured size constraints on the defined partitions do not permit
+        fitting all partitions onto the available disk space. If the partitions do not fit, the highest
+        numeric partition priority of all defined partitions is determined, and all defined partitions with
+        this priority are removed from the list of new partitions to create (which may be multiple, if the
+        same priority is used for multiple partitions). The fitting algorithm is then tried again. If the
+        partitions still do not fit, the now highest numeric partition priority is determined, and the
+        matching partitions removed too, and so on. Partitions of a priority of 0 or lower are never
+        removed. If all partitions with a priority above 0 are removed and the partitions still do not fit on
+        the device the operation fails. Note that this priority has no effect on ordering partitions, for
+        that use the alphabetical order of the filenames of the partition definition files. Defaults to
+        0.</p></dd><dt id="Weight="><span class="term"><code class="varname">Weight=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#Weight=">¶</a></dt><dd><p>A numeric weight to assign to this partition in the range 0…1000000. Available disk
+        space is assigned the defined partitions according to their relative weights (subject to the size
+        constraints configured with <code class="varname">SizeMinBytes=</code>, <code class="varname">SizeMaxBytes=</code>), so
+        that a partition with weight 2000 gets double the space as one with weight 1000, and a partition with
+        weight 333 a third of that. Defaults to 1000.</p><p>The <code class="varname">Weight=</code> setting is used to distribute available disk space in an
+        "elastic" fashion, based on the disk size and existing partitions. If a partition shall have a fixed
+        size use both <code class="varname">SizeMinBytes=</code> and <code class="varname">SizeMaxBytes=</code> with the same
+        value in order to fixate the size to one value, in which case the weight has no
+        effect.</p></dd><dt id="PaddingWeight="><span class="term"><code class="varname">PaddingWeight=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#PaddingWeight=">¶</a></dt><dd><p>Similar to <code class="varname">Weight=</code> but sets a weight for the free space after the
+        partition (the "padding"). When distributing available space the weights of all partitions and all
+        defined padding is summed, and then each partition and padding gets the fraction defined by its
+        weight. Defaults to 0, i.e. by default no padding is applied.</p><p>Padding is useful if empty space shall be left for later additions or a safety margin at the
+        end of the device or between partitions.</p></dd><dt id="SizeMinBytes="><span class="term"><code class="varname">SizeMinBytes=</code>, </span><span class="term"><code class="varname">SizeMaxBytes=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#SizeMinBytes=">¶</a></dt><dd><p>Specifies minimum and maximum size constraints in bytes. Takes the usual K, M, G, T,
+        …  suffixes (to the base of 1024). If <code class="varname">SizeMinBytes=</code> is specified the partition is
+        created at or grown to at least the specified size. If <code class="varname">SizeMaxBytes=</code> is specified
+        the partition is created at or grown to at most the specified size. The precise size is determined
+        through the weight value value configured with <code class="varname">Weight=</code>, see above. When
+        <code class="varname">SizeMinBytes=</code> is set equal to <code class="varname">SizeMaxBytes=</code> the configured
+        weight has no effect as the partition is explicitly sized to the specified fixed value. Note that
+        partitions are never created smaller than 4096 bytes, and since partitions are never shrunk the
+        previous size of the partition (in case the partition already exists) is also enforced as lower bound
+        for the new size. The values should be specified as multiples of 4096 bytes, and are rounded upwards
+        (in case of <code class="varname">SizeMinBytes=</code>) or downwards (in case of
+        <code class="varname">SizeMaxBytes=</code>) otherwise. If the backing device does not provide enough space to
+        fulfill the constraints placing the partition will fail. For partitions that shall be created,
+        depending on the setting of <code class="varname">Priority=</code> (see above) the partition might be dropped
+        and the placing algorithm restarted. By default a minimum size constraint of 10M and no maximum size
+        constraint is set.</p></dd><dt id="PaddingMinBytes="><span class="term"><code class="varname">PaddingMinBytes=</code>, </span><span class="term"><code class="varname">PaddingMaxBytes=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#PaddingMinBytes=">¶</a></dt><dd><p>Specifies minimum and maximum size constraints in bytes for the free space after the
+        partition (the "padding"). Semantics are similar to <code class="varname">SizeMinBytes=</code> and
+        <code class="varname">SizeMaxBytes=</code>, except that unlike partition sizes free space can be shrunk and can
+        be as small as zero. By default no size constraints on padding are set, so that only
+        <code class="varname">PaddingWeight=</code> determines the size of the padding applied.</p></dd><dt id="CopyBlocks="><span class="term"><code class="varname">CopyBlocks=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#CopyBlocks=">¶</a></dt><dd><p>Takes a path to a regular file, block device node or directory, or the special value
+        "<code class="literal">auto</code>". If specified and the partition is newly created, the data from the specified
+        path is written to the newly created partition, on the block level. If a directory is specified, the
+        backing block device of the file system the directory is on is determined, and the data read directly
+        from that. This option is useful to efficiently replicate existing file systems onto new partitions
+        on the block level — for example to build a simple OS installer or an OS image builder.</p><p>If the special value "<code class="literal">auto</code>" is specified, the source to copy from is
+        automatically picked up from the running system (or the image specified with
+        <code class="option">--image=</code> — if used). A partition that matches both the configured partition type (as
+        declared with <code class="varname">Type=</code> described above), and the currently mounted directory
+        appropriate for that partition type is determined. For example, if the partition type is set to
+        "<code class="literal">root</code>" the partition backing the root directory (<code class="filename">/</code>) is used as
+        source to copy from — if its partition type is set to "<code class="literal">root</code>" as well. If the
+        declared type is "<code class="literal">usr</code>" the partition backing <code class="filename">/usr/</code> is used as
+        source to copy blocks from — if its partition type is set to "<code class="literal">usr</code>" too. The logic is
+        capable of automatically tracking down the backing partitions for encrypted and Verity-enabled
+        volumes. "<code class="literal">CopyBlocks=auto</code>" is useful for implementing "self-replicating" systems,
+        i.e. systems that are their own installer.</p><p>The file specified here must have a size that is a multiple of the basic block size 512 and not
+        be empty. If this option is used, the size allocation algorithm is slightly altered: the partition is
+        created as least as big as required to fit the data in, i.e. the data size is an additional minimum
+        size value taken into consideration for the allocation algorithm, similar to and in addition to the
+        <code class="varname">SizeMin=</code> value configured above.</p><p>This option has no effect if the partition it is declared for already exists, i.e. existing
+        data is never overwritten. Note that the data is copied in before the partition table is updated,
+        i.e. before the partition actually is persistently created. This provides robustness: it is
+        guaranteed that the partition either doesn't exist or exists fully populated; it is not possible that
+        the partition exists but is not or only partially populated.</p><p>This option cannot be combined with <code class="varname">Format=</code> or
+        <code class="varname">CopyFiles=</code>.</p></dd><dt id="Format="><span class="term"><code class="varname">Format=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#Format=">¶</a></dt><dd><p>Takes a file system name, such as "<code class="literal">ext4</code>", "<code class="literal">btrfs</code>",
+        "<code class="literal">xfs</code>" or "<code class="literal">vfat</code>", or the special value "<code class="literal">swap</code>". If
+        specified and the partition is newly created it is formatted with the specified file system (or as
+        swap device). The file system UUID and label are automatically derived from the partition UUID and
+        label. If this option is used, the size allocation algorithm is slightly altered: the partition is
+        created as least as big as required for the minimal file system of the specified type (or 4KiB if the
+        minimal size is not known).</p><p>This option has no effect if the partition already exists.</p><p>Similar to the behaviour of <code class="varname">CopyBlocks=</code> the file system is formatted before
+        the partition is created, ensuring that the partition only ever exists with a fully initialized
+        file system.</p><p>This option cannot be combined with <code class="varname">CopyBlocks=</code>.</p></dd><dt id="CopyFiles="><span class="term"><code class="varname">CopyFiles=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#CopyFiles=">¶</a></dt><dd><p>Takes a pair of colon separated absolute file system paths. The first path refers to
+        a source file or directory on the host, the second path refers to a target in the file system of the
+        newly created partition and formatted file system. This setting may be used to copy files or
+        directories from the host into the file system that is created due to the <code class="varname">Format=</code>
+        option. If <code class="varname">CopyFiles=</code> is used without <code class="varname">Format=</code> specified
+        explicitly, "<code class="literal">Format=</code>" with a suitable default is implied (currently
+        "<code class="literal">ext4</code>", but this may change in the future). This option may be used multiple times
+        to copy multiple files or directories from host into the newly formatted file system. The colon and
+        second path may be omitted in which case the source path is also used as the target path (relative to
+        the root of the newly created file system). If the source path refers to a directory it is copied
+        recursively.</p><p>This option has no effect if the partition already exists: it cannot be used to copy additional
+        files into an existing partition, it may only be used to populate a file system created anew.</p><p>The copy operation is executed before the file system is registered in the partition table,
+        thus ensuring that a file system populated this way only ever exists fully initialized.</p><p>This option cannot be combined with <code class="varname">CopyBlocks=</code>.</p><p>When <span class="command"><strong>systemd-repart</strong></span> is invoked with the <code class="option">--image=</code> or
+        <code class="option">--root=</code> command line switches the source paths specified are taken relative to the
+        specified root directory or disk image root.</p></dd><dt id="MakeDirectories="><span class="term"><code class="varname">MakeDirectories=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#MakeDirectories=">¶</a></dt><dd><p>Takes one or more absolute paths, separated by whitespace, each declaring a directory
+        to create within the new file system. Behaviour is similar to <code class="varname">CopyFiles=</code>, but
+        instead of copying in a set of files this just creates the specified directories with the default
+        mode of 0755 owned by the root user and group, plus all their parent directories (with the same
+        ownership and access mode). To configure directories with different ownership or access mode, use
+        <code class="varname">CopyFiles=</code> and specify a source tree to copy containing appropriately
+        owned/configured directories. This option may be used more than once to create multiple
+        directories. When <code class="varname">CopyFiles=</code> and <code class="varname">MakeDirectories=</code> are used
+        together the former is applied first. If a directory listed already exists no operation is executed
+        (in particular, the ownership/access mode of the directories is left as is).</p><p>The primary usecase for this option is to create a minimal set of directories that may be
+        mounted over by other partitions contained in the same disk image. For example, a disk image where
+        the root file system is formatted at first boot might want to automatically pre-create
+        <code class="filename">/usr/</code> in it this way, so that the "<code class="literal">usr</code>" partition may
+        over-mount it.</p><p>Consider using
+        <a href="systemd-tmpfiles.html#"><span class="citerefentry"><span class="refentrytitle">systemd-tmpfiles</span>(8)</span></a>
+        with its <code class="option">--image=</code> option to pre-create other, more complex directory hierarchies (as
+        well as other inodes) with fine-grained control of ownership, access modes and other file
+        attributes.</p></dd><dt id="Encrypt="><span class="term"><code class="varname">Encrypt=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#Encrypt=">¶</a></dt><dd><p>Takes one of "<code class="literal">off</code>", "<code class="literal">key-file</code>",
+        "<code class="literal">tpm2</code>" and "<code class="literal">key-file+tpm2</code>" (alternatively, also accepts a boolean
+        value, which is mapped to "<code class="literal">off</code>" when false, and "<code class="literal">key-file</code>" when
+        true). Defaults to "<code class="literal">off</code>". If not "<code class="literal">off</code>" the partition will be
+        formatted with a LUKS2 superblock, before the blocks configured with <code class="varname">CopyBlocks=</code>
+        are copied in or the file system configured with <code class="varname">Format=</code> is created.</p><p>The LUKS2 UUID is automatically derived from the partition UUID in a stable fashion. If
+        "<code class="literal">key-file</code>" or "<code class="literal">key-file+tpm2</code>" is used, a key is added to the LUKS2
+        superblock, configurable with the <code class="option">--key-file=</code> option to
+        <span class="command"><strong>systemd-repart</strong></span>. If "<code class="literal">tpm2</code>" or "<code class="literal">key-file+tpm2</code>" is
+        used, a key is added to the LUKS2 superblock that is enrolled to the local TPM2 chip, as configured
+        with the <code class="option">--tpm2-device=</code> and <code class="option">--tpm2-pcrs=</code> options to
+        <span class="command"><strong>systemd-repart</strong></span>.</p><p>When used this slightly alters the size allocation logic as the implicit, minimal size limits
+        of <code class="varname">Format=</code> and <code class="varname">CopyBlocks=</code> are increased by the space necessary
+        for the LUKS2 superblock (see above).</p><p>This option has no effect if the partition already exists.</p></dd><dt id="FactoryReset="><span class="term"><code class="varname">FactoryReset=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#FactoryReset=">¶</a></dt><dd><p>Takes a boolean argument. If specified the partition is marked for removal during a
+        factory reset operation. This functionality is useful to implement schemes where images can be reset
+        into their original state by removing partitions and creating them anew. Defaults to off.</p></dd><dt id="Flags="><span class="term"><code class="varname">Flags=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#Flags=">¶</a></dt><dd><p>Configures the 64bit GPT partition flags field to set for the partition when creating
+        it. This option has no effect if the partition already exists. If not specified the flags values is
+        set to all zeroes, except for the three bits that can also be configured via
+        <code class="varname">NoAuto=</code>, <code class="varname">ReadOnly=</code> and <code class="varname">GrowFileSystem=</code>; see
+        below for details on the defaults for these three flags. Specify the flags value in hexadecimal (by
+        prefixing it with "<code class="literal">0x</code>"), binary (prefix "<code class="literal">0b</code>") or decimal (no
+        prefix).</p></dd><dt id="NoAuto="><span class="term"><code class="varname">NoAuto=</code>, </span><span class="term"><code class="varname">ReadOnly=</code>, </span><span class="term"><code class="varname">GrowFileSystem=</code></span><a class="headerlink" title="Permalink to this term" href="repart.d.html#NoAuto=">¶</a></dt><dd><p>Configures the No-Auto, Read-Only and Grow-File-System partition flags (bit 63, 60
+        and 59) of the partition table entry, as defined by the <a class="ulink" href="https://systemd.io/DISCOVERABLE_PARTITIONS" target="_top">Discoverable Partitions Specification</a>. Only
+        available for partition types supported by the specification. This option is a friendly way to set
+        bits 63, 60 and 59 of the partition flags value without setting any of the other bits, and may be set
+        via <code class="varname">Flags=</code> too, see above.</p><p>If <code class="varname">Flags=</code> is used in conjunction with one or more of
+        <code class="varname">NoAuto=</code>/<code class="varname">ReadOnly=</code>/<code class="varname">GrowFileSystem=</code> the latter
+        control the value of the relevant flags, i.e. the high-level settings
+        <code class="varname">NoAuto=</code>/<code class="varname">ReadOnly=</code>/<code class="varname">GrowFileSystem=</code> override
+        the relevant bits of the low-level setting <code class="varname">Flags=</code>.</p><p>Note that the three flags affect only automatic partition mounting, as implemented by
+        <a href="systemd-gpt-auto-generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd-gpt-auto-generator</span>(8)</span></a>
+        or the <code class="option">--image=</code> option of various commands (such as
+        <a href="systemd-nspawn.html#"><span class="citerefentry"><span class="refentrytitle">systemd-nspawn</span>(1)</span></a>). It
+        has no effect on explicit mounts, such as those done via <a href="http://man7.org/linux/man-pages/man8/mount.8.html"><span class="citerefentry"><span class="refentrytitle">mount</span>(8)</span></a> or
+        <a href="http://man7.org/linux/man-pages/man5/fstab.5.html"><span class="citerefentry"><span class="refentrytitle">fstab</span>(5)</span></a>.</p><p>If both bit 50 and 59 are set for a partition (i.e. the partition is marked both read-only and
+        marked for file system growing) the latter is typically without effect: the read-only flag takes
+        precedence in most tools reading these flags, and since growing the file system involves writing to
+        the partition it is consequently ignored.</p><p><code class="varname">NoAuto=</code> defaults to off. <code class="varname">ReadOnly=</code> defaults to on for
+        Verity partition types, and off for all others. <code class="varname">GrowFileSystem=</code> defaults to on for
+        all partition types that support it, except if the partition is marked read-only (and thus
+        effectively, defaults to off for Verity partitions).</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Specifiers">Specifiers<a class="headerlink" title="Permalink to this headline" href="repart.d.html#Specifiers">¶</a></h2><p>Specifiers may be used in the <code class="varname">Label=</code>, <code class="varname">CopyBlocks=</code>,
+    <code class="varname">CopyFiles=</code>, <code class="varname">MakeDirectories=</code> settings. The following expansions are
+    understood:</p><div class="table"><a name="id-1.7.3"></a><p class="title"><b>Table 2. Specifiers available</b></p><div class="table-contents"><table class="table" summary="Specifiers available" border="1"><colgroup><col align="left" class="spec"><col align="left" class="mean"><col align="left" class="detail"></colgroup><thead><tr><th align="left">Specifier</th><th align="left">Meaning</th><th align="left">Details</th></tr></thead><tbody><tr><td align="left"><a name="a"></a>"<code class="literal">%a</code>"</td><td align="left">Architecture</td><td align="left">A short string identifying the architecture of the local system. A string such as <code class="constant">x86</code>, <code class="constant">x86-64</code> or <code class="constant">arm64</code>. See the architectures defined for <code class="varname">ConditionArchitecture=</code> in <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a> for a full list.</td></tr><tr><td align="left"><a name="A"></a>"<code class="literal">%A</code>"</td><td align="left">Operating system image version</td><td align="left">The operating system image version identifier of the running system, as read from the <code class="varname">IMAGE_VERSION=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="b"></a>"<code class="literal">%b</code>"</td><td align="left">Boot ID</td><td align="left">The boot ID of the running system, formatted as string. See <a href="http://man7.org/linux/man-pages/man4/random.4.html"><span class="citerefentry"><span class="refentrytitle">random</span>(4)</span></a> for more information.</td></tr><tr><td align="left"><a name="B"></a>"<code class="literal">%B</code>"</td><td align="left">Operating system build ID</td><td align="left">The operating system build identifier of the running system, as read from the <code class="varname">BUILD_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="H"></a>"<code class="literal">%H</code>"</td><td align="left">Host name</td><td align="left">The hostname of the running system.</td></tr><tr><td align="left"><a name="l"></a>"<code class="literal">%l</code>"</td><td align="left">Short host name</td><td align="left">The hostname of the running system, truncated at the first dot to remove any domain component.</td></tr><tr><td align="left"><a name="m"></a>"<code class="literal">%m</code>"</td><td align="left">Machine ID</td><td align="left">The machine ID of the running system, formatted as string. See <a href="machine-id.html#"><span class="citerefentry"><span class="refentrytitle">machine-id</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="M"></a>"<code class="literal">%M</code>"</td><td align="left">Operating system image identifier</td><td align="left">The operating system image identifier of the running system, as read from the <code class="varname">IMAGE_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="o"></a>"<code class="literal">%o</code>"</td><td align="left">Operating system ID</td><td align="left">The operating system identifier of the running system, as read from the <code class="varname">ID=</code> field of <code class="filename">/etc/os-release</code>. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="v"></a>"<code class="literal">%v</code>"</td><td align="left">Kernel release</td><td align="left">Identical to <span class="command"><strong>uname -r</strong></span> output.</td></tr><tr><td align="left"><a name="w"></a>"<code class="literal">%w</code>"</td><td align="left">Operating system version ID</td><td align="left">The operating system version identifier of the running system, as read from the <code class="varname">VERSION_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="W"></a>"<code class="literal">%W</code>"</td><td align="left">Operating system variant ID</td><td align="left">The operating system variant identifier of the running system, as read from the <code class="varname">VARIANT_ID=</code> field of <code class="filename">/etc/os-release</code>. If not set, resolves to an empty string. See <a href="os-release.html#"><span class="citerefentry"><span class="refentrytitle">os-release</span>(5)</span></a> for more information.</td></tr><tr><td align="left"><a name="T"></a>"<code class="literal">%T</code>"</td><td align="left">Directory for temporary files</td><td align="left">This is either <code class="filename">/tmp</code> or the path "<code class="literal">$TMPDIR</code>", "<code class="literal">$TEMP</code>" or "<code class="literal">$TMP</code>" are set to. (Note that the directory may be specified without a trailing slash.)</td></tr><tr><td align="left"><a name="V"></a>"<code class="literal">%V</code>"</td><td align="left">Directory for larger and persistent temporary files</td><td align="left">This is either <code class="filename">/var/tmp</code> or the path "<code class="literal">$TMPDIR</code>", "<code class="literal">$TEMP</code>" or "<code class="literal">$TMP</code>" are set to. (Note that the directory may be specified without a trailing slash.)</td></tr><tr><td align="left"><a name="percent"></a>"<code class="literal">%%</code>"</td><td align="left">Single percent sign</td><td align="left">Use "<code class="literal">%%</code>" in place of "<code class="literal">%</code>" to specify a single percent sign.</td></tr></tbody></table></div></div><br class="table-break"></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="repart.d.html#Examples">¶</a></h2><div class="example"><a name="id-1.8.2"></a><p class="title"><b>Example 1. Grow the root partition to the full disk size at first boot</b></p><div class="example-contents"><p>With the following file the root partition is automatically grown to the full disk if possible during boot.</p><pre class="programlisting"># /usr/lib/repart.d/50-root.conf
+[Partition]
+Type=root
+</pre></div></div><br class="example-break"><div class="example"><a name="id-1.8.3"></a><p class="title"><b>Example 2. Create a swap and home partition automatically on boot, if missing</b></p><div class="example-contents"><p>The home partition gets all available disk space while the swap partition gets 1G at most and 64M
+      at least. We set a priority &gt; 0 on the swap partition to ensure the swap partition is not used if not
+      enough space is available. For every three bytes assigned to the home partition the swap partition gets
+      assigned one.</p><pre class="programlisting"># /usr/lib/repart.d/60-home.conf
+[Partition]
+Type=home
+</pre><pre class="programlisting"># /usr/lib/repart.d/70-swap.conf
+[Partition]
+Type=swap
+SizeMinBytes=64M
+SizeMaxBytes=1G
+Priority=1
+Weight=333
+</pre></div></div><br class="example-break"><div class="example"><a name="id-1.8.4"></a><p class="title"><b>Example 3. Create B partitions in an A/B Verity setup, if missing</b></p><div class="example-contents"><p>Let's say the vendor intends to update OS images in an A/B setup, i.e. with two root partitions
+      (and two matching Verity partitions) that shall be used alternatingly during upgrades. To minimize
+      image sizes the original image is shipped only with one root and one Verity partition (the "A" set),
+      and the second root and Verity partitions (the "B" set) shall be created on first boot on the free
+      space on the medium.</p><pre class="programlisting"># /usr/lib/repart.d/50-root.conf
+[Partition]
+Type=root
+SizeMinBytes=512M
+SizeMaxBytes=512M
+</pre><pre class="programlisting"># /usr/lib/repart.d/60-root-verity.conf
+[Partition]
+Type=root-verity
+SizeMinBytes=64M
+SizeMaxBytes=64M
+</pre><p>The definitions above cover the "A" set of root partition (of a fixed 512M size) and Verity
+      partition for the root partition (of a fixed 64M size). Let's use symlinks to create the "B" set of
+      partitions, since after all they shall have the same properties and sizes as the "A" set.</p><pre class="programlisting"># ln -s 50-root.conf /usr/lib/repart.d/70-root-b.conf
+# ln -s 60-root-verity.conf /usr/lib/repart.d/80-root-verity-b.conf
+</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="repart.d.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemd-repart.html#"><span class="citerefentry"><span class="refentrytitle">systemd-repart</span>(8)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man8/sfdisk.8.html"><span class="citerefentry"><span class="refentrytitle">sfdisk</span>(8)</span></a>,
+      <a href="systemd-cryptenroll.html#"><span class="citerefentry"><span class="refentrytitle">systemd-cryptenroll</span>(1)</span></a>
+    </p></div></div></body></html>

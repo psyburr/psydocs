@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% load reverse_man_url %}
+
+{% block title %}{{ man.name }}({{ man.section }}) — Arch manual pages{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'archmanweb/man_page.css' %}">
+    {% for lang in other_languages %}
+        <link rel="alternate" href="{% reverse_man_url '' '' man.name man.section lang url_output_type %}" hreflang="{{ lang }}">
+    {% endfor %}
+{% endblock %}
+
+{% block content_left %}
+<section class="man-page-content">
+    {{ man_page_content | safe }}
+</section>
+{% endblock %}
+
+{% block sidebar %}
+<section class="package-info">
+    <p>Package information:</p>
+    <dl>
+        <dt>Package name:</dt>
+        <dd><a href="https://www.archlinux.org/packages/{{ pkg.repo }}/{{ pkg.arch }}/{{ pkg.name }}/">{{ pkg.repo }}/{{ pkg.name }}</a></dd>
+        <dt>Version:</dt>
+        <dd>{{ pkg.version }}</dd>
+        <dt>Upstream:</dt>
+        <dd><a href="{{ pkg.url }}">{{ pkg.url }}</a></dd>
+        <dt>Licenses:</dt>
+        <dd>{{ pkg.licenses | join:", " }}</dd>
+        <dt>Manuals:</dt>
+        <dd><a href="{% url 'listing' %}/{{ pkg.repo }}/{{ pkg.name }}/">{% url 'listing' %}/{{ pkg.repo }}/{{ pkg.name }}/</a></dd>
+    </dl>
+</section>
+
+<details>
+    <summary>Table of contents</summary>
+    <nav class="toc">
+        <ul>
+        {% for h in headings %}
+            <li><a href="#{{ h.id | safe }}">{{ h.title | safe }}</a></li>
+        {% endfor %}
+        </ul>
+    </nav>
+</details>
+
+<nav class="other-packages">
+    {% if other_packages %}
+        <p>In other packages:</p>
+        <ul>
+        {% for pkg in other_packages %}
+            <li><a href="{% reverse_man_url pkg.repo pkg.name man.name man.section lang url_output_type %}">{{ pkg.repo }}/{{ pkg.name }}: {{ man.name }}({{ man.section }})</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</nav>
+
+<nav class="other-languages">
+    {% if other_languages %}
+        <p>In other languages:</p>
+        <ul>
+        {% for lang in other_languages %}
+            <li><a href="{% reverse_man_url '' '' man.name man.section lang url_output_type %}">{{ lang }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</nav>
+
+<nav class="other-sections">
+    {% if other_sections %}
+        <p>In other sections:</p>
+        <ul>
+        {% for section in other_sections %}
+            <li><a href="{% reverse_man_url '' '' man.name section url_lang url_output_type %}">{{ man.name }}({{ section }})</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</nav>
+{% endblock %}

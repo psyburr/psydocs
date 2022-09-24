@@ -1,0 +1,326 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>
+    
+      Git Handbook &middot; GitHub Guides
+    
+  </title>
+  <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="stylesheet" href="../../components/gridism/gridism.css">
+  <link rel="stylesheet" href="../../components/primer/markdown.css">
+  <link rel="stylesheet" href="../../components/primer/octicons.css">
+  <link href="../../stylesheets/main.css" rel="stylesheet" />
+  <link href="../../stylesheets/pygments.css" rel="stylesheet" />
+
+  <script src="../../javascripts/jquery.js" type="text/javascript"></script>
+  <script src="../../javascripts/snap.svg-min.js" type="text/javascript"></script>
+  <script src="../../javascripts/application.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-3769691-29']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+</head>
+<body>
+
+  <header>
+    <div class="wrap">
+      <ul class="links">
+        <li><a href="https://www.youtube.com/githubguides">Video Guides</a></li>
+        <li><a href="https://help.github.com">GitHub Help</a></li>
+        <li class="nav-github"><a href="https://github.com">GitHub.com</a></li>
+        <li class="nav-rss"><a href="../../feed/index.xml"><span class="octicon octicon-rss"></span></a></li>
+      </ul>
+
+      <a href ="../../index.html"><img src="../../images/logo@2x.png" width="136" height="25" alt ="GitHub Guides logo"/></a>
+    </div>
+  </header>
+
+  <article class="full">
+  <div class="article-heading js-article-heading js-geopattern" style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iNDMyIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJyZ2IoMzUsIDg1LCAxNDUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4wNDY7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIC01OC41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMDQ2O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAzNzMuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjAzNzMzMzMzMzMzMzMzMzMzO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAtNDYuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjAzNzMzMzMzMzMzMzMzMzMzO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAzODUuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA2MzMzMzMzMzMzMzMzMzM0O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAtMzQuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA2MzMzMzMzMzMzMzMzMzM0O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAzOTcuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA5ODtzdHJva2Utd2lkdGg6MTJweDsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00MCwgLTIyLjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4wOTg7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDQwOS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDU0NjY2NjY2NjY2NjY2Njc7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIC0xMC41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDU0NjY2NjY2NjY2NjY2Njc7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDQyMS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDM3MzMzMzMzMzMzMzMzMzM7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDEuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjAzNzMzMzMzMzMzMzMzMzMzO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA0MzMuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjAzNzMzMzMzMzMzMzMzMzMzO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxMy41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDM3MzMzMzMzMzMzMzMzMzM7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDQ0NS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMTI0MDAwMDAwMDAwMDAwMDE7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDI1LjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2RkZCIgc3R5bGU9Im9wYWNpdHk6MC4xMjQwMDAwMDAwMDAwMDAwMTtzdHJva2Utd2lkdGg6MTJweDsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00MCwgNDU3LjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4xNTtzdHJva2Utd2lkdGg6MTJweDsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00MCwgMzcuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjE1O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA0NjkuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA0OS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDcyMDAwMDAwMDAwMDAwMDE7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDQ4MS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMTMyNjY2NjY2NjY2NjY2NjU7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDYxLjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4xMzI2NjY2NjY2NjY2NjY2NTtzdHJva2Utd2lkdGg6MTJweDsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00MCwgNDkzLjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4wMjg2NjY2NjY2NjY2NjY2Njc7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDczLjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4wMjg2NjY2NjY2NjY2NjY2Njc7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDUwNS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMDYzMzMzMzMzMzMzMzMzMzQ7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDg1LjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4wNjMzMzMzMzMzMzMzMzMzNDtzdHJva2Utd2lkdGg6MTJweDsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00MCwgNTE3LjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4xMzI2NjY2NjY2NjY2NjY2NTtzdHJva2Utd2lkdGg6MTJweDsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00MCwgOTcuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjEzMjY2NjY2NjY2NjY2NjY1O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA1MjkuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxMDkuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA1NDEuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA4MDY2NjY2NjY2NjY2NjY2O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxMjEuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA4MDY2NjY2NjY2NjY2NjY2O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA1NTMuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA4MDY2NjY2NjY2NjY2NjY2O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxMzMuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA4MDY2NjY2NjY2NjY2NjY2O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA1NjUuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxNDUuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA1NzcuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjEzMjY2NjY2NjY2NjY2NjY1O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxNTcuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjEzMjY2NjY2NjY2NjY2NjY1O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA1ODkuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjE0MTMzMzMzMzMzMzMzMzM0O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxNjkuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjE0MTMzMzMzMzMzMzMzMzM0O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2MDEuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA1NDY2NjY2NjY2NjY2NjY3O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxODEuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA1NDY2NjY2NjY2NjY2NjY3O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2MTMuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAxOTMuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2MjUuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjEwNjY2NjY2NjY2NjY2NjY3O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAyMDUuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjEwNjY2NjY2NjY2NjY2NjY3O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2MzcuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA4MDY2NjY2NjY2NjY2NjY2O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAyMTcuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjA4MDY2NjY2NjY2NjY2NjY2O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2NDkuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjE1O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAyMjkuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjE1O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2NjEuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjEyNDAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAyNDEuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjEyNDAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2NzMuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjE1O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAyNTMuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjE1O3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2ODUuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCAyNjUuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGRkIiBzdHlsZT0ib3BhY2l0eTowLjA3MjAwMDAwMDAwMDAwMDAxO3N0cm9rZS13aWR0aDoxMnB4OyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQwLCA2OTcuNSkiICAvPjxwYXRoIGQ9Ik0wIDM5IEMgMjguMCAwLCA1Mi4wIDAsIDgwIDM5IFMgMTMyLjAgNzgsIDE2MCAzOSBTIDIxMi4wIDAsIDI0MC4wLCAzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjIyIiBzdHlsZT0ib3BhY2l0eTowLjAyODY2NjY2NjY2NjY2NjY2NztzdHJva2Utd2lkdGg6MTJweDsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00MCwgMjc3LjUpIiAgLz48cGF0aCBkPSJNMCAzOSBDIDI4LjAgMCwgNTIuMCAwLCA4MCAzOSBTIDEzMi4wIDc4LCAxNjAgMzkgUyAyMTIuMCAwLCAyNDAuMCwgMzkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIyMiIgc3R5bGU9Im9wYWNpdHk6MC4wMjg2NjY2NjY2NjY2NjY2Njc7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDcwOS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDg5MzMzMzMzMzMzMzMzMzM7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDI4OS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDg5MzMzMzMzMzMzMzMzMzM7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDcyMS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMDYzMzMzMzMzMzMzMzMzMzQ7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDMwMS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMDYzMzMzMzMzMzMzMzMzMzQ7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDczMy41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMTE1MzMzMzMzMzMzMzMzMzQ7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDMxMy41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMTE1MzMzMzMzMzMzMzMzMzQ7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDc0NS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMTI0MDAwMDAwMDAwMDAwMDE7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDMyNS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMTI0MDAwMDAwMDAwMDAwMDE7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDc1Ny41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMDgwNjY2NjY2NjY2NjY2NjY7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDMzNy41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMDgwNjY2NjY2NjY2NjY2NjY7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDc2OS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDI7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDM0OS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiNkZGQiIHN0eWxlPSJvcGFjaXR5OjAuMDI7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDc4MS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMDYzMzMzMzMzMzMzMzMzMzQ7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDM2MS41KSIgIC8+PHBhdGggZD0iTTAgMzkgQyAyOC4wIDAsIDUyLjAgMCwgODAgMzkgUyAxMzIuMCA3OCwgMTYwIDM5IFMgMjEyLjAgMCwgMjQwLjAsIDM5IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMjIiIHN0eWxlPSJvcGFjaXR5OjAuMDYzMzMzMzMzMzMzMzMzMzQ7c3Ryb2tlLXdpZHRoOjEycHg7IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDAsIDc5My41KSIgIC8+PC9zdmc+);">
+    <div class="wrap">
+      <div class="icon-container">
+        <span class="mega-octicon octicon-device-desktop"></span>
+      </div>
+      <h1>Git Handbook</h1>
+      <span class="article-read-time article-meta">
+        <span class="octicon octicon-clock"></span> 10 minute read
+      </span>
+      
+    </div>
+  </div>
+
+
+  <div class="wrap">
+    
+    <div class="toc-wrapper">
+      <ol class="toc js-toc"></ol>
+    </div>
+    
+
+    <div class="markdown-body content-body ">
+      <p><a id="version-control" title="What is Version Control?" class="toc-item"></a></p>
+
+<h3>What’s a version control system?</h3>
+
+<p>A version control system, or VCS, tracks the history of changes as people and teams collaborate on projects together. As the project evolves, teams can run tests, fix bugs, and contribute new code with the confidence that any version can be recovered at any time. Developers can review project history to find out:</p>
+
+<ul>
+  <li>Which changes were made?</li>
+  <li>Who made the changes?</li>
+  <li>When were the changes made?</li>
+  <li>Why were changes needed?</li>
+</ul>
+
+<h3>What’s a distributed version control system?</h3>
+
+<p>Git is an example of a distributed version control system (DVCS) commonly used for open source and commercial software development. DVCSs allow full access to every file, branch, and iteration of a project, and allows every user access to a full and self-contained history of all changes. Unlike once popular centralized version control systems, DVCSs like Git don’t need a constant connection to a central repository. Developers can work anywhere and collaborate asynchronously from any time zone.</p>
+
+<p>Without version control, team members are subject to redundant tasks, slower timelines, and multiple copies of a single project. To eliminate unnecessary work, Git and other VCSs give each contributor a unified and consistent view of a project, surfacing work that’s already in progress. Seeing a transparent history of changes, who made them, and how they contribute to the development of a project helps team members stay aligned while working independently.</p>
+
+<h3>Why Git?</h3>
+
+<p>According to the latest <a href="https://insights.stackoverflow.com/survey/2017#technology">Stack Overflow developer survey</a>, more than 70 percent of developers use Git, making it the most-used VCS in the world. Git is commonly used for both open source and commercial software development, <strong>with significant benefits</strong> for individuals, teams and businesses.</p>
+
+<ul>
+  <li>
+    <p>Git lets developers see the entire timeline of their changes, decisions, and progression of any project in one place. From the moment they access the history of a project, the developer has all the context they need to understand it and start contributing.</p>
+  </li>
+  <li>
+    <p>Developers work in every time zone. With a DVCS like Git, collaboration can happen any time while maintaining source code integrity. Using branches, developers can safely propose changes to production code.</p>
+  </li>
+  <li>
+    <p>Businesses using Git can break down communication barriers between teams and keep them focused on doing their best work. Plus, Git makes it possible to align experts across a business to collaborate on major projects.</p>
+  </li>
+</ul>
+
+<p><a id="repository" title="Repositories" class="toc-item"></a></p>
+
+<h3>What’s a repository?</h3>
+
+<p>A <em>repository</em>, or <a href="https://git-scm.com/">Git project</a>, encompasses the entire collection of files and folders associated with a project, along with each file’s revision history. The file history appears as snapshots in time called <em>commits</em>, and the commits exist as a linked-list relationship, and can be organized into multiple lines of development called <em>branches</em>. Because Git is a DVCS, repositories are self-contained units and anyone who owns a copy of the repository can access the entire codebase and its history. Using the command line or other ease-of-use interfaces, a git repository also allows for: interaction with the history, cloning, creating branches, committing, merging, comparing changes across versions of code, and more.</p>
+
+<p>Working in repositories keeps development projects organized and protected. Developers are encouraged to fix bugs, or create fresh features, without fear of derailing mainline development efforts. Git facilitates this through the use of topic branches: lightweight pointers to commits in history that can be easily created and deprecated when no longer needed.</p>
+
+<p>Through platforms like GitHub, Git also provides more opportunities for project transparency and collaboration. Public repositories help teams work together to build the best possible final product.</p>
+
+<p><a id="basic-git" title="Basic Git" class="toc-item"></a></p>
+
+<h3>Basic Git commands</h3>
+
+<p>To use Git, developers use specific commands to copy, create, change, and combine code. These commands can be executed directly from the command line or by using an application like <a href="https://desktop.github.com/">GitHub Desktop</a> or Git Kraken. Here are some common commands for using Git:</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git init</code> initializes a brand new Git repository and begins tracking an existing directory. It adds a hidden subfolder within the existing directory that houses the internal data structure required for version control.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git clone</code> creates a local copy of a project that already exists remotely. The clone includes all the project’s files, history, and branches.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git add</code> stages a change. Git tracks changes to a developer’s codebase, but it’s necessary to stage and take a snapshot of the changes to include them in the project’s history. This command performs staging, the first part of that two-step process. Any changes that are staged will become a part of the next snapshot and a part of the project’s history. Staging and committing separately gives developers complete control over the history of their project without changing how they code and work.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git commit</code> saves the snapshot to the project history and completes the change-tracking process. In short, a commit functions like taking a photo. Anything that’s been staged with <code class="language-plaintext highlighter-rouge">git add</code> will become a part of the snapshot with <code class="language-plaintext highlighter-rouge">git commit</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git status</code> shows the status of changes as untracked, modified, or staged.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git branch</code> shows the branches being worked on locally.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git merge</code> merges lines of development together. This command is typically used to combine changes made on two distinct branches. For example, a developer would merge when they want to combine changes from a feature branch into the master branch for deployment.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git pull</code> updates the local line of development with updates from its remote counterpart. Developers use this command if a teammate has made commits to a branch on a remote, and they would like to reflect those changes in their local environment.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">git push</code> updates the remote repository with any commits made locally to a branch.</p>
+  </li>
+</ul>
+
+<p>Learn more from <a href="https://git-scm.com/docs">a full reference guide to Git commands</a>.</p>
+
+<h4>Explore more Git commands</h4>
+
+<p>For a detailed look at Git practices, the videos below show how to get the most out of some Git commands.</p>
+
+<ul>
+  <li><a href="https://www.youtube.com/watch?v=rBbbOouhI-s&amp;index=2&amp;list=PLg7s6cbtAD17Gw5u8644bgKhgRLiJXdX4">Working locally</a></li>
+  <li><a href="https://www.youtube.com/watch?v=SxmveNrZb5k&amp;list=PLg7s6cbtAD17Gw5u8644bgKhgRLiJXdX4&amp;index=3"><code class="language-plaintext highlighter-rouge">git status</code></a></li>
+  <li><a href="https://www.youtube.com/watch?v=Vb0Ghkkc2hk&amp;index=4&amp;list=PLg7s6cbtAD17Gw5u8644bgKhgRLiJXdX4">Two-step commits</a></li>
+  <li><a href="https://www.youtube.com/watch?v=-uQHV9GOA0w&amp;index=5&amp;list=PLg7s6cbtAD17Gw5u8644bgKhgRLiJXdX4"><code class="language-plaintext highlighter-rouge">git pull</code> and <code class="language-plaintext highlighter-rouge">git push</code></a></li>
+</ul>
+
+<p><a id="github" title="GitHub" class="toc-item"></a></p>
+
+<h3>How GitHub fits in</h3>
+
+<p>GitHub is a Git hosting repository that provides developers with tools to ship better code through command line features, issues (threaded discussions), pull requests, code review, or the use of a collection of free and for-purchase apps in the GitHub Marketplace. With collaboration layers like the GitHub flow, a community of 15 million developers, and an ecosystem with hundreds of integrations, GitHub changes the way software is built.</p>
+
+<h3>How GitHub works</h3>
+
+<p>GitHub builds collaboration directly into the development process. Work is organized into repositories, where developers can outline requirements or direction and set expectations for team members. Then, using the GitHub flow, developers simply create a branch to work on updates, commit changes to save them, open a pull request to propose and discuss changes, and merge pull requests once everyone is on the same page.</p>
+
+<h3>The GitHub flow</h3>
+
+<p>The GitHub flow is a lightweight, branch-based workflow built around core Git commands used by teams around the globe—including ours.</p>
+
+<p>The GitHub flow has six steps, each with distinct benefits when implemented:</p>
+
+<ol>
+  <li><strong>Create a branch:</strong> Topic branches created from the canonical deployment branch (usually <code class="language-plaintext highlighter-rouge">master</code>) allow teams to contribute to many parallel efforts. Short-lived topic branches, in particular, keep teams focused and results in quick ships.</li>
+  <li><strong>Add commits:</strong> Snapshots of development efforts within a branch create safe, revertible points in the project’s history.</li>
+  <li><strong>Open a pull request:</strong> Pull requests publicize a project’s ongoing efforts and set the tone for a transparent development process.</li>
+  <li><strong>Discuss and review code:</strong> Teams participate in code reviews by commenting, testing, and reviewing open pull requests. Code review is at the core of an open and participatory culture.</li>
+  <li><strong>Merge:</strong> Upon clicking merge, GitHub automatically performs the equivalent of a local ‘git merge’ operation. GitHub also keeps the entire branch development history on the merged pull request.</li>
+  <li><strong>Deploy:</strong> Teams can choose the best release cycles or incorporate continuous integration tools and operate with the assurance that code on the deployment branch has gone through a robust workflow.</li>
+</ol>
+
+<h4>Learn more about the GitHub flow</h4>
+
+<p>Developers can find more information about the GitHub flow in the resources provided below.</p>
+
+<ul>
+  <li><a href="../flow.html">Interactive guide</a></li>
+  <li><a href="https://www.youtube.com/watch?v=47E-jcuQz5c&amp;index=1&amp;list=PLg7s6cbtAD17Gw5u8644bgKhgRLiJXdX4">GitHub Flow video</a></li>
+</ul>
+
+<h3>GitHub and the command line</h3>
+
+<p>For developers new to the command line, the GitHub Training team has put together a series of <a href="https://help.github.com/articles/git-and-github-learning-resources/">tutorials</a> on Git commands to guide the way. Sometimes, a series of commands can paint a picture of how to use Git:</p>
+
+<h4>Example: Contribute to an existing repository</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># download a repository on GitHub.com to our machine</span>
+git clone https://github.com/me/repo.git
+
+<span class="c"># change into the `repo` directory</span>
+<span class="nb">cd </span>repo
+
+<span class="c"># create a new branch to store any new changes</span>
+git branch my-branch
+
+<span class="c"># switch to that branch (line of development)</span>
+git checkout my-branch
+
+<span class="c"># make changes, for example, edit `file1.md` and `file2.md` using the text editor</span>
+
+<span class="c"># stage the changed files</span>
+git add file1.md file2.md
+
+<span class="c"># take a snapshot of the staging area (anything that's been added)</span>
+git commit <span class="nt">-m</span> <span class="s2">"my snapshot"</span>
+
+<span class="c"># push changes to github</span>
+git push <span class="nt">--set-upstream</span> origin my-branch
+</code></pre></div></div>
+
+<h4>Example: Start a new repository and publish it to GitHub</h4>
+
+<p>First, you will need to create a new repository on GitHub. You can learn how to create a new repository in our <a href="../../activities/hello-world/index.html#repository">Hello World guide</a>. <strong>Do not</strong> initialize the repository with a README, .gitignore or License. This empty repository will await your code.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># create a new directory, and initialize it with git-specific functions</span>
+git init my-repo
+
+<span class="c"># change into the `my-repo` directory</span>
+<span class="nb">cd </span>my-repo
+
+<span class="c"># create the first file in the project</span>
+<span class="nb">touch </span>README.md
+
+<span class="c"># git isn't aware of the file, stage it</span>
+git add README.md
+
+<span class="c"># take a snapshot of the staging area</span>
+git commit <span class="nt">-m</span> <span class="s2">"add README to initial commit"</span>
+
+<span class="c"># provide the path for the repository you created on github</span>
+git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPOSITORY.git
+
+<span class="c"># push changes to github</span>
+git push <span class="nt">--set-upstream</span> origin master
+</code></pre></div></div>
+
+<h4>Example: contribute to an existing branch on GitHub</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># assumption: a project called `repo` already exists on the machine, and a new branch has been pushed to GitHub.com since the last time changes were made locally</span>
+
+<span class="c"># change into the `repo` directory</span>
+<span class="nb">cd </span>repo
+
+<span class="c"># update all remote tracking branches, and the currently checked out branch</span>
+git pull
+
+<span class="c"># change into the existing branch called `feature-a`</span>
+git checkout feature-a
+
+<span class="c"># make changes, for example, edit `file1.md` using the text editor</span>
+
+<span class="c"># stage the changed file</span>
+git add file1.md
+
+<span class="c"># take a snapshot of the staging area</span>
+git commit <span class="nt">-m</span> <span class="s2">"edit file1"</span>
+
+<span class="c"># push changes to github</span>
+git push
+</code></pre></div></div>
+
+<h3>Models for collaborative development</h3>
+
+<p>There are two primary ways people collaborate on GitHub:</p>
+
+<ol>
+  <li>Shared repository</li>
+  <li><a href="https://help.github.com/articles/about-forks/">Fork</a> and <a href="https://help.github.com/articles/using-pull-requests">pull</a></li>
+</ol>
+
+<p>With a <em>shared repository</em>, individuals and teams are explicitly designated as contributors with read, write, or administrator access. This simple permission structure, combined with features like protected branches and Marketplace, helps teams progress quickly when they adopt GitHub.</p>
+
+<p>For an open source project, or for projects to which anyone can contribute, managing individual permissions can be challenging, but a <em>fork and pull</em> model allows anyone who can view the project to contribute. A fork is a copy of a project under an developer’s personal account. Every developer has full control of their fork and is free to implement a fix or new feature. Work completed in forks is either kept separate, or is surfaced back to the original project via a pull request. There, maintainers can review the suggested changes before they’re merged. See the <a href="../../activities/forking/index.html">Forking Projects Guide</a> for more information.</p>
+
+<h3>Learn at your own pace</h3>
+
+<p>The GitHub team has created a library of educational videos and guides to help users continue to develop their skills and build better software.</p>
+
+<ul>
+  <li><a href="https://github.com/showcases/great-for-new-contributors">Beginner projects to explore</a></li>
+  <li><a href="https://youtube.com/githubguides">GitHub video guides</a></li>
+  <li><a href="https://services.github.com/on-demand/">GitHub on-demand training</a></li>
+  <li><a href="../../index.html">GitHub training guides</a></li>
+  <li><a href="https://services.github.com/resources/">GitHub training resources</a></li>
+</ul>
+
+
+      <p class="last-updated">Last updated Sept 25, 2017</p>
+    </div>
+  </div>
+</article>
+
+
+  <footer>
+    <div class="wrap">
+      <span class="mega-octicon octicon-mark-github"></span>
+      <p>
+        <a href="https://github.com">GitHub</a> is the best way to build and ship software.<br />
+        Powerful collaboration, code review, and code management for open source and private projects.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>localectl</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="localectl"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>localectl — Control the system locale and keyboard layout settings</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">localectl</code>  [OPTIONS...] {COMMAND}</p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="localectl.html#Description">¶</a></h2><p><span class="command"><strong>localectl</strong></span> may be used to query and change
+    the system locale and keyboard layout settings. It communicates with
+    <a href="systemd-localed.html#"><span class="citerefentry"><span class="refentrytitle">systemd-localed</span>(8)</span></a>
+    to modify files such as <code class="filename">/etc/locale.conf</code> and
+    <code class="filename">/etc/vconsole.conf</code>.</p><p>The system locale controls the language settings of system
+    services and of the UI before the user logs in, such as the
+    display manager, as well as the default for users after
+    login.</p><p>The keyboard settings control the keyboard layout used on
+    the text console and of the graphical UI before the user logs in,
+    such as the display manager, as well as the default for users
+    after login.</p><p>Note that the changes performed using this tool might require
+    the initramfs to be rebuilt to take effect during early system boot.
+    The initramfs is not rebuilt automatically by <code class="filename">localectl</code>.
+    </p><p>Note that
+    <a href="systemd-firstboot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-firstboot</span>(1)</span></a>
+    may be used to initialize the system locale for mounted (but not booted)
+    system images.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Commands">Commands<a class="headerlink" title="Permalink to this headline" href="localectl.html#Commands">¶</a></h2><p>The following commands are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="status"><span class="term"><span class="command"><strong>status</strong></span></span><a class="headerlink" title="Permalink to this term" href="localectl.html#status">¶</a></dt><dd><p>Show current settings of the system locale and keyboard mapping.
+        If no command is specified, this is the implied default.</p></dd><dt id="set-locale LOCALE"><span class="term"><span class="command"><strong>set-locale LOCALE</strong></span>, </span><span class="term"><span class="command"><strong>set-locale VARIABLE=LOCALE…</strong></span></span><a class="headerlink" title="Permalink to this term" href="localectl.html#set-locale%20LOCALE">¶</a></dt><dd><p>Set the system locale. This takes one locale such as "<code class="literal">en_US.UTF-8</code>", or takes one or more
+        locale assignments such as "<code class="literal">LANG=de_DE.utf8</code>", "<code class="literal">LC_MESSAGES=en_GB.utf8</code>", and so on. If
+        one locale without variable name is provided, then "<code class="literal">LANG=</code>" locale variable will be set. See
+        <a href="http://man7.org/linux/man-pages/man7/locale.7.html"><span class="citerefentry"><span class="refentrytitle">locale</span>(7)</span></a>
+        for details on the available settings and their meanings. Use
+        <span class="command"><strong>list-locales</strong></span> for a list of available
+        locales (see below). </p></dd><dt id="list-locales"><span class="term"><span class="command"><strong>list-locales</strong></span></span><a class="headerlink" title="Permalink to this term" href="localectl.html#list-locales">¶</a></dt><dd><p>List available locales useful for
+        configuration with
+        <span class="command"><strong>set-locale</strong></span>.</p></dd><dt id="set-keymap MAP [TOGGLEMAP]"><span class="term"><span class="command"><strong>set-keymap MAP [TOGGLEMAP]</strong></span></span><a class="headerlink" title="Permalink to this term" href="localectl.html#set-keymap%20MAP%20%5BTOGGLEMAP%5D">¶</a></dt><dd><p>Set the system keyboard mapping for the
+        console and X11. This takes a mapping name (such as "de" or
+        "us"), and possibly a second one to define a toggle keyboard
+        mapping. Unless <code class="option">--no-convert</code> is passed, the
+        selected setting is also applied as the default system
+        keyboard mapping of X11, after converting it to the closest
+        matching X11 keyboard mapping. Use
+        <span class="command"><strong>list-keymaps</strong></span> for a list of available
+        keyboard mappings (see below).</p></dd><dt id="list-keymaps"><span class="term"><span class="command"><strong>list-keymaps</strong></span></span><a class="headerlink" title="Permalink to this term" href="localectl.html#list-keymaps">¶</a></dt><dd><p>List available keyboard mappings for the
+        console, useful for configuration with
+        <span class="command"><strong>set-keymap</strong></span>.</p></dd><dt id="set-x11-keymap LAYOUT [MODEL [VARIANT [OPTIONS]]]"><span class="term"><span class="command"><strong>set-x11-keymap LAYOUT [MODEL [VARIANT [OPTIONS]]]</strong></span></span><a class="headerlink" title="Permalink to this term" href="localectl.html#set-x11-keymap%20LAYOUT%20%5BMODEL%20%5BVARIANT%20%5BOPTIONS%5D%5D%5D">¶</a></dt><dd><p>Set the system default keyboard mapping for
+        X11 and the virtual console. This takes a keyboard mapping
+        name (such as "<code class="literal">de</code>" or "<code class="literal">us</code>"),
+        and possibly a model, variant, and options, see
+        <a href="http://man7.org/linux/man-pages/man4/kbd.4.html"><span class="citerefentry"><span class="refentrytitle">kbd</span>(4)</span></a>
+        for details. Unless <code class="option">--no-convert</code> is passed,
+        the selected setting is also applied as the system console
+        keyboard mapping, after converting it to the closest matching
+        console keyboard mapping.</p></dd><dt id="list-x11-keymap-models"><span class="term"><span class="command"><strong>list-x11-keymap-models</strong></span>, </span><span class="term"><span class="command"><strong>list-x11-keymap-layouts</strong></span>, </span><span class="term"><span class="command"><strong>list-x11-keymap-variants [LAYOUT]</strong></span>, </span><span class="term"><span class="command"><strong>list-x11-keymap-options</strong></span></span><a class="headerlink" title="Permalink to this term" href="localectl.html#list-x11-keymap-models">¶</a></dt><dd><p>List available X11 keymap models, layouts,
+        variants and options, useful for configuration with
+        <span class="command"><strong>set-keymap</strong></span>. The command
+        <span class="command"><strong>list-x11-keymap-variants</strong></span> optionally takes a
+        layout parameter to limit the output to the variants suitable
+        for the specific layout.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="localectl.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--no-ask-password"><span class="term"><code class="option">--no-ask-password</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#--no-ask-password">¶</a></dt><dd><p>Do not query the user for authentication for
+        privileged operations.</p></dd><dt id="--no-convert"><span class="term"><code class="option">--no-convert</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#--no-convert">¶</a></dt><dd><p>If <span class="command"><strong>set-keymap</strong></span> or
+        <span class="command"><strong>set-x11-keymap</strong></span> is invoked and this option
+        is passed, then the keymap will not be converted from the
+        console to X11, or X11 to console,
+        respectively.</p></dd><dt id="-H"><span class="term"><code class="option">-H</code>, </span><span class="term"><code class="option">--host=</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#-H">¶</a></dt><dd><p><a name="host-text"></a>Execute the operation remotely. Specify a hostname, or a
+      username and hostname separated by "<code class="literal">@</code>", to
+      connect to. The hostname may optionally be suffixed by a
+      port ssh is listening on, separated by "<code class="literal">:</code>", and then a
+      container name, separated by "<code class="literal">/</code>", which
+      connects directly to a specific container on the specified
+      host. This will use SSH to talk to the remote machine manager
+      instance. Container names may be enumerated with
+      <span class="command"><strong>machinectl -H
+      <em class="replaceable"><code>HOST</code></em></strong></span>. Put IPv6 addresses in brackets.</p></dd><dt id="-M"><span class="term"><code class="option">-M</code>, </span><span class="term"><code class="option">--machine=</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#-M">¶</a></dt><dd><p><a name="machine-text"></a>Execute operation on a local container. Specify a container name to connect to, optionally
+      prefixed by a user name to connect as and a separating "<code class="literal">@</code>" character. If the special
+      string "<code class="literal">.host</code>" is used in place of the container name, a connection to the local
+      system is made (which is useful to connect to a specific user's user bus: "<code class="literal">--user
+      --machine=lennart@.host</code>"). If the "<code class="literal">@</code>" syntax is not used, the connection is
+      made as root user. If the "<code class="literal">@</code>" syntax is used either the left hand side or the right hand
+      side may be omitted (but not both) in which case the local user name and "<code class="literal">.host</code>" are
+      implied.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="localectl.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code
+    otherwise.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="Environment">Environment<a class="headerlink" title="Permalink to this headline" href="localectl.html#Environment">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="$SYSTEMD_LOG_LEVEL"><span class="term"><code class="varname">$SYSTEMD_LOG_LEVEL</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_LOG_LEVEL">¶</a></dt><dd><p><a name="log-level-body"></a>The maximum log level of emitted messages (messages with a higher
+      log level, i.e. less important ones, will be suppressed). Either one of (in order of decreasing
+      importance) <code class="constant">emerg</code>, <code class="constant">alert</code>, <code class="constant">crit</code>,
+      <code class="constant">err</code>, <code class="constant">warning</code>, <code class="constant">notice</code>,
+      <code class="constant">info</code>, <code class="constant">debug</code>, or an integer in the range 0…7. See
+      <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>
+      for more information.</p></dd><dt id="$SYSTEMD_LOG_COLOR"><span class="term"><code class="varname">$SYSTEMD_LOG_COLOR</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_LOG_COLOR">¶</a></dt><dd><p><a name="log-color-body"></a>A boolean. If true, messages written to the tty will be colored
+      according to priority.</p><p>This setting is only useful when messages are written directly to the terminal, because
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a> and
+      other tools that display logs will color messages based on the log level on their own.</p></dd><dt id="$SYSTEMD_LOG_TIME"><span class="term"><code class="varname">$SYSTEMD_LOG_TIME</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_LOG_TIME">¶</a></dt><dd><p><a name="log-time-body"></a>A boolean. If true, console log messages will be prefixed with a
+      timestamp.</p><p>This setting is only useful when messages are written directly to the terminal or a file, because
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a> and
+      other tools that display logs will attach timestamps based on the entry metadata on their own.</p></dd><dt id="$SYSTEMD_LOG_LOCATION"><span class="term"><code class="varname">$SYSTEMD_LOG_LOCATION</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_LOG_LOCATION">¶</a></dt><dd><p><a name="log-location-body"></a>A boolean. If true, messages will be prefixed with a filename
+      and line number in the source code where the message originates.</p><p>Note that the log location is often attached as metadata to journal entries anyway. Including it
+      directly in the message text can nevertheless be convenient when debugging programs.</p></dd><dt id="$SYSTEMD_LOG_TID"><span class="term"><code class="varname">$SYSTEMD_LOG_TID</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_LOG_TID">¶</a></dt><dd><p><a name="log-tid-body"></a>A boolean. If true, messages will be prefixed with the current
+      numerical thread ID (TID).</p><p>Note that the this information is attached as metadata to journal entries anyway. Including it
+      directly in the message text can nevertheless be convenient when debugging programs.</p></dd><dt id="$SYSTEMD_LOG_TARGET"><span class="term"><code class="varname">$SYSTEMD_LOG_TARGET</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_LOG_TARGET">¶</a></dt><dd><p><a name="log-target-body"></a>The destination for log messages. One of
+      <code class="constant">console</code> (log to the attached tty), <code class="constant">console-prefixed</code> (log to
+      the attached tty but with prefixes encoding the log level and "facility", see <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>,
+      <code class="constant">kmsg</code> (log to the kernel circular log buffer), <code class="constant">journal</code> (log to
+      the journal), <code class="constant">journal-or-kmsg</code> (log to the journal if available, and to kmsg
+      otherwise), <code class="constant">auto</code> (determine the appropriate log target automatically, the default),
+      <code class="constant">null</code> (disable log output).</p></dd><dt id="$SYSTEMD_PAGER"><span class="term"><code class="varname">$SYSTEMD_PAGER</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_PAGER">¶</a></dt><dd><p>Pager to use when <code class="option">--no-pager</code> is not given; overrides
+      <code class="varname">$PAGER</code>. If neither <code class="varname">$SYSTEMD_PAGER</code> nor <code class="varname">$PAGER</code> are set, a
+      set of well-known pager implementations are tried in turn, including
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a> and
+      <a href="http://man7.org/linux/man-pages/man1/more.1.html"><span class="citerefentry"><span class="refentrytitle">more</span>(1)</span></a>, until one is found. If
+      no pager implementation is discovered no pager is invoked. Setting this environment variable to an empty string
+      or the value "<code class="literal">cat</code>" is equivalent to passing <code class="option">--no-pager</code>.</p></dd><dt id="$SYSTEMD_LESS"><span class="term"><code class="varname">$SYSTEMD_LESS</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_LESS">¶</a></dt><dd><p>Override the options passed to <span class="command"><strong>less</strong></span> (by default
+      "<code class="literal">FRSXMK</code>").</p><p>Users might want to change two options in particular:</p><div class="variablelist"><dl class="variablelist"><dt id="K"><span class="term"><code class="option">K</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#K">¶</a></dt><dd></dd><dt id="X"><span class="term"><code class="option">X</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#X">¶</a></dt><dd></dd></dl></div><p>See
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a>
+      for more discussion.</p></dd><dt id="$SYSTEMD_LESSCHARSET"><span class="term"><code class="varname">$SYSTEMD_LESSCHARSET</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_LESSCHARSET">¶</a></dt><dd><p>Override the charset passed to <span class="command"><strong>less</strong></span> (by default "<code class="literal">utf-8</code>", if
+      the invoking terminal is determined to be UTF-8 compatible).</p></dd><dt id="$SYSTEMD_PAGERSECURE"><span class="term"><code class="varname">$SYSTEMD_PAGERSECURE</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_PAGERSECURE">¶</a></dt><dd><p>Takes a boolean argument. When true, the "secure" mode of the pager is enabled; if
+      false, disabled. If <code class="varname">$SYSTEMD_PAGERSECURE</code> is not set at all, secure mode is enabled
+      if the effective UID is not the same as the owner of the login session, see
+      <a href="http://man7.org/linux/man-pages/man2/geteuid.2.html"><span class="citerefentry"><span class="refentrytitle">geteuid</span>(2)</span></a>
+      and <a href="sd_pid_get_owner_uid.html#"><span class="citerefentry"><span class="refentrytitle">sd_pid_get_owner_uid</span>(3)</span></a>.
+      In secure mode, <code class="option">LESSSECURE=1</code> will be set when invoking the pager, and the pager shall
+      disable commands that open or create new files or start new subprocesses. When
+      <code class="varname">$SYSTEMD_PAGERSECURE</code> is not set at all, pagers which are not known to implement
+      secure mode will not be used. (Currently only
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a>
+      implements secure mode.)</p><p>Note: when commands are invoked with elevated privileges, for example under <a href="http://man7.org/linux/man-pages/man8/sudo.8.html"><span class="citerefentry"><span class="refentrytitle">sudo</span>(8)</span></a> or
+      <a href="http://linux.die.net/man/1/pkexec"><span class="citerefentry"><span class="refentrytitle">pkexec</span>(1)</span></a>, care
+      must be taken to ensure that unintended interactive features are not enabled. "Secure" mode for the
+      pager may be enabled automatically as describe above. Setting <code class="varname">SYSTEMD_PAGERSECURE=0</code>
+      or not removing it from the inherited environment allows the user to invoke arbitrary commands. Note
+      that if the <code class="varname">$SYSTEMD_PAGER</code> or <code class="varname">$PAGER</code> variables are to be
+      honoured, <code class="varname">$SYSTEMD_PAGERSECURE</code> must be set too. It might be reasonable to completely
+      disable the pager using <code class="option">--no-pager</code> instead.</p></dd><dt id="$SYSTEMD_COLORS"><span class="term"><code class="varname">$SYSTEMD_COLORS</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_COLORS">¶</a></dt><dd><p>Takes a boolean argument. When true, <span class="command"><strong>systemd</strong></span> and related utilities
+      will use colors in their output, otherwise the output will be monochrome. Additionally, the variable can
+      take one of the following special values: "<code class="literal">16</code>", "<code class="literal">256</code>" to restrict the use
+      of colors to the base 16 or 256 ANSI colors, respectively. This can be specified to override the automatic
+      decision based on <code class="varname">$TERM</code> and what the console is connected to.</p></dd><dt id="$SYSTEMD_URLIFY"><span class="term"><code class="varname">$SYSTEMD_URLIFY</code></span><a class="headerlink" title="Permalink to this term" href="localectl.html#%24SYSTEMD_URLIFY">¶</a></dt><dd><p>The value must be a boolean. Controls whether clickable links should be generated in
+      the output for terminal emulators supporting this. This can be specified to override the decision that
+      <span class="command"><strong>systemd</strong></span> makes based on <code class="varname">$TERM</code> and other conditions.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.10"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="localectl.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man7/locale.7.html"><span class="citerefentry"><span class="refentrytitle">locale</span>(7)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man5/locale.conf.5.html"><span class="citerefentry"><span class="refentrytitle">locale.conf</span>(5)</span></a>,
+      <a href="vconsole.conf.html#"><span class="citerefentry"><span class="refentrytitle">vconsole.conf</span>(5)</span></a>,
+      <a href="https://www.mankier.com/1/loadkeys"><span class="citerefentry"><span class="refentrytitle">loadkeys</span>(1)</span></a>,
+      <a href="http://man7.org/linux/man-pages/man4/kbd.4.html"><span class="citerefentry"><span class="refentrytitle">kbd</span>(4)</span></a>,
+      <a class="ulink" href="http://www.x.org/releases/current/doc/xorg-docs/input/XKB-Config.html" target="_top">
+        The XKB Configuration Guide
+      </a>,
+      <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>,
+      <a href="systemd-localed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-localed.service</span>(8)</span></a>,
+      <a href="systemd-firstboot.html#"><span class="citerefentry"><span class="refentrytitle">systemd-firstboot</span>(1)</span></a>,
+      <a href="http://linux.die.net/man/8/mkinitrd"><span class="citerefentry"><span class="refentrytitle">mkinitrd</span>(8)</span></a>
+    </p></div></div></body></html>

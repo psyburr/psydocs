@@ -1,0 +1,38 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_bus_get_name_creds</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_bus_get_name_creds"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_bus_get_name_creds, sd_bus_get_owner_creds — Query bus client credentials</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-bus.h&gt;</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_get_name_creds</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">name</var>, </td></tr><tr><td> </td><td>uint64_t <var class="pdparam">mask</var>, </td></tr><tr><td> </td><td>sd_bus_creds **<var class="pdparam">creds</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_bus_get_owner_creds</b>(</code></td><td>sd_bus *<var class="pdparam">bus</var>, </td></tr><tr><td> </td><td>uint64_t <var class="pdparam">mask</var>, </td></tr><tr><td> </td><td>sd_bus_creds **<var class="pdparam">creds</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_bus_get_owner_creds.html#Description">¶</a></h2><p><code class="function">sd_bus_get_name_creds()</code> queries the credentials of the bus client
+    identified by <em class="parameter"><code>name</code></em>. The <em class="parameter"><code>mask</code></em> parameter is a combo of
+    <code class="constant">SD_BUS_CREDS_*</code> flags that indicate which credential info the caller is
+    interested in. See
+    <a href="sd_bus_creds_new_from_pid.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_creds_new_from_pid</span>(3)</span></a>
+    for a list of possible flags. On success, <em class="parameter"><code>creds</code></em> contains a new
+    <span class="structname">sd_bus_creds</span> instance with the requested information. Ownership of this instance
+    belongs to the caller and it should be freed once no longer needed by calling
+    <a href="sd_bus_creds_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_creds_unref</span>(3)</span></a>.
+    </p><p><code class="function">sd_bus_get_owner_creds()</code> queries the credentials of the creator of the given
+    bus. The <em class="parameter"><code>mask</code></em> and <em class="parameter"><code>creds</code></em> parameters behave the same as in
+    <code class="function">sd_bus_get_name_creds()</code>.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_bus_get_owner_creds.html#Return%20Value">¶</a></h2><p>On success, these functions return a non-negative integer. On failure, they return a negative
+    errno-style error code.</p><div class="refsect2"><a name="id-1.6.3"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_bus_get_owner_creds.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_get_owner_creds.html#-EINVAL">¶</a></dt><dd><p>An argument is invalid.</p></dd><dt id="-ENOPKG"><span class="term"><code class="constant">-ENOPKG</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_get_owner_creds.html#-ENOPKG">¶</a></dt><dd><p>The bus cannot be resolved.</p></dd><dt id="-EPERM"><span class="term"><code class="constant">-EPERM</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_get_owner_creds.html#-EPERM">¶</a></dt><dd><p>The bus has already been started.</p></dd><dt id="-ECHILD"><span class="term"><code class="constant">-ECHILD</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_get_owner_creds.html#-ECHILD">¶</a></dt><dd><p>The bus was created in a different process.</p></dd><dt id="-ENOMEM"><span class="term"><code class="constant">-ENOMEM</code></span><a class="headerlink" title="Permalink to this term" href="sd_bus_get_owner_creds.html#-ENOMEM">¶</a></dt><dd><p>Memory allocation failed.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_bus_get_owner_creds.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_bus_get_owner_creds.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="sd-bus.html#"><span class="citerefentry"><span class="refentrytitle">sd-bus</span>(3)</span></a>,
+      <a href="sd_bus_creds_unref.html#"><span class="citerefentry"><span class="refentrytitle">sd_bus_creds_unref</span>(3)</span></a>
+    </p></div></div></body></html>

@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>vconsole.conf</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="vconsole.conf"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>vconsole.conf — Configuration file for the virtual console</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><p><code class="filename">/etc/vconsole.conf</code></p></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="vconsole.conf.html#Description">¶</a></h2><p>The <code class="filename">/etc/vconsole.conf</code> file configures
+    the virtual console, i.e. keyboard mapping and console font. It is
+    applied at boot by udev using <code class="filename">90-vconsole.rules</code> file.
+    You can safely mask this file if you want to avoid this kind of initialization.
+    </p><p>The basic file format of the
+    <code class="filename">vconsole.conf</code> is a newline-separated list of
+    environment-like shell-compatible variable assignments. It is
+    possible to source the configuration from shell scripts, however,
+    beyond mere variable assignments no shell features are supported,
+    allowing applications to read the file without implementing a
+    shell compatible execution engine.</p><p>Note that the kernel command line options
+    <code class="varname">vconsole.keymap=</code>,
+    <code class="varname">vconsole.keymap_toggle=</code>,
+    <code class="varname">vconsole.font=</code>,
+    <code class="varname">vconsole.font_map=</code>,
+    <code class="varname">vconsole.font_unimap=</code> may be used
+    to override the console settings at boot.</p><p>Depending on the operating system other configuration files
+    might be checked for configuration of the virtual console as well,
+    however only as fallback.</p><p><code class="filename">/etc/vconsole.conf</code> is usually created and updated
+    using
+    <a href="systemd-localed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-localed.service</span>(8)</span></a>.
+    <a href="localectl.html#"><span class="citerefentry"><span class="refentrytitle">localectl</span>(1)</span></a>
+    may be used to instruct <span class="command"><strong>systemd-localed.service</strong></span> to
+    query or update configuration.</p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="vconsole.conf.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="KEYMAP="><span class="term"><code class="varname">KEYMAP=</code>, </span><span class="term"><code class="varname">KEYMAP_TOGGLE=</code></span><a class="headerlink" title="Permalink to this term" href="vconsole.conf.html#KEYMAP=">¶</a></dt><dd><p>Configures the key mapping table for the keyboard.
+        <code class="varname">KEYMAP=</code> defaults to "<code class="literal">us</code>" if not set. The
+        <code class="varname">KEYMAP_TOGGLE=</code> can be used to configure a second toggle keymap and is by
+        default unset.</p></dd><dt id="FONT="><span class="term"><code class="varname">FONT=</code>, </span><span class="term"><code class="varname">FONT_MAP=</code>, </span><span class="term"><code class="varname">FONT_UNIMAP=</code></span><a class="headerlink" title="Permalink to this term" href="vconsole.conf.html#FONT=">¶</a></dt><dd><p>Configures the console font, the console map
+        and the unicode font map.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Kernel Command Line">Kernel Command Line<a class="headerlink" title="Permalink to this headline" href="vconsole.conf.html#Kernel%20Command%20Line">¶</a></h2><p>A few configuration parameters from <code class="filename">vconsole.conf</code> may be overridden
+    on the kernel command line:</p><div class="variablelist"><dl class="variablelist"><dt id="vconsole.keymap="><span class="term"><code class="varname">vconsole.keymap=</code>, </span><span class="term"><code class="varname">vconsole.keymap_toggle=</code></span><a class="headerlink" title="Permalink to this term" href="vconsole.conf.html#vconsole.keymap=">¶</a></dt><dd><p>Overrides <code class="varname">KEYMAP=</code> and <code class="varname">KEYMAP_TOGGLE=</code>.
+        </p></dd><dt id="vconsole.font="><span class="term"><code class="varname">vconsole.font=</code>, </span><span class="term"><code class="varname">vconsole.font_map=</code>, </span><span class="term"><code class="varname">vconsole.font_unimap=</code></span><a class="headerlink" title="Permalink to this term" href="vconsole.conf.html#vconsole.font=">¶</a></dt><dd><p>Overrides <code class="varname">FONT=</code>, <code class="varname">FONT_MAP=</code>, and
+        <code class="varname">FONT_UNIMAP=</code>.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Example">Example<a class="headerlink" title="Permalink to this headline" href="vconsole.conf.html#Example">¶</a></h2><div class="example"><a name="id-1.8.2"></a><p class="title"><b>Example 1. German keyboard and console</b></p><div class="example-contents"><p><code class="filename">/etc/vconsole.conf</code>:</p><pre class="programlisting">KEYMAP=de-latin1
+FONT=eurlatgr</pre></div></div><br class="example-break"></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="vconsole.conf.html#See%20Also">¶</a></h2><p>
+        <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+        <a href="systemd-vconsole-setup.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-vconsole-setup.service</span>(8)</span></a>,
+        <a href="https://www.mankier.com/1/loadkeys"><span class="citerefentry"><span class="refentrytitle">loadkeys</span>(1)</span></a>,
+        <a href="http://linux.die.net/man/8/setfont"><span class="citerefentry"><span class="refentrytitle">setfont</span>(8)</span></a>,
+        <a href="http://man7.org/linux/man-pages/man5/locale.conf.5.html"><span class="citerefentry"><span class="refentrytitle">locale.conf</span>(5)</span></a>,
+        <a href="systemd-localed.service.html#"><span class="citerefentry"><span class="refentrytitle">systemd-localed.service</span>(8)</span></a>
+      </p></div></div></body></html>

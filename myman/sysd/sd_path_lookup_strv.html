@@ -1,0 +1,136 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>sd_path_lookup</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="sd_path_lookup"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>sd_path_lookup, sd_path_lookup_strv — Query well-known file system paths</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;systemd/sd-path.h&gt;</pre><pre class="funcsynopsisinfo"><span class="token">enum</span> {
+        <code class="constant">SD_PATH_TEMPORARY</code>,
+        <code class="constant">SD_PATH_TEMPORARY_LARGE</code>,
+
+        <code class="constant">SD_PATH_SYSTEM_BINARIES</code>,
+        <code class="constant">SD_PATH_SYSTEM_INCLUDE</code>,
+        <code class="constant">SD_PATH_SYSTEM_LIBRARY_PRIVATE</code>,
+        <code class="constant">SD_PATH_SYSTEM_LIBRARY_ARCH</code>,
+        <code class="constant">SD_PATH_SYSTEM_SHARED</code>,
+        <code class="constant">SD_PATH_SYSTEM_CONFIGURATION_FACTORY</code>,
+        <code class="constant">SD_PATH_SYSTEM_STATE_FACTORY</code>,
+
+        <code class="constant">SD_PATH_SYSTEM_CONFIGURATION</code>,
+        <code class="constant">SD_PATH_SYSTEM_RUNTIME</code>,
+        <code class="constant">SD_PATH_SYSTEM_RUNTIME_LOGS</code>,
+        <code class="constant">SD_PATH_SYSTEM_STATE_PRIVATE</code>,
+        <code class="constant">SD_PATH_SYSTEM_STATE_LOGS</code>,
+        <code class="constant">SD_PATH_SYSTEM_STATE_CACHE</code>,
+        <code class="constant">SD_PATH_SYSTEM_STATE_SPOOL</code>,
+
+        <code class="constant">SD_PATH_USER_BINARIES</code>,
+        <code class="constant">SD_PATH_USER_LIBRARY_PRIVATE</code>,
+        <code class="constant">SD_PATH_USER_LIBRARY_ARCH</code>,
+        <code class="constant">SD_PATH_USER_SHARED</code>,
+
+        <code class="constant">SD_PATH_USER_CONFIGURATION</code>,
+        <code class="constant">SD_PATH_USER_RUNTIME</code>,
+        <code class="constant">SD_PATH_USER_STATE_CACHE</code>,
+
+        <code class="constant">SD_PATH_USER</code>,
+        <code class="constant">SD_PATH_USER_DOCUMENTS</code>,
+        <code class="constant">SD_PATH_USER_MUSIC</code>,
+        <code class="constant">SD_PATH_USER_PICTURES</code>,
+        <code class="constant">SD_PATH_USER_VIDEOS</code>,
+        <code class="constant">SD_PATH_USER_DOWNLOAD</code>,
+        <code class="constant">SD_PATH_USER_PUBLIC</code>,
+        <code class="constant">SD_PATH_USER_TEMPLATES</code>,
+        <code class="constant">SD_PATH_USER_DESKTOP</code>,
+
+        <code class="constant">SD_PATH_SEARCH_BINARIES</code>,
+        <code class="constant">SD_PATH_SEARCH_BINARIES_DEFAULT</code>,
+        <code class="constant">SD_PATH_SEARCH_LIBRARY_PRIVATE</code>,
+        <code class="constant">SD_PATH_SEARCH_LIBRARY_ARCH</code>,
+        <code class="constant">SD_PATH_SEARCH_SHARED</code>,
+        <code class="constant">SD_PATH_SEARCH_CONFIGURATION_FACTORY</code>,
+        <code class="constant">SD_PATH_SEARCH_STATE_FACTORY</code>,
+        <code class="constant">SD_PATH_SEARCH_CONFIGURATION</code>,
+
+        <code class="constant">SD_PATH_SYSTEMD_UTIL</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SYSTEM_UNIT</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SYSTEM_PRESET</code>,
+        <code class="constant">SD_PATH_SYSTEMD_USER_UNIT</code>,
+        <code class="constant">SD_PATH_SYSTEMD_USER_PRESET</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SYSTEM_CONF</code>,
+        <code class="constant">SD_PATH_SYSTEMD_USER_CONF</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SEARCH_SYSTEM_UNIT</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SEARCH_USER_UNIT</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SYSTEM_GENERATOR</code>,
+        <code class="constant">SD_PATH_SYSTEMD_USER_GENERATOR</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SEARCH_SYSTEM_GENERATOR</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SEARCH_USER_GENERATOR</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SLEEP</code>,
+        <code class="constant">SD_PATH_SYSTEMD_SHUTDOWN</code>,
+
+        <code class="constant">SD_PATH_TMPFILES</code>,
+        <code class="constant">SD_PATH_SYSUSERS</code>,
+        <code class="constant">SD_PATH_SYSCTL</code>,
+        <code class="constant">SD_PATH_BINFMT</code>,
+        <code class="constant">SD_PATH_MODULES_LOAD</code>,
+        <code class="constant">SD_PATH_CATALOG</code>,
+
+        <code class="constant">SD_PATH_SYSTEMD_SEARCH_NETWORK</code>,
+};</pre><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_path_lookup</b>(</code></td><td>uint64_t <var class="pdparam">type</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">suffix</var>, </td></tr><tr><td> </td><td>char **<var class="pdparam">paths</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">int <b class="fsfunc">sd_path_lookup_strv</b>(</code></td><td>uint64_t <var class="pdparam">type</var>, </td></tr><tr><td> </td><td>const char *<var class="pdparam">suffix</var>, </td></tr><tr><td> </td><td>char ***<var class="pdparam">paths</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="sd_path_lookup_strv.html#Description">¶</a></h2><p><code class="function">sd_path_lookup()</code> and <code class="function">sd_bus_path_lookup_strv()</code> return a
+    single path or set of file system paths specified by the argument <em class="parameter"><code>type</code></em>. In case of
+    <code class="function">sd_path_lookup()</code> a single <code class="constant">NUL</code>-terminated string is returned.
+    When <em class="parameter"><code>type</code></em> specifies a set of paths, they are concatenated using
+    "<code class="literal">:</code>" as a separator (as is traditionally done for e.g. <code class="varname">$PATH</code> or
+    <code class="varname">$LD_LIBRARY_PATH</code>). In case of <code class="function">sd_path_lookup_strv()</code> a
+    <code class="constant">NULL</code>-terminated array of strings is returned (strv). If suffix
+    <em class="parameter"><code>suffix</code></em> is given, it is concatenated to each of the paths after a slash
+    ("<code class="literal">/</code>"). All returned paths are absolute.</p><p>For paths which refer to user directories, the relevant XDG standard is followed, with support for
+    environment variables like <code class="varname">$XDG_DOCUMENTS_DIR</code>, <code class="varname">$XDG_DESKTOP_DIR</code>,
+    ..., and explicit configuration in <code class="filename">/etc/xdg/user-dirs.conf</code> or
+    <code class="filename">${XDG_CONFIG_HOME}/user-dirs.dirs</code>. See
+    <a class="ulink" href="https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html" target="_top">
+      XDG Base Directory Specification</a> for details.</p><p><a href="systemd-path.html#"><span class="citerefentry"><span class="refentrytitle">systemd-path</span>(1)</span></a> is
+    a wrapper around <code class="function">sd_path_lookup()</code> and allows the same set of paths to be queried.
+    </p></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Return Value">Return Value<a class="headerlink" title="Permalink to this headline" href="sd_path_lookup_strv.html#Return%20Value">¶</a></h2><p>On success, <code class="function">sd_path_lookup()</code> and <code class="function">sd_path_lookup_strv()</code>
+    return a non-negative integer. On failure, a negative errno-style error number is returned by either
+    function.</p><p>The returned string or string array (strv) must be
+    <a href="http://man7.org/linux/man-pages/man3/free.3.html"><span class="citerefentry"><span class="refentrytitle">free</span>(3)</span></a>'d by the
+    caller.</p><div class="refsect2"><a name="errors"></a><h3 id="Errors">Errors<a class="headerlink" title="Permalink to this headline" href="sd_path_lookup_strv.html#Errors">¶</a></h3><p>Returned errors may indicate the following problems:</p><div class="variablelist"><dl class="variablelist"><dt id="-EOPNOTSUPP"><span class="term"><code class="constant">-EOPNOTSUPP</code></span><a class="headerlink" title="Permalink to this term" href="sd_path_lookup_strv.html#-EOPNOTSUPP">¶</a></dt><dd><p>Unknown identifier <em class="parameter"><code>type</code></em>.</p></dd><dt id="-EINVAL"><span class="term"><code class="constant">-EINVAL</code></span><a class="headerlink" title="Permalink to this term" href="sd_path_lookup_strv.html#-EINVAL">¶</a></dt><dd><p>Output argument is <code class="constant">NULL</code>.</p></dd><dt id="-ENXIO"><span class="term"><code class="constant">-ENXIO</code></span><a class="headerlink" title="Permalink to this term" href="sd_path_lookup_strv.html#-ENXIO">¶</a></dt><dd><p>Query failed because of an undefined environment variable (e.g. for
+          <code class="constant">SD_PATH_USER_RUNTIME</code> when <code class="varname">$XDG_RUNTIME_DIR</code> is not
+          defined).</p></dd><dt id="-ENOMEM"><span class="term"><code class="constant">-ENOMEM</code></span><a class="headerlink" title="Permalink to this term" href="sd_path_lookup_strv.html#-ENOMEM">¶</a></dt><dd><p>Memory allocation failed.</p></dd></dl></div></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Examples">Examples<a class="headerlink" title="Permalink to this headline" href="sd_path_lookup_strv.html#Examples">¶</a></h2><div class="refsect2"><a name="id-1.7.2"></a><h3 id="Look up the location of ~/Documents">Look up the location of ~/Documents<a class="headerlink" title="Permalink to this headline" href="sd_path_lookup_strv.html#Look%20up%20the%20location%20of%20~/Documents">¶</a></h3><pre class="programlisting">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sd-path.h&gt;
+
+int main(void) {
+  int r;
+  char *t;
+
+  r = sd_path_lookup(SD_PATH_USER_DOCUMENTS, NULL, &amp;t);
+  if (r &lt; 0)
+    return EXIT_FAILURE;
+
+  printf("~/Documents: %s\n", t);
+  free(t);
+
+  return EXIT_SUCCESS;
+}
+</pre><p>Note that the default answer of <code class="filename">$HOME/Documents</code> may be
+      overridden by <code class="filename">user-dirs.conf</code> or
+      <code class="varname">$XDG_DOCUMENTS_DIR</code>.</p></div></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Notes">Notes<a class="headerlink" title="Permalink to this headline" href="sd_path_lookup_strv.html#Notes">¶</a></h2><p><a name="pkgconfig-text"></a>These APIs are implemented as a shared
+  library, which can be compiled and linked to with the
+  <code class="constant">libsystemd</code> <a href="http://linux.die.net/man/1/pkg-config"><span class="citerefentry"><span class="refentrytitle">pkg-config</span>(1)</span></a>
+  file.</p></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="sd_path_lookup_strv.html#See%20Also">¶</a></h2><p>
+      <a href="systemd-path.html#"><span class="citerefentry"><span class="refentrytitle">systemd-path</span>(1)</span></a>
+    </p></div></div></body></html>

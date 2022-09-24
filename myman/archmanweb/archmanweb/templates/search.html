@@ -1,0 +1,110 @@
+{% extends "index.html" %}
+{% load query_transform %}
+{% load reverse_man_url %}
+{% load pagination_links %}
+
+{% block head %}
+    <meta name="robots" value="noindex">
+{% endblock %}
+
+{% block current_search_term %}{{ request.GET.q }}{% endblock %}
+
+{% block content %}
+<article>
+
+<section class="filter-parameters box">
+    <h2>Manual page search parameters</h2>
+
+    <form action="{% url 'search' %}" class="search" role="search">
+        {{ search_form.non_field_errors }}
+        <fieldset>
+            <legend>Enter search parameters</legend>
+            {# fieldset cannot be a flex container: https://stackoverflow.com/q/28078681 #}
+            <div class="flex-container">
+            {% for field in search_form %}
+            {% if not field.is_hidden %}
+            <div>
+                <label for="{{ field.id_for_label }}" title="{{ field.help_text }}">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+            {% endif %}
+            {% endfor %}
+            <div>
+                <label>&nbsp;</label>
+                <input title="Search for manuals using these criteria" type="submit" value="Search" />
+            </div>
+            </div>
+        </fieldset>
+    </form>
+</section>
+
+{% if request.GET.q and search_form.is_valid %}
+<section class="search-results">
+    <h2>Results in manual names</h2>
+    <ol start="{{ man_results.start_index }}">
+    {% for man in man_results %}
+        <li>
+            <a href="{% reverse_man_url man.package__repo man.package__name man.name man.section man.lang '' %}">{{ man.name }}({{ man.section }})</a>
+            [{{ man.lang }}]
+            (from the <a href="{% url 'listing' %}/{{ man.package__repo }}/{{ man.package__name }}/">{{ man.package__repo }}/{{ man.package__name }}</a> package)
+        </li>
+    {% empty %}
+        No results.
+    {% endfor%}
+    </ol>
+
+    {% if man_results.paginator.num_pages != 1 %}
+        {% pagination_links request man_results 'page_man' %}
+    {% endif %}
+</section>
+
+<section class="search-results">
+    <h2>Results in manual descriptions ("apropos")</h2>
+    <ol start="{{ apropos_results.start_index }}">
+    {% for man in apropos_results %}
+        <li>
+            <dl>
+                <dt>
+                    <a href="{% reverse_man_url man.package__repo man.package__name man.name man.section man.lang '' %}">{{ man.name }}({{ man.section }})</a>
+                    [{{ man.lang }}]
+                    (from the <a href="{% url 'listing' %}/{{ man.package__repo }}/{{ man.package__name }}/">{{ man.package__repo }}/{{ man.package__name }}</a> package)
+                </dt>
+                <dd>{{ man.desc_snippet | safe }}</dd>
+            </dl>
+        </li>
+    {% empty %}
+        No results.
+    {% endfor%}
+    </ol>
+
+    {% if apropos_results.paginator.num_pages != 1 %}
+        {% pagination_links request apropos_results 'page_apropos' %}
+    {% endif %}
+</section>
+
+<section class="search-results">
+    <h2>Results in package names and descriptions</h2>
+    <ol start="{{ pkg_results.start_index }}">
+    {% for pkg in pkg_results %}
+        <li>
+            <dl>
+                <dt><a href="{% url 'listing' %}/{{ pkg.repo }}/{{ pkg.name }}/">{{ pkg.repo }}/{{ pkg.name }}</a></dt>
+                <dd>{{ pkg.desc_snippet | safe }}</dd>
+            </dl>
+        </li>
+    {% empty %}
+        No results.
+    {% endfor%}
+    </ol>
+
+    {% if pkg_results.paginator.num_pages != 1 %}
+        {% pagination_links request pkg_results 'page_pkg' %}
+    {% endif %}
+</section>
+{% endif %}
+
+</article>
+{% endblock %}

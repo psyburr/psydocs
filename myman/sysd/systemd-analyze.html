@@ -1,0 +1,511 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>systemd-analyze</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><style>
+    a.headerlink {
+      color: #c60f0f;
+      font-size: 0.8em;
+      padding: 0 4px 0 4px;
+      text-decoration: none;
+      visibility: hidden;
+    }
+
+    a.headerlink:hover {
+      background-color: #c60f0f;
+      color: white;
+    }
+
+    h1:hover > a.headerlink, h2:hover > a.headerlink, h3:hover > a.headerlink, dt:hover > a.headerlink {
+      visibility: visible;
+    }
+  </style><a href="index.html">Index </a>·
+  <a href="systemd.directives.html">Directives </a><span style="float:right">systemd 249</span><hr><div class="refentry"><a name="systemd-analyze"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>systemd-analyze — Analyze and debug system manager</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...] [time]</p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  blame </p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  critical-chain  [<em class="replaceable"><code>UNIT</code></em>...]</p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  dump </p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  plot  [&gt;file.svg]</p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  dot  [<em class="replaceable"><code>PATTERN</code></em>...] [&gt;file.dot]</p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  unit-paths </p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  exit-status  [<em class="replaceable"><code>STATUS</code></em>...]</p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  capability  [<em class="replaceable"><code>CAPABILITY</code></em>...]</p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  condition   <em class="replaceable"><code>CONDITION</code></em>… </p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  syscall-filter  [<em class="replaceable"><code>SET</code></em>…]</p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  calendar   <em class="replaceable"><code>SPEC</code></em>... </p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  timestamp   <em class="replaceable"><code>TIMESTAMP</code></em>... </p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  timespan   <em class="replaceable"><code>SPAN</code></em>... </p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  cat-config   <em class="replaceable"><code>NAME</code></em>|<em class="replaceable"><code>PATH</code></em>... </p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  verify  [<em class="replaceable"><code>FILE</code></em>...]</p></div><div class="cmdsynopsis"><p><code class="command">systemd-analyze</code>  [OPTIONS...]  security   <em class="replaceable"><code>UNIT</code></em>... </p></div></div><div class="refsect1"><a name="id-1.5"></a><h2 id="Description">Description<a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#Description">¶</a></h2><p><span class="command"><strong>systemd-analyze</strong></span> may be used to determine
+    system boot-up performance statistics and retrieve other state and
+    tracing information from the system and service manager, and to
+    verify the correctness of unit files. It is also used to access
+    special functions useful for advanced system manager debugging.</p><p>If no command is passed, <span class="command"><strong>systemd-analyze
+    time</strong></span> is implied.</p><div class="refsect2"><a name="id-1.5.4"></a><h3 id="systemd-analyze time"><span class="command"><strong>systemd-analyze time</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20time">¶</a></h3><p>This command prints the time spent in the kernel before userspace has been reached, the time
+      spent in the initial RAM disk (initrd) before normal system userspace has been reached, and the time
+      normal system userspace took to initialize. Note that these measurements simply measure the time passed
+      up to the point where all system services have been spawned, but not necessarily until they fully
+      finished initialization or the disk is idle.</p><div class="example"><a name="id-1.5.4.3"></a><p class="title"><b>Example 1. <span class="command">Show how long the boot took</span></b></p><div class="example-contents"><pre class="programlisting"># in a container
+$ systemd-analyze time
+Startup finished in 296ms (userspace)
+multi-user.target reached after 275ms in userspace
+
+# on a real machine
+$ systemd-analyze time
+Startup finished in 2.584s (kernel) + 19.176s (initrd) + 47.847s (userspace) = 1min 9.608s
+multi-user.target reached after 47.820s in userspace
+</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.5"></a><h3 id="systemd-analyze blame"><span class="command"><strong>systemd-analyze blame</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20blame">¶</a></h3><p>This command prints a list of all running units, ordered by the time they took to initialize.
+      This information may be used to optimize boot-up times. Note that the output might be misleading as the
+      initialization of one service might be slow simply because it waits for the initialization of another
+      service to complete.  Also note: <span class="command"><strong>systemd-analyze blame</strong></span> doesn't display results for
+      services with <code class="varname">Type=simple</code>, because systemd considers such services to be started
+      immediately, hence no measurement of the initialization delays can be done. Also note that this command
+      only shows the time units took for starting up, it does not show how long unit jobs spent in the
+      execution queue. In particular it shows the time units spent in "<code class="literal">activating</code>" state,
+      which is not defined for units such as device units that transition directly from
+      "<code class="literal">inactive</code>" to "<code class="literal">active</code>". This command hence gives an impression of the
+      performance of program code, but cannot accurately reflect latency introduced by waiting for
+      hardware and similar events.</p><div class="example"><a name="id-1.5.5.3"></a><p class="title"><b>Example 2. <span class="command">Show which units took the most time during boot</span></b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze blame
+         32.875s pmlogger.service
+         20.905s systemd-networkd-wait-online.service
+         13.299s dev-vda1.device
+         ...
+            23ms sysroot.mount
+            11ms initrd-udevadm-cleanup-db.service
+             3ms sys-kernel-config.mount
+        </pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.6"></a><h3 id="systemd-analyze critical-chain [UNIT...]"><span class="command"><strong>systemd-analyze critical-chain [<span class="optional"><em class="replaceable"><code>UNIT</code></em>...</span>]</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20critical-chain%20%5BUNIT...%5D">¶</a></h3><p>This command prints a tree of the time-critical chain of units (for each of the specified
+      <em class="replaceable"><code>UNIT</code></em>s or for the default target otherwise). The time after the unit is
+      active or started is printed after the "@" character. The time the unit takes to start is printed after
+      the "+" character. Note that the output might be misleading as the initialization of services might
+      depend on socket activation and because of the parallel execution of units. Also, similar to the
+      <span class="command"><strong>blame</strong></span> command, this only takes into account the time units spent in
+      "<code class="literal">activating</code>" state, and hence does not cover units that never went through an
+      "<code class="literal">activating</code>" state (such as device units that transition directly from
+      "<code class="literal">inactive</code>" to "<code class="literal">active</code>"). Moreover it does not show information on
+      jobs (and in particular not jobs that timed out).</p><div class="example"><a name="id-1.5.6.3"></a><p class="title"><b>Example 3. <span class="command">systemd-analyze critical-chain</span></b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze critical-chain
+multi-user.target @47.820s
+└─pmie.service @35.968s +548ms
+  └─pmcd.service @33.715s +2.247s
+    └─network-online.target @33.712s
+      └─systemd-networkd-wait-online.service @12.804s +20.905s
+        └─systemd-networkd.service @11.109s +1.690s
+          └─systemd-udevd.service @9.201s +1.904s
+            └─systemd-tmpfiles-setup-dev.service @7.306s +1.776s
+              └─kmod-static-nodes.service @6.976s +177ms
+                └─systemd-journald.socket
+                  └─system.slice
+                    └─-.slice
+</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.7"></a><h3 id="systemd-analyze dump"><span class="command"><strong>systemd-analyze dump</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20dump">¶</a></h3><p>This command outputs a (usually very long) human-readable serialization of the complete server
+      state. Its format is subject to change without notice and should not be parsed by applications.</p><div class="example"><a name="id-1.5.7.3"></a><p class="title"><b>Example 4. Show the internal state of user manager</b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze --user dump
+Timestamp userspace: Thu 2019-03-14 23:28:07 CET
+Timestamp finish: Thu 2019-03-14 23:28:07 CET
+Timestamp generators-start: Thu 2019-03-14 23:28:07 CET
+Timestamp generators-finish: Thu 2019-03-14 23:28:07 CET
+Timestamp units-load-start: Thu 2019-03-14 23:28:07 CET
+Timestamp units-load-finish: Thu 2019-03-14 23:28:07 CET
+-&gt; Unit proc-timer_list.mount:
+        Description: /proc/timer_list
+        ...
+-&gt; Unit default.target:
+        Description: Main user target
+...
+</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.8"></a><h3 id="systemd-analyze plot"><span class="command"><strong>systemd-analyze plot</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20plot">¶</a></h3><p>This command prints an SVG graphic detailing which system services have been started at what
+      time, highlighting the time they spent on initialization.</p><div class="example"><a name="id-1.5.8.3"></a><p class="title"><b>Example 5. <span class="command">Plot a bootchart</span></b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze plot &gt;bootup.svg
+$ eog bootup.svg&amp;
+</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.9"></a><h3 id="systemd-analyze dot [pattern...]"><span class="command"><strong>systemd-analyze dot [<em class="replaceable"><code>pattern</code></em>...]</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20dot%20%5Bpattern...%5D">¶</a></h3><p>This command generates textual dependency graph description in dot format for further processing
+      with the GraphViz
+      <a href="http://linux.die.net/man/1/dot"><span class="citerefentry"><span class="refentrytitle">dot</span>(1)</span></a>
+      tool. Use a command line like <span class="command"><strong>systemd-analyze dot | dot -Tsvg &gt;systemd.svg</strong></span> to
+      generate a graphical dependency tree. Unless <code class="option">--order</code> or <code class="option">--require</code> is
+      passed, the generated graph will show both ordering and requirement dependencies. Optional pattern
+      globbing style specifications (e.g. <code class="filename">*.target</code>) may be given at the end. A unit
+      dependency is included in the graph if any of these patterns match either the origin or destination
+      node.</p><div class="example"><a name="id-1.5.9.3"></a><p class="title"><b>Example 6. Plot all dependencies of any unit whose name starts with "<code class="literal">avahi-daemon</code>"
+        </b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze dot 'avahi-daemon.*' | dot -Tsvg &gt;avahi.svg
+$ eog avahi.svg</pre></div></div><br class="example-break"><div class="example"><a name="id-1.5.9.4"></a><p class="title"><b>Example 7. Plot the dependencies between all known target units</b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze dot --to-pattern='*.target' --from-pattern='*.target' \
+      | dot -Tsvg &gt;targets.svg
+$ eog targets.svg</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.10"></a><h3 id="systemd-analyze unit-paths"><span class="command"><strong>systemd-analyze unit-paths</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20unit-paths">¶</a></h3><p>This command outputs a list of all directories from which unit files, <code class="filename">.d</code>
+      overrides, and <code class="filename">.wants</code>, <code class="filename">.requires</code> symlinks may be
+      loaded. Combine with <code class="option">--user</code> to retrieve the list for the user manager instance, and
+      <code class="option">--global</code> for the global configuration of user manager instances.</p><div class="example"><a name="id-1.5.10.3"></a><p class="title"><b>Example 8. <span class="command">Show all paths for generated units</span></b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze unit-paths | grep '^/run'
+/run/systemd/system.control
+/run/systemd/transient
+/run/systemd/generator.early
+/run/systemd/system
+/run/systemd/system.attached
+/run/systemd/generator
+/run/systemd/generator.late
+</pre></div></div><br class="example-break"><p>Note that this verb prints the list that is compiled into <span class="command"><strong>systemd-analyze</strong></span>
+      itself, and does not communicate with the running manager. Use
+      </p><pre class="programlisting">systemctl [--user] [--global] show -p UnitPath --value</pre><p>
+      to retrieve the actual list that the manager uses, with any empty directories omitted.</p></div><div class="refsect2"><a name="id-1.5.11"></a><h3 id="systemd-analyze exit-status [STATUS...]"><span class="command"><strong>systemd-analyze exit-status [<span class="optional"><em class="replaceable"><code>STATUS</code></em>...</span>]</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20exit-status%20%5BSTATUS...%5D">¶</a></h3><p>This command prints a list of exit statuses along with their "class", i.e. the source of the
+      definition (one of "<code class="literal">glibc</code>", "<code class="literal">systemd</code>", "<code class="literal">LSB</code>", or
+      "<code class="literal">BSD</code>"), see the Process Exit Codes section in
+      <a href="systemd.exec.html#"><span class="citerefentry"><span class="refentrytitle">systemd.exec</span>(5)</span></a>.
+      If no additional arguments are specified, all known statuses are shown. Otherwise, only the
+      definitions for the specified codes are shown.</p><div class="example"><a name="id-1.5.11.3"></a><p class="title"><b>Example 9. <span class="command">Show some example exit status names</span></b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze exit-status 0 1 {63..65}
+NAME    STATUS CLASS
+SUCCESS 0      glibc
+FAILURE 1      glibc
+-       63     -
+USAGE   64     BSD
+DATAERR 65     BSD
+</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.12"></a><h3 id="systemd-analyze capability [CAPABILITY...]"><span class="command"><strong>systemd-analyze capability [<span class="optional"><em class="replaceable"><code>CAPABILITY</code></em>...</span>]</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20capability%20%5BCAPABILITY...%5D">¶</a></h3><p>This command prints a list of Linux capabilities along with their numeric IDs. See <a href="http://man7.org/linux/man-pages/man7/capabilities.7.html"><span class="citerefentry"><span class="refentrytitle">capabilities</span>(7)</span></a>
+      for details. If no argument is specified the full list of capabilities known to the service manager and
+      the kernel is shown. Capabilities defined by the kernel but not known to the service manager are shown
+      as "<code class="literal">cap_???</code>". Optionally, if arguments are specified they may refer to specific
+      cabilities by name or numeric ID, in which case only the indicated capabilities are shown in the
+      table.</p><div class="example"><a name="id-1.5.12.3"></a><p class="title"><b>Example 10. <span class="command">Show some example capability names</span></b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze capability 0 1 {30..32}
+NAME              NUMBER
+cap_chown              0
+cap_dac_override       1
+cap_audit_control     30
+cap_setfcap           31
+cap_mac_override      32</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.13"></a><h3 id="systemd-analyze condition CONDITION..."><span class="command"><strong>systemd-analyze condition <em class="replaceable"><code>CONDITION</code></em>...</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20condition%20CONDITION...">¶</a></h3><p>This command will evaluate <code class="varname">Condition*=...</code> and
+      <code class="varname">Assert*=...</code> assignments, and print their values, and
+      the resulting value of the combined condition set. See
+      <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>
+      for a list of available conditions and asserts.</p><div class="example"><a name="id-1.5.13.3"></a><p class="title"><b>Example 11. Evaluate conditions that check kernel versions</b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze condition 'ConditionKernelVersion = ! &lt;4.0' \
+        'ConditionKernelVersion = &gt;=5.1' \
+        'ConditionACPower=|false' \
+        'ConditionArchitecture=|!arm' \
+        'AssertPathExists=/etc/os-release'
+test.service: AssertPathExists=/etc/os-release succeeded.
+Asserts succeeded.
+test.service: ConditionArchitecture=|!arm succeeded.
+test.service: ConditionACPower=|false failed.
+test.service: ConditionKernelVersion=&gt;=5.1 succeeded.
+test.service: ConditionKernelVersion=!&lt;4.0 succeeded.
+Conditions succeeded.</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.14"></a><h3 id="systemd-analyze syscall-filter [SET...]"><span class="command"><strong>systemd-analyze syscall-filter [<span class="optional"><em class="replaceable"><code>SET</code></em>...</span>]</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20syscall-filter%20%5BSET...%5D">¶</a></h3><p>This command will list system calls contained in the specified system call set
+      <em class="replaceable"><code>SET</code></em>, or all known sets if no sets are specified. Argument
+      <em class="replaceable"><code>SET</code></em> must include the "<code class="literal">@</code>" prefix.</p></div><div class="refsect2"><a name="id-1.5.15"></a><h3 id="systemd-analyze calendar EXPRESSION..."><span class="command"><strong>systemd-analyze calendar <em class="replaceable"><code>EXPRESSION</code></em>...</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20calendar%20EXPRESSION...">¶</a></h3><p>This command will parse and normalize repetitive calendar time events, and will calculate when
+      they elapse next. This takes the same input as the <code class="varname">OnCalendar=</code> setting in
+      <a href="systemd.timer.html#"><span class="citerefentry"><span class="refentrytitle">systemd.timer</span>(5)</span></a>,
+      following the syntax described in
+      <a href="systemd.time.html#"><span class="citerefentry"><span class="refentrytitle">systemd.time</span>(7)</span></a>. By
+      default, only the next time the calendar expression will elapse is shown; use
+      <code class="option">--iterations=</code> to show the specified number of next times the expression
+      elapses. Each time the expression elapses forms a timestamp, see the <span class="command"><strong>timestamp</strong></span>
+      verb below.</p><div class="example"><a name="id-1.5.15.3"></a><p class="title"><b>Example 12. Show leap days in the near future</b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze calendar --iterations=5 '*-2-29 0:0:0'
+  Original form: *-2-29 0:0:0
+Normalized form: *-02-29 00:00:00
+    Next elapse: Sat 2020-02-29 00:00:00 UTC
+       From now: 11 months 15 days left
+       Iter. #2: Thu 2024-02-29 00:00:00 UTC
+       From now: 4 years 11 months left
+       Iter. #3: Tue 2028-02-29 00:00:00 UTC
+       From now: 8 years 11 months left
+       Iter. #4: Sun 2032-02-29 00:00:00 UTC
+       From now: 12 years 11 months left
+       Iter. #5: Fri 2036-02-29 00:00:00 UTC
+       From now: 16 years 11 months left
+</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.16"></a><h3 id="systemd-analyze timestamp TIMESTAMP..."><span class="command"><strong>systemd-analyze timestamp <em class="replaceable"><code>TIMESTAMP</code></em>...</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20timestamp%20TIMESTAMP...">¶</a></h3><p>This command parses a timestamp (i.e. a single point in time) and outputs the normalized form and
+      the difference between this timestamp and now. The timestamp should adhere to the syntax documented in
+      <a href="systemd.time.html#"><span class="citerefentry"><span class="refentrytitle">systemd.time</span>(7)</span></a>,
+      section "PARSING TIMESTAMPS".</p><div class="example"><a name="id-1.5.16.3"></a><p class="title"><b>Example 13. Show parsing of timestamps</b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze timestamp yesterday now tomorrow
+  Original form: yesterday
+Normalized form: Mon 2019-05-20 00:00:00 CEST
+       (in UTC): Sun 2019-05-19 22:00:00 UTC
+   UNIX seconds: @15583032000
+       From now: 1 day 9h ago
+
+  Original form: now
+Normalized form: Tue 2019-05-21 09:48:39 CEST
+       (in UTC): Tue 2019-05-21 07:48:39 UTC
+   UNIX seconds: @1558424919.659757
+       From now: 43us ago
+
+  Original form: tomorrow
+Normalized form: Wed 2019-05-22 00:00:00 CEST
+       (in UTC): Tue 2019-05-21 22:00:00 UTC
+   UNIX seconds: @15584760000
+       From now: 14h left
+</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.17"></a><h3 id="systemd-analyze timespan EXPRESSION..."><span class="command"><strong>systemd-analyze timespan <em class="replaceable"><code>EXPRESSION</code></em>...</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20timespan%20EXPRESSION...">¶</a></h3><p>This command parses a time span (i.e. a difference between two timestamps) and outputs the
+      normalized form and the equivalent value in microseconds. The time span should adhere to the syntax
+      documented in
+      <a href="systemd.time.html#"><span class="citerefentry"><span class="refentrytitle">systemd.time</span>(7)</span></a>,
+      section "PARSING TIME SPANS". Values without units are parsed as seconds.</p><div class="example"><a name="id-1.5.17.3"></a><p class="title"><b>Example 14. Show parsing of timespans</b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze timespan 1s 300s '1year 0.000001s'
+Original: 1s
+      μs: 1000000
+   Human: 1s
+
+Original: 300s
+      μs: 300000000
+   Human: 5min
+
+Original: 1year 0.000001s
+      μs: 31557600000001
+   Human: 1y 1us
+</pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.18"></a><h3 id="systemd-analyze cat-config
+      NAME|PATH..."><span class="command"><strong>systemd-analyze cat-config</strong></span>
+      <em class="replaceable"><code>NAME</code></em>|<em class="replaceable"><code>PATH</code></em>...<a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20cat-config%0A%20%20%20%20%20%20NAME%7CPATH...">¶</a></h3><p>This command is similar to <span class="command"><strong>systemctl cat</strong></span>, but operates on config files. It
+      will copy the contents of a config file and any drop-ins to standard output, using the usual systemd
+      set of directories and rules for precedence. Each argument must be either an absolute path including
+      the prefix (such as <code class="filename">/etc/systemd/logind.conf</code> or
+      <code class="filename">/usr/lib/systemd/logind.conf</code>), or a name relative to the prefix (such as
+      <code class="filename">systemd/logind.conf</code>).</p><div class="example"><a name="id-1.5.18.3"></a><p class="title"><b>Example 15. Showing logind configuration</b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze cat-config systemd/logind.conf
+# /etc/systemd/logind.conf
+...
+[Login]
+NAutoVTs=8
+...
+
+# /usr/lib/systemd/logind.conf.d/20-test.conf
+... some override from another package
+
+# /etc/systemd/logind.conf.d/50-override.conf
+... some administrator override
+        </pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.19"></a><h3 id="systemd-analyze verify FILE..."><span class="command"><strong>systemd-analyze verify <em class="replaceable"><code>FILE</code></em>...</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20verify%20FILE...">¶</a></h3><p>This command will load unit files and print warnings if any errors are detected. Files specified
+      on the command line will be loaded, but also any other units referenced by them. The full unit search
+      path is formed by combining the directories for all command line arguments, and the usual unit load
+      paths. The variable <code class="varname">$SYSTEMD_UNIT_PATH</code> is supported, and may be used to replace or
+      augment the compiled in set of unit load paths; see
+      <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>. All
+      units files present in the directories containing the command line arguments will be used in preference
+      to the other paths.</p><p>The following errors are currently detected:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>unknown sections and directives,</p></li><li class="listitem"><p>missing dependencies which are required to start the given unit,</p></li><li class="listitem"><p>man pages listed in <code class="varname">Documentation=</code> which are not found in the
+        system,</p></li><li class="listitem"><p>commands listed in <code class="varname">ExecStart=</code> and similar which are not found in
+        the system or not executable.</p></li></ul></div><div class="example"><a name="id-1.5.19.5"></a><p class="title"><b>Example 16. Misspelt directives</b></p><div class="example-contents"><pre class="programlisting">$ cat ./user.slice
+[Unit]
+WhatIsThis=11
+Documentation=man:nosuchfile(1)
+Requires=different.service
+
+[Service]
+Description=x
+
+$ systemd-analyze verify ./user.slice
+[./user.slice:9] Unknown lvalue 'WhatIsThis' in section 'Unit'
+[./user.slice:13] Unknown section 'Service'. Ignoring.
+Error: org.freedesktop.systemd1.LoadFailed:
+   Unit different.service failed to load:
+   No such file or directory.
+Failed to create user.slice/start: Invalid argument
+user.slice: man nosuchfile(1) command failed with code 16
+        </pre></div></div><br class="example-break"><div class="example"><a name="id-1.5.19.6"></a><p class="title"><b>Example 17. Missing service units</b></p><div class="example-contents"><pre class="programlisting">$ tail ./a.socket ./b.socket
+==&gt; ./a.socket &lt;==
+[Socket]
+ListenStream=100
+
+==&gt; ./b.socket &lt;==
+[Socket]
+ListenStream=100
+Accept=yes
+
+$ systemd-analyze verify ./a.socket ./b.socket
+Service a.service not loaded, a.socket cannot be started.
+Service b@0.service not loaded, b.socket cannot be started.
+        </pre></div></div><br class="example-break"></div><div class="refsect2"><a name="id-1.5.20"></a><h3 id="systemd-analyze security [UNIT...]"><span class="command"><strong>systemd-analyze security [<span class="optional"><em class="replaceable"><code>UNIT</code></em>...</span>]</strong></span><a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#systemd-analyze%20security%20%5BUNIT...%5D">¶</a></h3><p>This command analyzes the security and sandboxing settings of one or more specified service
+      units. If at least one unit name is specified the security settings of the specified service units are
+      inspected and a detailed analysis is shown. If no unit name is specified, all currently loaded,
+      long-running service units are inspected and a terse table with results shown. The command checks for
+      various security-related service settings, assigning each a numeric "exposure level" value, depending
+      on how important a setting is. It then calculates an overall exposure level for the whole unit, which
+      is an estimation in the range 0.0…10.0 indicating how exposed a service is security-wise. High exposure
+      levels indicate very little applied sandboxing. Low exposure levels indicate tight sandboxing and
+      strongest security restrictions. Note that this only analyzes the per-service security features systemd
+      itself implements. This means that any additional security mechanisms applied by the service code
+      itself are not accounted for. The exposure level determined this way should not be misunderstood: a
+      high exposure level neither means that there is no effective sandboxing applied by the service code
+      itself, nor that the service is actually vulnerable to remote or local attacks. High exposure levels do
+      indicate however that most likely the service might benefit from additional settings applied to
+      them.</p><p>Please note that many of the security and sandboxing settings individually can be circumvented —
+      unless combined with others. For example, if a service retains the privilege to establish or undo mount
+      points many of the sandboxing options can be undone by the service code itself. Due to that is
+      essential that each service uses the most comprehensive and strict sandboxing and security settings
+      possible. The tool will take into account some of these combinations and relationships between the
+      settings, but not all. Also note that the security and sandboxing settings analyzed here only apply to
+      the operations executed by the service code itself. If a service has access to an IPC system (such as
+      D-Bus) it might request operations from other services that are not subject to the same
+      restrictions. Any comprehensive security and sandboxing analysis is hence incomplete if the IPC access
+      policy is not validated too.</p><div class="example"><a name="id-1.5.20.4"></a><p class="title"><b>Example 18. Analyze <code class="filename">systemd-logind.service</code></b></p><div class="example-contents"><pre class="programlisting">$ systemd-analyze security --no-pager systemd-logind.service
+  NAME                DESCRIPTION                              EXPOSURE
+✗ PrivateNetwork=     Service has access to the host's network      0.5
+✗ User=/DynamicUser=  Service runs as root user                     0.4
+✗ DeviceAllow=        Service has no device ACL                     0.2
+✓ IPAddressDeny=      Service blocks all IP address ranges
+...
+→ Overall exposure level for systemd-logind.service: 4.1 OK 🙂
+</pre></div></div><br class="example-break"></div></div><div class="refsect1"><a name="id-1.6"></a><h2 id="Options">Options<a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#Options">¶</a></h2><p>The following options are understood:</p><div class="variablelist"><dl class="variablelist"><dt id="--system"><span class="term"><code class="option">--system</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--system">¶</a></dt><dd><p>Operates on the system systemd instance. This
+        is the implied default.</p></dd><dt id="--user"><span class="term"><code class="option">--user</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--user">¶</a></dt><dd><p>Operates on the user systemd
+        instance.</p></dd><dt id="--global"><span class="term"><code class="option">--global</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--global">¶</a></dt><dd><p>Operates on the system-wide configuration for
+        user systemd instance.</p></dd><dt id="--order"><span class="term"><code class="option">--order</code>, </span><span class="term"><code class="option">--require</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--order">¶</a></dt><dd><p>When used in conjunction with the
+        <span class="command"><strong>dot</strong></span> command (see above), selects which
+        dependencies are shown in the dependency graph. If
+        <code class="option">--order</code> is passed, only dependencies of type
+        <code class="varname">After=</code> or <code class="varname">Before=</code> are
+        shown. If <code class="option">--require</code> is passed, only
+        dependencies of type <code class="varname">Requires=</code>,
+        <code class="varname">Requisite=</code>,
+        <code class="varname">Wants=</code> and <code class="varname">Conflicts=</code>
+        are shown. If neither is passed, this shows dependencies of
+        all these types.</p></dd><dt id="--from-pattern="><span class="term"><code class="option">--from-pattern=</code>, </span><span class="term"><code class="option">--to-pattern=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--from-pattern=">¶</a></dt><dd><p>When used in conjunction with the
+        <span class="command"><strong>dot</strong></span> command (see above), this selects which
+        relationships are shown in the dependency graph. Both options
+        require a
+        <a href="http://man7.org/linux/man-pages/man7/glob.7.html"><span class="citerefentry"><span class="refentrytitle">glob</span>(7)</span></a>
+        pattern as an argument, which will be matched against the
+        left-hand and the right-hand, respectively, nodes of a
+        relationship.</p><p>Each of these can be used more than once, in which case
+        the unit name must match one of the values. When tests for
+        both sides of the relation are present, a relation must pass
+        both tests to be shown. When patterns are also specified as
+        positional arguments, they must match at least one side of the
+        relation. In other words, patterns specified with those two
+        options will trim the list of edges matched by the positional
+        arguments, if any are given, and fully determine the list of
+        edges shown otherwise.</p></dd><dt id="--fuzz=timespan"><span class="term"><code class="option">--fuzz=</code><em class="replaceable"><code>timespan</code></em></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--fuzz=timespan">¶</a></dt><dd><p>When used in conjunction with the
+        <span class="command"><strong>critical-chain</strong></span> command (see above), also
+        show units, which finished <em class="replaceable"><code>timespan</code></em>
+        earlier, than the latest unit in the same level. The unit of
+        <em class="replaceable"><code>timespan</code></em> is seconds unless
+        specified with a different unit, e.g.
+        "50ms".</p></dd><dt id="--man=no"><span class="term"><code class="option">--man=no</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--man=no">¶</a></dt><dd><p>Do not invoke
+        <a href="http://man7.org/linux/man-pages/man1/man.1.html"><span class="citerefentry"><span class="refentrytitle">man</span>(1)</span></a>
+        to verify the existence of man pages listed in <code class="varname">Documentation=</code>.</p></dd><dt id="--generators"><span class="term"><code class="option">--generators</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--generators">¶</a></dt><dd><p>Invoke unit generators, see
+        <a href="systemd.generator.html#"><span class="citerefentry"><span class="refentrytitle">systemd.generator</span>(7)</span></a>.
+        Some generators require root privileges. Under a normal user, running with
+        generators enabled will generally result in some warnings.</p></dd><dt id="--recursive-errors=MODE"><span class="term"><code class="option">--recursive-errors=<em class="replaceable"><code>MODE</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--recursive-errors=MODE">¶</a></dt><dd><p>Control verification of units and their dependencies and whether
+        <span class="command"><strong>systemd-analyze verify</strong></span> exits with a non-zero process exit status or not. With
+        <span class="command"><strong>yes</strong></span>, return a non-zero process exit status when warnings arise during verification
+        of either the specified unit or any of its associated dependencies. This is the default. With
+        <span class="command"><strong>no</strong></span>, return a non-zero process exit status when warnings arise during verification
+        of only the specified unit. With <span class="command"><strong>one</strong></span>, return a non-zero process exit status when
+        warnings arise during verification of either the specified unit or its immediate dependencies. </p></dd><dt id="--root=PATH"><span class="term"><code class="option">--root=<em class="replaceable"><code>PATH</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--root=PATH">¶</a></dt><dd><p>With <span class="command"><strong>cat-files</strong></span> and <span class="command"><strong>verify</strong></span>,
+        operate on files underneath the specified root path <em class="replaceable"><code>PATH</code></em>.</p></dd><dt id="--image=PATH"><span class="term"><code class="option">--image=<em class="replaceable"><code>PATH</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--image=PATH">¶</a></dt><dd><p>With <span class="command"><strong>cat-files</strong></span> and <span class="command"><strong>verify</strong></span>,
+        operate on files inside the specified image path <em class="replaceable"><code>PATH</code></em>.</p></dd><dt id="--offline=BOOL"><span class="term"><code class="option">--offline=<em class="replaceable"><code>BOOL</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--offline=BOOL">¶</a></dt><dd><p>With <span class="command"><strong>security</strong></span>, perform an offline security review
+        of the specified unit file(s), i.e. does not have to rely on PID 1 to acquire security
+        information for the files like the <span class="command"><strong>security</strong></span> verb when used by itself does.
+        This means that <code class="option">--offline=</code> can be used with <code class="option">--root=</code> and
+        <code class="option">--image=</code> as well. If a unit's overall exposure level is above that set by
+        <code class="option">--threshold=</code> (default value is 100), <code class="option">--offline=</code> will return
+        an error.</p></dd><dt id="--threshold=NUMBER"><span class="term"><code class="option">--threshold=<em class="replaceable"><code>NUMBER</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--threshold=NUMBER">¶</a></dt><dd><p>With <span class="command"><strong>security</strong></span>, allow the user to set a custom value
+        to compare the overall exposure level with, for the specified unit file(s). If a unit's
+        overall exposure level, is greater than that set by the user, <span class="command"><strong>security</strong></span>
+        will return an error. <code class="option">--threshold=</code> can be used with <code class="option">--offline=</code>
+        as well and its default value is 100.</p></dd><dt id="--security-policy=PATH"><span class="term"><code class="option">--security-policy=<em class="replaceable"><code>PATH</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--security-policy=PATH">¶</a></dt><dd><p>With <span class="command"><strong>security</strong></span>, allow the user to define a custom set of
+        requirements formatted as a JSON file against which to compare the specified unit file(s)
+        and determine their overall exposure level to security threats.</p><div class="table"><a name="id-1.6.3.14.2.2"></a><p class="title"><b>Table 1. Accepted Assessment Test Identifiers</b></p><div class="table-contents"><table class="table" summary="Accepted Assessment Test Identifiers" border="1"><colgroup><col class="directive"></colgroup><thead><tr><th>Assessment Test Identifier</th></tr></thead><tbody><tr><td>UserOrDynamicUser</td></tr><tr><td>SupplementaryGroups</td></tr><tr><td>PrivateMounts</td></tr><tr><td>PrivateDevices</td></tr><tr><td>PrivateTmp</td></tr><tr><td>PrivateNetwork</td></tr><tr><td>PrivateUsers</td></tr><tr><td>ProtectControlGroups</td></tr><tr><td>ProtectKernelModules</td></tr><tr><td>ProtectKernelTunables</td></tr><tr><td>ProtectKernelLogs</td></tr><tr><td>ProtectClock</td></tr><tr><td>ProtectHome</td></tr><tr><td>ProtectHostname</td></tr><tr><td>ProtectSystem</td></tr><tr><td>RootDirectoryOrRootImage</td></tr><tr><td>LockPersonality</td></tr><tr><td>MemoryDenyWriteExecute</td></tr><tr><td>NoNewPrivileges</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_ADMIN</td></tr><tr><td>CapabilityBoundingSet_CAP_SET_UID_GID_PCAP</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_PTRACE</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_TIME</td></tr><tr><td>CapabilityBoundingSet_CAP_NET_ADMIN</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_RAWIO</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_MODULE</td></tr><tr><td>CapabilityBoundingSet_CAP_AUDIT</td></tr><tr><td>CapabilityBoundingSet_CAP_SYSLOG</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_NICE_RESOURCE</td></tr><tr><td>CapabilityBoundingSet_CAP_MKNOD</td></tr><tr><td>CapabilityBoundingSet_CAP_CHOWN_FSETID_SETFCAP</td></tr><tr><td>CapabilityBoundingSet_CAP_DAC_FOWNER_IPC_OWNER</td></tr><tr><td>CapabilityBoundingSet_CAP_KILL</td></tr><tr><td>CapabilityBoundingSet_CAP_NET_BIND_SERVICE_BROADCAST_RAW</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_BOOT</td></tr><tr><td>CapabilityBoundingSet_CAP_MAC</td></tr><tr><td>CapabilityBoundingSet_CAP_LINUX_IMMUTABLE</td></tr><tr><td>CapabilityBoundingSet_CAP_IPC_LOCK</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_CHROOT</td></tr><tr><td>CapabilityBoundingSet_CAP_BLOCK_SUSPEND</td></tr><tr><td>CapabilityBoundingSet_CAP_WAKE_ALARM</td></tr><tr><td>CapabilityBoundingSet_CAP_LEASE</td></tr><tr><td>CapabilityBoundingSet_CAP_SYS_TTY_CONFIG</td></tr><tr><td>UMask</td></tr><tr><td>KeyringMode</td></tr><tr><td>ProtectProc</td></tr><tr><td>ProcSubset</td></tr><tr><td>NotifyAccess</td></tr><tr><td>RemoveIPC</td></tr><tr><td>Delegate</td></tr><tr><td>RestrictRealtime</td></tr><tr><td>RestrictSUIDSGID</td></tr><tr><td>RestrictNamespaces_user</td></tr><tr><td>RestrictNamespaces_mnt</td></tr><tr><td>RestrictNamespaces_ipc</td></tr><tr><td>RestrictNamespaces_pid</td></tr><tr><td>RestrictNamespaces_cgroup</td></tr><tr><td>RestrictNamespaces_uts</td></tr><tr><td>RestrictNamespaces_net</td></tr><tr><td>RestrictAddressFamilies_AF_INET_INET6</td></tr><tr><td>RestrictAddressFamilies_AF_UNIX</td></tr><tr><td>RestrictAddressFamilies_AF_NETLINK</td></tr><tr><td>RestrictAddressFamilies_AF_PACKET</td></tr><tr><td>RestrictAddressFamilies_OTHER</td></tr><tr><td>SystemCallArchitectures</td></tr><tr><td>SystemCallFilter_swap</td></tr><tr><td>SystemCallFilter_obsolete</td></tr><tr><td>SystemCallFilter_clock</td></tr><tr><td>SystemCallFilter_cpu_emulation</td></tr><tr><td>SystemCallFilter_debug</td></tr><tr><td>SystemCallFilter_mount</td></tr><tr><td>SystemCallFilter_module</td></tr><tr><td>SystemCallFilter_raw_io</td></tr><tr><td>SystemCallFilter_reboot</td></tr><tr><td>SystemCallFilter_privileged</td></tr><tr><td>SystemCallFilter_resources</td></tr><tr><td>IPAddressDeny</td></tr><tr><td>DeviceAllow</td></tr><tr><td>AmbientCapabilities</td></tr></tbody></table></div></div><br class="table-break"><div class="example"><a name="id-1.6.3.14.2.3"></a><p class="title"><b>Example 19. JSON Policy</b></p><div class="example-contents"><p>The JSON file passed as a path parameter to <code class="option">--security-policy=</code>
+          has a top-level JSON object, with keys being the assessment test identifiers mentioned
+          above. The values in the file should be JSON objects with one or more of the
+          following fields: description_na (string), description_good (string), description_bad
+          (string), weight (unsigned integer), and range (unsigned integer). If any of these fields
+          corresponding to a specific id of the unit file is missing from the JSON object, the
+          default built-in field value corresponding to that same id is used for security analysis
+          as default. The weight and range fields are used in determining the overall exposure level
+          of the unit files so by allowing users to manipulate these fields, 'security' gives them
+          the option to decide for themself which ids are more important and hence, should have a greater
+          effect on the exposure level. </p><pre class="programlisting">
+          {
+            "PrivateDevices":
+              {
+              "description_good": "Service has no access to hardware devices",
+              "description_bad": "Service potentially has access to hardware devices",
+              "weight": 1000,
+              "range": 1
+              },
+            "PrivateMounts":
+              {
+              "description_good": "Service cannot install system mounts",
+              "description_bad": "Service may install system mounts",
+              "weight": 1000,
+              "range": 1
+              },
+            "PrivateNetwork":
+              {
+              "description_good": "Service has no access to the host's network",
+              "description_bad": "Service has access to the host's network",
+              "weight": 2500,
+              "range": 1
+              },
+            "PrivateTmp":
+              {
+              "description_good": "Service has no access to other software's temporary files",
+              "description_bad": "Service has access to other software's temporary files",
+              "weight": 1000,
+              "range": 1
+              },
+            "PrivateUsers":
+              {
+              "description_good": "Service does not have access to other users",
+              "description_bad": "Service has access to other users",
+              "weight": 1000,
+              "range": 1
+              }
+          }
+            </pre></div></div><br class="example-break"></dd><dt id="--json=MODE"><span class="term"><code class="option">--json=<em class="replaceable"><code>MODE</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--json=MODE">¶</a></dt><dd><p>With the <span class="command"><strong>security</strong></span> command, generate a JSON formatted
+        output of the security analysis table. The format is a JSON array with objects
+        containing the following fields: <code class="varname">set</code> which indicates if the setting has
+        been enabled or not, <code class="varname">name</code> which is what is used to refer to the setting,
+        <code class="varname">json_field</code> which is the JSON compatible identifier of the setting,
+        <code class="varname">description</code> which is an outline of the setting state, and
+        <code class="varname">exposure</code> which is a number in the range 0.0…10.0, where a higher value
+        corresponds to a higher security threat. The JSON version of the table is printed to standard
+        output. The <em class="replaceable"><code>MODE</code></em> passed to the option can be one of three:
+        <code class="option">off</code> which is the default, <code class="option">pretty</code> and <code class="option">short</code>
+        which respectively output a prettified or shorted JSON version of the security table.</p></dd><dt id="--iterations=NUMBER"><span class="term"><code class="option">--iterations=<em class="replaceable"><code>NUMBER</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--iterations=NUMBER">¶</a></dt><dd><p>When used with the <span class="command"><strong>calendar</strong></span> command, show the specified number of
+        iterations the specified calendar expression will elapse next. Defaults to 1.</p></dd><dt id="--base-time=TIMESTAMP"><span class="term"><code class="option">--base-time=<em class="replaceable"><code>TIMESTAMP</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--base-time=TIMESTAMP">¶</a></dt><dd><p>When used with the <span class="command"><strong>calendar</strong></span> command, show next iterations relative
+        to the specified point in time. If not specified defaults to the current time.</p></dd><dt id="--unit=UNIT"><span class="term"><code class="option">--unit=<em class="replaceable"><code>UNIT</code></em></code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--unit=UNIT">¶</a></dt><dd><p>When used with the <span class="command"><strong>condition</strong></span> command, evaluate all the
+        <code class="varname">Condition*=...</code> and <code class="varname">Assert*=...</code>
+        assignments in the specified unit file. The full unit search path is formed by combining the
+        directories for the specified unit with the usual unit load paths. The variable
+        <code class="varname">$SYSTEMD_UNIT_PATH</code> is supported, and may be used to replace or augment the
+        compiled in set of unit load paths; see
+        <a href="systemd.unit.html#"><span class="citerefentry"><span class="refentrytitle">systemd.unit</span>(5)</span></a>. All
+        units files present in the directory containing the specified unit will be used in preference to the
+        other paths.</p></dd><dt id="-H"><span class="term"><code class="option">-H</code>, </span><span class="term"><code class="option">--host=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#-H">¶</a></dt><dd><p><a name="host-text"></a>Execute the operation remotely. Specify a hostname, or a
+      username and hostname separated by "<code class="literal">@</code>", to
+      connect to. The hostname may optionally be suffixed by a
+      port ssh is listening on, separated by "<code class="literal">:</code>", and then a
+      container name, separated by "<code class="literal">/</code>", which
+      connects directly to a specific container on the specified
+      host. This will use SSH to talk to the remote machine manager
+      instance. Container names may be enumerated with
+      <span class="command"><strong>machinectl -H
+      <em class="replaceable"><code>HOST</code></em></strong></span>. Put IPv6 addresses in brackets.</p></dd><dt id="-M"><span class="term"><code class="option">-M</code>, </span><span class="term"><code class="option">--machine=</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#-M">¶</a></dt><dd><p><a name="machine-text"></a>Execute operation on a local container. Specify a container name to connect to, optionally
+      prefixed by a user name to connect as and a separating "<code class="literal">@</code>" character. If the special
+      string "<code class="literal">.host</code>" is used in place of the container name, a connection to the local
+      system is made (which is useful to connect to a specific user's user bus: "<code class="literal">--user
+      --machine=lennart@.host</code>"). If the "<code class="literal">@</code>" syntax is not used, the connection is
+      made as root user. If the "<code class="literal">@</code>" syntax is used either the left hand side or the right hand
+      side may be omitted (but not both) in which case the local user name and "<code class="literal">.host</code>" are
+      implied.</p></dd><dt id="-h"><span class="term"><code class="option">-h</code>, </span><span class="term"><code class="option">--help</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#-h">¶</a></dt><dd><p><a name="help-text"></a>Print a short help text and exit.
+    </p></dd><dt id="--version"><span class="term"><code class="option">--version</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--version">¶</a></dt><dd><p><a name="version-text"></a>Print a short version string and exit.</p></dd><dt id="--no-pager"><span class="term"><code class="option">--no-pager</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#--no-pager">¶</a></dt><dd><p>Do not pipe output into a pager.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.7"></a><h2 id="Exit status">Exit status<a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#Exit%20status">¶</a></h2><p>On success, 0 is returned, a non-zero failure code
+    otherwise.</p></div><div class="refsect1"><a name="id-1.8"></a><h2 id="Environment">Environment<a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#Environment">¶</a></h2><div class="variablelist"><dl class="variablelist"><dt id="$SYSTEMD_LOG_LEVEL"><span class="term"><code class="varname">$SYSTEMD_LOG_LEVEL</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_LOG_LEVEL">¶</a></dt><dd><p><a name="log-level-body"></a>The maximum log level of emitted messages (messages with a higher
+      log level, i.e. less important ones, will be suppressed). Either one of (in order of decreasing
+      importance) <code class="constant">emerg</code>, <code class="constant">alert</code>, <code class="constant">crit</code>,
+      <code class="constant">err</code>, <code class="constant">warning</code>, <code class="constant">notice</code>,
+      <code class="constant">info</code>, <code class="constant">debug</code>, or an integer in the range 0…7. See
+      <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>
+      for more information.</p></dd><dt id="$SYSTEMD_LOG_COLOR"><span class="term"><code class="varname">$SYSTEMD_LOG_COLOR</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_LOG_COLOR">¶</a></dt><dd><p><a name="log-color-body"></a>A boolean. If true, messages written to the tty will be colored
+      according to priority.</p><p>This setting is only useful when messages are written directly to the terminal, because
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a> and
+      other tools that display logs will color messages based on the log level on their own.</p></dd><dt id="$SYSTEMD_LOG_TIME"><span class="term"><code class="varname">$SYSTEMD_LOG_TIME</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_LOG_TIME">¶</a></dt><dd><p><a name="log-time-body"></a>A boolean. If true, console log messages will be prefixed with a
+      timestamp.</p><p>This setting is only useful when messages are written directly to the terminal or a file, because
+      <a href="journalctl.html#"><span class="citerefentry"><span class="refentrytitle">journalctl</span>(1)</span></a> and
+      other tools that display logs will attach timestamps based on the entry metadata on their own.</p></dd><dt id="$SYSTEMD_LOG_LOCATION"><span class="term"><code class="varname">$SYSTEMD_LOG_LOCATION</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_LOG_LOCATION">¶</a></dt><dd><p><a name="log-location-body"></a>A boolean. If true, messages will be prefixed with a filename
+      and line number in the source code where the message originates.</p><p>Note that the log location is often attached as metadata to journal entries anyway. Including it
+      directly in the message text can nevertheless be convenient when debugging programs.</p></dd><dt id="$SYSTEMD_LOG_TID"><span class="term"><code class="varname">$SYSTEMD_LOG_TID</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_LOG_TID">¶</a></dt><dd><p><a name="log-tid-body"></a>A boolean. If true, messages will be prefixed with the current
+      numerical thread ID (TID).</p><p>Note that the this information is attached as metadata to journal entries anyway. Including it
+      directly in the message text can nevertheless be convenient when debugging programs.</p></dd><dt id="$SYSTEMD_LOG_TARGET"><span class="term"><code class="varname">$SYSTEMD_LOG_TARGET</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_LOG_TARGET">¶</a></dt><dd><p><a name="log-target-body"></a>The destination for log messages. One of
+      <code class="constant">console</code> (log to the attached tty), <code class="constant">console-prefixed</code> (log to
+      the attached tty but with prefixes encoding the log level and "facility", see <a href="http://man7.org/linux/man-pages/man3/syslog.3.html"><span class="citerefentry"><span class="refentrytitle">syslog</span>(3)</span></a>,
+      <code class="constant">kmsg</code> (log to the kernel circular log buffer), <code class="constant">journal</code> (log to
+      the journal), <code class="constant">journal-or-kmsg</code> (log to the journal if available, and to kmsg
+      otherwise), <code class="constant">auto</code> (determine the appropriate log target automatically, the default),
+      <code class="constant">null</code> (disable log output).</p></dd><dt id="$SYSTEMD_PAGER"><span class="term"><code class="varname">$SYSTEMD_PAGER</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_PAGER">¶</a></dt><dd><p>Pager to use when <code class="option">--no-pager</code> is not given; overrides
+      <code class="varname">$PAGER</code>. If neither <code class="varname">$SYSTEMD_PAGER</code> nor <code class="varname">$PAGER</code> are set, a
+      set of well-known pager implementations are tried in turn, including
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a> and
+      <a href="http://man7.org/linux/man-pages/man1/more.1.html"><span class="citerefentry"><span class="refentrytitle">more</span>(1)</span></a>, until one is found. If
+      no pager implementation is discovered no pager is invoked. Setting this environment variable to an empty string
+      or the value "<code class="literal">cat</code>" is equivalent to passing <code class="option">--no-pager</code>.</p></dd><dt id="$SYSTEMD_LESS"><span class="term"><code class="varname">$SYSTEMD_LESS</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_LESS">¶</a></dt><dd><p>Override the options passed to <span class="command"><strong>less</strong></span> (by default
+      "<code class="literal">FRSXMK</code>").</p><p>Users might want to change two options in particular:</p><div class="variablelist"><dl class="variablelist"><dt id="K"><span class="term"><code class="option">K</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#K">¶</a></dt><dd></dd><dt id="X"><span class="term"><code class="option">X</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#X">¶</a></dt><dd></dd></dl></div><p>See
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a>
+      for more discussion.</p></dd><dt id="$SYSTEMD_LESSCHARSET"><span class="term"><code class="varname">$SYSTEMD_LESSCHARSET</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_LESSCHARSET">¶</a></dt><dd><p>Override the charset passed to <span class="command"><strong>less</strong></span> (by default "<code class="literal">utf-8</code>", if
+      the invoking terminal is determined to be UTF-8 compatible).</p></dd><dt id="$SYSTEMD_PAGERSECURE"><span class="term"><code class="varname">$SYSTEMD_PAGERSECURE</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_PAGERSECURE">¶</a></dt><dd><p>Takes a boolean argument. When true, the "secure" mode of the pager is enabled; if
+      false, disabled. If <code class="varname">$SYSTEMD_PAGERSECURE</code> is not set at all, secure mode is enabled
+      if the effective UID is not the same as the owner of the login session, see
+      <a href="http://man7.org/linux/man-pages/man2/geteuid.2.html"><span class="citerefentry"><span class="refentrytitle">geteuid</span>(2)</span></a>
+      and <a href="sd_pid_get_owner_uid.html#"><span class="citerefentry"><span class="refentrytitle">sd_pid_get_owner_uid</span>(3)</span></a>.
+      In secure mode, <code class="option">LESSSECURE=1</code> will be set when invoking the pager, and the pager shall
+      disable commands that open or create new files or start new subprocesses. When
+      <code class="varname">$SYSTEMD_PAGERSECURE</code> is not set at all, pagers which are not known to implement
+      secure mode will not be used. (Currently only
+      <a href="http://man7.org/linux/man-pages/man1/less.1.html"><span class="citerefentry"><span class="refentrytitle">less</span>(1)</span></a>
+      implements secure mode.)</p><p>Note: when commands are invoked with elevated privileges, for example under <a href="http://man7.org/linux/man-pages/man8/sudo.8.html"><span class="citerefentry"><span class="refentrytitle">sudo</span>(8)</span></a> or
+      <a href="http://linux.die.net/man/1/pkexec"><span class="citerefentry"><span class="refentrytitle">pkexec</span>(1)</span></a>, care
+      must be taken to ensure that unintended interactive features are not enabled. "Secure" mode for the
+      pager may be enabled automatically as describe above. Setting <code class="varname">SYSTEMD_PAGERSECURE=0</code>
+      or not removing it from the inherited environment allows the user to invoke arbitrary commands. Note
+      that if the <code class="varname">$SYSTEMD_PAGER</code> or <code class="varname">$PAGER</code> variables are to be
+      honoured, <code class="varname">$SYSTEMD_PAGERSECURE</code> must be set too. It might be reasonable to completely
+      disable the pager using <code class="option">--no-pager</code> instead.</p></dd><dt id="$SYSTEMD_COLORS"><span class="term"><code class="varname">$SYSTEMD_COLORS</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_COLORS">¶</a></dt><dd><p>Takes a boolean argument. When true, <span class="command"><strong>systemd</strong></span> and related utilities
+      will use colors in their output, otherwise the output will be monochrome. Additionally, the variable can
+      take one of the following special values: "<code class="literal">16</code>", "<code class="literal">256</code>" to restrict the use
+      of colors to the base 16 or 256 ANSI colors, respectively. This can be specified to override the automatic
+      decision based on <code class="varname">$TERM</code> and what the console is connected to.</p></dd><dt id="$SYSTEMD_URLIFY"><span class="term"><code class="varname">$SYSTEMD_URLIFY</code></span><a class="headerlink" title="Permalink to this term" href="systemd-analyze.html#%24SYSTEMD_URLIFY">¶</a></dt><dd><p>The value must be a boolean. Controls whether clickable links should be generated in
+      the output for terminal emulators supporting this. This can be specified to override the decision that
+      <span class="command"><strong>systemd</strong></span> makes based on <code class="varname">$TERM</code> and other conditions.</p></dd></dl></div></div><div class="refsect1"><a name="id-1.9"></a><h2 id="See Also">See Also<a class="headerlink" title="Permalink to this headline" href="systemd-analyze.html#See%20Also">¶</a></h2><p>
+      <a href="systemd.html#"><span class="citerefentry"><span class="refentrytitle">systemd</span>(1)</span></a>,
+      <a href="systemctl.html#"><span class="citerefentry"><span class="refentrytitle">systemctl</span>(1)</span></a>
+    </p></div></div></body></html>

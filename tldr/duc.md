@@ -9,11 +9,11 @@
 
 - List all files and directories under /usr/local, showing relative file sizes in a [g]raph:
 
-`duc ls --classify --graph {{/usr/local}}`
+`duc ls -Fg {{/usr/local}}`
 
 - List all files and directories under /usr/local using treeview recursively:
 
-`duc ls --classify --graph --recursive {{/usr/local}}`
+`duc ls -Fg -R {{/usr/local}}`
 
 - Start the graphical interface to explore the file system using sunburst graphs:
 

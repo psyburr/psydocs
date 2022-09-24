@@ -1,0 +1,723 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Wed Mar  4 09:32:46 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>GIST</title>
+
+</head>
+<body>
+
+<h1 align="center">GIST</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#Synopsis">Synopsis</a><br>
+<a href="#Installation">Installation</a><br>
+<a href="#Command">Command</a><br>
+<a href="#Login">Login</a><br>
+<a href="#Configuration">Configuration</a><br>
+<a href="#Meta&#8722;fu">Meta&#8722;fu</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>gist</b>
+&#8722; upload code to https://gist.github.com</p>
+
+<h2>Synopsis
+<a name="Synopsis"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The gist gem
+provides a <b>gist</b> command that you can use from your
+terminal to upload content to https://gist.github.com/.</p>
+
+<h2>Installation
+<a name="Installation"></a>
+</h2>
+
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="41%">
+
+
+<p style="margin-top: 1em">If you have ruby installed:</p></td>
+<td width="42%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gem install
+gist</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="37%">
+
+
+<p style="margin-top: 1em">If you´re using
+Bundler:</p> </td>
+<td width="46%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">source
+:rubygems gem ´gist´</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="49%">
+
+
+<p style="margin-top: 1em">For OS X, gist lives in
+Homebrew</p> </td>
+<td width="34%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">brew install
+gist</p>
+
+<h2>Command
+<a name="Command"></a>
+</h2>
+
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="55%">
+
+
+<p style="margin-top: 1em">To upload the contents of
+<b>a.rb</b> just:</p></td>
+<td width="28%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist a.rb</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="34%">
+
+
+<p style="margin-top: 1em">Upload multiple files:</p></td>
+<td width="49%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist a b c gist
+*.rb</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">By default it reads from STDIN,
+and you can set a filename with <b>&#8722;f</b>.</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;f
+test.rb &lt;a.rb</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">Alternatively, you can just
+paste from the clipboard:</p></td>
+<td width="2%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist
+&#8722;P</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="49%">
+
+
+<p style="margin-top: 1em">Use <b>&#8722;p</b> to make the
+gist private:</p></td>
+<td width="34%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;p
+a.rb</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="43%">
+
+
+<p style="margin-top: 1em">Use <b>&#8722;d</b> to add a
+description:</p> </td>
+<td width="40%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;d
+"Random rbx bug" a.rb</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="58%">
+
+
+<p style="margin-top: 1em">You can update existing gists
+with <b>&#8722;u</b>:</p></td>
+<td width="25%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;u
+GIST_ID FILE_NAME gist &#8722;u 42f2c239d2eb57299408
+test.txt</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">If you´d like to copy the
+resulting URL to your clipboard, use <b>&#8722;c</b>.</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;c
+&lt;a.rb</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">If you´d like to copy the
+resulting embeddable URL to your clipboard, use
+<b>&#8722;e</b>.</p> </td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;e
+&lt;a.rb</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">And you can just ask gist to
+open a browser window directly with <b>&#8722;o</b>.</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;o
+&lt;a.rb</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">To list (public gists or all
+gists for authed user) gists for user</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;l :
+all gists for authed user gist &#8722;l defunkt : list
+defunkt´s public gists</p>
+
+<p style="margin-left:11%; margin-top: 1em">To read a gist
+and print it to STDOUT</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="17%"></td>
+<td width="23%">
+
+
+<p>gist &#8722;r GIST_ID</p></td>
+<td width="60%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%;">gist &#8722;r 374130</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="49%">
+
+
+<p>See <b>gist &#8722;&#8722;help</b> for more detail.</p></td>
+<td width="34%">
+</td></tr>
+</tbody></table>
+
+<h2>Login
+<a name="Login"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">If you want to
+associate your gists with your GitHub account, you need to
+login with gist. It doesn´t store your username and
+password, it just uses them to get an OAuth2 token (with the
+"gist" permission).</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="17%"></td>
+<td width="18%">
+
+
+<p>gist &#8722;&#8722;login</p></td>
+<td width="65%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:17%;">Obtaining OAuth2 access_token
+from github. <br>
+GitHub username: ConradIrwin <br>
+GitHub password: <br>
+2&#8722;factor auth code: <br>
+Success! https://github.com/settings/tokens</p>
+
+<p style="margin-left:11%; margin-top: 1em">This token is
+stored in <b>~/.gist</b> and used for all future gisting. If
+you need to you can revoke it from
+https://github.com/settings/tokens, or just delete the
+file.</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>After you´ve done this, you can still upload gists
+anonymously with <b>&#8722;a</b>.</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">gist &#8722;a
+a.rb</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you have a
+complicated authorization requirement you can manually
+create a token file by pasting a Github token with only the
+<b>gist</b> permission into a file called <b>~/.gist</b>.
+You can create one from
+https://github.com/settings/tokens</p>
+
+<p style="margin-left:11%; margin-top: 1em">This file
+should contain only the token (~40 hex characters), and to
+make it easier to edit, can optionally have a final newline
+(\n or \r\n).</p>
+
+<p style="margin-left:11%; margin-top: 1em">For example,
+one way to create this file would be to run:</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="17%"></td>
+<td width="46%">
+
+
+<p>echo MY_SECRET_TOKEN &gt; ~/.gist</p></td>
+<td width="37%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%; margin-top: 1em"><b>GitHub
+Enterprise</b> <br>
+If you´d like <b>gist</b> to use your locally
+installed GitHub Enterprise
+<i>https://enterprise.github.com/</i>, you need to export
+the <b>GITHUB_URL</b> environment variable (usually done in
+your <b>~/.bashrc</b>).</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="17%"></td>
+<td width="81%">
+
+
+<p>export
+GITHUB_URL=http://github.internal.example.com/</p> </td>
+<td width="2%">
+</td></tr>
+</tbody></table>
+
+<p style="margin-left:11%; margin-top: 1em">Once
+you´ve done this and restarted your terminal (or run
+<b>source ~/.bashrc</b>), gist will automatically use github
+enterprise instead of the public github.com</p>
+
+<p style="margin-left:11%; margin-top: 1em">Your token for
+GitHub Enterprise will be stored in
+<b>.gist.&lt;protocol&gt;.&lt;server.name&gt;[.&lt;port&gt;]</b>
+(e.g. <b>~/.gist.http.github.internal.example.com</b> for
+the GITHUB_URL example above) instead of <b>~/.gist</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you have
+multiple servers or use Enterprise and public GitHub often,
+you can work around this by creating scripts that set the
+env var and then run <b>gist</b>. Keep in mind that to use
+the public GitHub you must unset the env var. Just setting
+it to the public URL will not work. Use <b>unset
+GITHUB_URL</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Token file
+format</b> <br>
+If you cannot use passwords, as most Enterprise
+installations do, you can generate the token via the web
+interface and then simply save the string in the correct
+file. Avoid line breaks or you might see: <b>$ gist &#8722;l
+Error: Bad credentials</b> <br>
+You can also use Gist as a library from inside your ruby
+code:</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">Gist.gist("Look.at(:my
+=&gt; ´awesome´).code")</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you need
+more advanced features you can also pass:</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p><b>:access_token</b> to authenticate using OAuth2
+(default is ‘File.read("~/.gist")).</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p><b>:filename</b> to change the syntax highlighting
+(default is <b>a.rb</b>).</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p><b>:public</b> if you want your gist to have a guessable
+url.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p><b>:description</b> to add a description to your
+gist.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p><b>:update</b> to update an existing gist (can be a URL
+or an id).</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p><b>:anonymous</b> to submit an anonymous gist (default
+is false).</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p><b>:copy</b> to copy the resulting URL to the clipboard
+(default is false).</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p><b>:open</b> to open the resulting URL in a browser
+(default is false).</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:11%; margin-top: 1em">NOTE: The
+access_token must have the "gist" scope.</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>If you want to upload multiple files in the same gist,
+you can:</p></td></tr>
+</tbody></table>
+
+
+<p style="margin-left:17%; margin-top: 1em">Gist.multi_gist("a.rb"
+=&gt; "Foo.bar", "a.py" =&gt;
+"Foo.bar")</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">If you´d rather use
+gist´s builtin access_token, then you can force the
+user to obtain one by calling:</p></td></tr>
+</tbody></table>
+
+
+<p style="margin-left:17%; margin-top: 1em">Gist.login!</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">This will take them through the
+process of obtaining an OAuth2 token, and storing it in
+<b>~/.gist</b>, where it can later be read by
+<b>Gist.gist</b></p> </td></tr>
+</tbody></table>
+
+<h2>Configuration
+<a name="Configuration"></a>
+</h2>
+
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">If you´d like
+<b>&#8722;o</b> or <b>&#8722;c</b> to be the default when
+you use the gist executable, add an alias to your
+<b>~/.bashrc</b> (or equivalent). For example:</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">alias
+gist=´gist &#8722;c´</p>
+
+<table rules="none" frame="void" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">•</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">If you´d prefer gist to
+open a different browser, then you can export the BROWSER
+environment variable:</p></td></tr>
+</tbody></table>
+
+<p style="margin-left:17%; margin-top: 1em">export
+BROWSER=google&#8722;chrome</p>
+
+<p style="margin-left:11%; margin-top: 1em">If clipboard or
+browser integration don´t work on your platform,
+please file a bug or (more ideally) a pull request.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you need to
+use an HTTP proxy to access the internet, export the
+<b>HTTP_PROXY</b> or <b>http_proxy</b> environment variable
+and gist will use it.</p>
+
+<h2>Meta&#8722;fu
+<a name="Meta&#8722;fu"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Thanks to
+@defunkt and @indirect for writing and maintaining versions
+1 through 3. Thanks to @rking and @ConradIrwin for
+maintaining version 4.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Licensed under
+the MIT license. Bug&#8722;reports, and pull requests are
+welcome.</p>
+<hr>
+
+
+</body></html>
